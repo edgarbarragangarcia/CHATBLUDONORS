@@ -17,7 +17,7 @@ export default async function AdminPage() {
   }
 
   // In a real app, you would fetch these counts from your database
-  const userCount = 10;
+  const userCount = 11;
   const chatCount = 5;
 
   return (
@@ -33,7 +33,7 @@ export default async function AdminPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{userCount}</div>
-            <p className="text-xs text-muted-foreground">+2 since last hour</p>
+            <p className="text-xs text-muted-foreground">+3 since last hour</p>
           </CardContent>
         </Card>
         <Card>
