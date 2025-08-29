@@ -20,7 +20,7 @@ export type Message = {
   user_name: string | null
 }
 
-export default function ChatPage({ user }: { user: User }) {
+export default function ChatPage({ user, email }: { user: User, email?: string }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [suggestedReplies, setSuggestedReplies] = useState<string[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
@@ -66,7 +66,7 @@ export default function ChatPage({ user }: { user: User }) {
     )
 
     setMessages(messagesWithProfiles)
-  }, [supabase])
+  }, [supabase, user.id, user.user_metadata.full_name, user.user_metadata.avatar_url])
 
 
   const fetchSuggestions = async (currentMessages: Message[]) => {
@@ -138,7 +138,7 @@ export default function ChatPage({ user }: { user: User }) {
 
   return (
     <div className="flex h-screen w-full flex-col bg-muted/40">
-      <ChatHeader user={user} />
+      <ChatHeader user={user} email={email} />
       <main className="flex-1 overflow-hidden p-4 md:p-6">
         <Card className="h-full flex flex-col">
             <MessageList messages={messages} currentUserId={user.id} />

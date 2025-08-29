@@ -16,8 +16,8 @@ export default async function Home() {
 
   // The user object needs to be destructured and reconstructed
   // to avoid passing a non-serializable object to the client component.
-  const { id, app_metadata, user_metadata, aud, created_at } = user
+  const { id, app_metadata, user_metadata, aud, created_at, email } = user
   const serializableUser = { id, app_metadata, user_metadata, aud, created_at } as User
 
-  return <ChatPage user={serializableUser} />
+  return <ChatPage user={serializableUser} email={email} />
 }

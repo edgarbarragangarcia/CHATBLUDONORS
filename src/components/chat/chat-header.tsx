@@ -19,10 +19,10 @@ import { LogOut, MessageSquareHeart, Shield } from "lucide-react"
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
-export function ChatHeader({ user }: { user: User }) {
+export function ChatHeader({ user, email }: { user: User, email?: string }) {
   const supabase = createClient()
   const router = useRouter()
-  const isAdmin = ADMIN_USERS.includes(user.email ?? '');
+  const isAdmin = ADMIN_USERS.includes(email ?? '');
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -35,7 +35,7 @@ export function ChatHeader({ user }: { user: User }) {
 
   const userInitial = user?.user_metadata.full_name
     ? user.user_metadata.full_name.charAt(0).toUpperCase()
-    : user.email?.charAt(0).toUpperCase() ?? "U"
+    : email?.charAt(0).toUpperCase() ?? "U"
 
   return (
     <header className="flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
@@ -57,8 +57,8 @@ export function ChatHeader({ user }: { user: User }) {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user?.user_metadata.full_name || user?.email}</p>
-              <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+              <p className="text-sm font-medium leading-none">{user?.user_metadata.full_name || email}</p>
+              <p className="text-xs leading-none text-muted-foreground">{email}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
