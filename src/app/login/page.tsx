@@ -28,8 +28,8 @@ export default function LoginPage() {
 
     if (error) {
         toast({
-            title: "Error signing in",
-            description: error.message,
+            title: "Error al iniciar sesión",
+            description: "Credenciales inválidas. Por favor, verifica tu correo y contraseña.",
             variant: "destructive",
         })
     } else {
@@ -48,7 +48,7 @@ export default function LoginPage() {
                 ChromaChat
             </CardTitle>
             <CardDescription>
-                Sign in to start your colorful conversation.
+                Inicia sesión para comenzar tu conversación.
             </CardDescription>
             </CardHeader>
             <CardContent>
@@ -67,7 +67,7 @@ export default function LoginPage() {
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password">Contraseña</Label>
                             <Input 
                                 id="password" 
                                 type="password" 
@@ -78,7 +78,7 @@ export default function LoginPage() {
                             />
                         </div>
                         <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? "Signing in..." : "Sign In"}
+                            {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
                         </Button>
                     </div>
                 </form>
