@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { type User } from "@supabase/supabase-js"
 import { generateSuggestedReplies } from "@/ai/flows/suggested-replies"
@@ -10,6 +10,8 @@ import { ChatHeader } from "./chat-header"
 import { MessageList } from "./message-list"
 import { MessageForm } from "./message-form"
 import { SuggestedReplies } from "./suggested-replies"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
 
 export type Message = {
   id: string
@@ -18,9 +20,10 @@ export type Message = {
   user_id: string
   user_avatar: string | null
   user_name: string | null
+  chat_id: string;
 }
 
-export default function ChatPage({ user, email }: { user: User, email?: string }) {
+export default function ChatPage({ user, email, chatId }: { user: User, email?: string, chatId: string }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [suggestedReplies, setSuggestedReplies] = useState<string[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
@@ -32,7 +35,7 @@ export default function ChatPage({ user, email }: { user: User, email?: string }
     // If it's the current user, we use their metadata.
     if (userId === user.id) {
       return {
-        name: user.user_metadata.full_name,
+        name: user.user_metadata.full_name || email,
         avatar: user.user_metadata.avatar_url,
       }
     }
@@ -47,6 +50,7 @@ export default function ChatPage({ user, email }: { user: User, email?: string }
     const { data, error } = await supabase
       .from("messages")
       .select("*")
+      .eq('chat_id', chatId)
       .order("created_at", { ascending: true })
 
     if (error) {
@@ -66,7 +70,7 @@ export default function ChatPage({ user, email }: { user: User, email?: string }
     )
 
     setMessages(messagesWithProfiles)
-  }, [supabase, user.id, user.user_metadata.full_name, user.user_metadata.avatar_url])
+  }, [supabase, user.id, user.user_metadata.full_name, user.user_metadata.avatar_url, email, chatId])
 
 
   const fetchSuggestions = async (currentMessages: Message[]) => {
@@ -95,10 +99,10 @@ export default function ChatPage({ user, email }: { user: User, email?: string }
     fetchMessages()
 
     const channel = supabase
-      .channel("messages")
+      .channel(`messages-for-${chatId}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
+        { event: "INSERT", schema: "public", table: "messages", filter: `chat_id=eq.${chatId}` },
         async (payload) => {
           const newMsg = payload.new
           const profile = await getProfileForUser(newMsg.user_id)
@@ -109,6 +113,7 @@ export default function ChatPage({ user, email }: { user: User, email?: string }
             user_id: newMsg.user_id,
             user_name: profile.name,
             user_avatar: profile.avatar,
+            chat_id: newMsg.chat_id,
           }
           setMessages((prevMessages) => {
               const updatedMessages = [...prevMessages, newMessage]
@@ -122,14 +127,14 @@ export default function ChatPage({ user, email }: { user: User, email?: string }
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, fetchMessages])
+  }, [supabase, fetchMessages, chatId])
 
   const handleSendMessage = async (content: string) => {
     if (content.trim() === "") return
 
     const { error } = await supabase
       .from("messages")
-      .insert([{ content, user_id: user.id }])
+      .insert([{ content, user_id: user.id, chat_id: chatId }])
     
     if (error) {
       console.error("Error sending message:", error)
@@ -139,8 +144,14 @@ export default function ChatPage({ user, email }: { user: User, email?: string }
   return (
     <div className="flex h-screen w-full flex-col bg-muted/40">
       <ChatHeader user={user} email={email} />
-      <main className="flex-1 overflow-hidden p-4 md:p-6">
-        <Card className="h-full flex flex-col">
+      <main className="flex-1 overflow-hidden p-4 md:p-6 flex flex-col">
+        <div className="mb-4">
+            <Link href="/" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+                <ArrowLeft className="h-4 w-4" />
+                Volver a todas las salas
+            </Link>
+        </div>
+        <Card className="h-full flex flex-col flex-1">
             <MessageList messages={messages} currentUserId={user.id} />
             <div className="p-4 border-t">
                 <SuggestedReplies 
