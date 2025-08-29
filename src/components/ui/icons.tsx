@@ -23,66 +23,74 @@ export const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export const ProjectiaLogo = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg 
-        viewBox="0 0 24 24" 
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-    >
-        <path d="M0 4C0 1.79086 1.79086 0 4 0H20C22.2091 0 24 1.79086 24 4V20C24 22.2091 22.2091 24 20 24H4C1.79086 24 0 22.2091 0 20V4Z" />
-        <path d="M11.999 15.6L10.799 13.2H14.399L12.799 9.6L16.399 9.6L11.199 18L11.999 15.6Z" fill="white" />
-        <path d="M12.801 8.4L14.001 6L7.60101 6L11.201 14.4L9.60101 14.4L12.801 8.4Z" fill="white" />
-    </svg>
-);
-
-
-export const PanelsIcon = (props: React.SVGProps<SVGSVGElement>) => (
+export const MessageSquareHeart = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
         viewBox="0 0 24 24" 
         fill="none" 
-        xmlns="http://www.w3.org/2000/svg"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
-        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
-        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
-        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
-        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2z"></path>
+        <path d="M12.4 7.5a2.1 2.1 0 0 0-2.8 0L9 8l.2.3a2.1 2.1 0 0 0 2.8 2.8L12.5 11l.5.5.5-.5a2.1 2.1 0 0 0 0-2.8Z"></path>
     </svg>
 );
 
-export const AssistantIcon = (props: React.SVGProps<SVGSVGElement>) => (
+
+export const MessagesSquare = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
         viewBox="0 0 24 24" 
         fill="none" 
-        xmlns="http://www.w3.org/2000/svg"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
-        <path d="M12 3L13.94 8.06L19 9.9L13.94 11.74L12 16.8L10.06 11.74L5 9.9L10.06 8.06L12 3Z"/>
-        <path d="M3 12L4.94 17.06L10 18.9L4.94 20.74L3 25.8L1.06 20.74L-4 18.9L1.06 17.06L3 12Z" transform="translate(15 -5) scale(0.5)"/>
+        <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"></path>
+        <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"></path>
     </svg>
 );
 
-export const ProgressIcon = (props: React.SVGProps<SVGSVGElement>) => (
+
+export const Bot = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
         viewBox="0 0 24 24" 
         fill="none" 
-        xmlns="http://www.w3.org/2000/svg"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
-        <polyline points="22 11.08 12 21.08 7.5 16.58"></polyline>
-        <polyline points="22 4 12 14.08 7.5 9.58"></polyline>
+        <path d="M12 8V4H8"></path>
+        <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+        <path d="M2 14h2"></path><path d="M20 14h2"></path>
+        <path d="M15 13v2"></path>
+        <path d="M9 13v2"></path>
+    </svg>
+);
+
+export const Sparkles = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+    >
+        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+        <path d="M5 3v4"></path>
+        <path d="M19 17v4"></path>
+        <path d="M3 5h4"></path>
+        <path d="M17 19h4"></path>
     </svg>
 );

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { GoogleIcon, ProjectiaLogo, PanelsIcon, AssistantIcon, ProgressIcon } from "@/components/ui/icons";
+import { GoogleIcon, MessageSquareHeart, MessagesSquare, Bot, Sparkles } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function LoginPage() {
@@ -55,40 +55,40 @@ export default function LoginPage() {
     <div className="flex min-h-screen w-full bg-background text-foreground">
       <div className="hidden lg:flex lg:w-1/2 flex-col items-start justify-center p-12 bg-gradient-to-br from-accent to-background">
         <div className="flex items-center gap-3 mb-8">
-            <ProjectiaLogo className="h-10 w-10 text-primary" />
-            <span className="text-2xl font-bold">PROJECTIA</span>
+            <MessageSquareHeart className="h-10 w-10 text-primary" />
+            <span className="text-2xl font-bold">ChromaChat</span>
         </div>
-        <h1 className="text-4xl font-bold mb-4">Transforma tus ideas en proyectos exitosos.</h1>
+        <h1 className="text-4xl font-bold mb-4">Conversaciones más inteligentes y fluidas.</h1>
         <p className="text-lg text-muted-foreground mb-12">
-            Gestiona tus proyectos con una herramienta visual, intuitiva y potenciada por IA que se adapta a tu forma de trabajar.
+            Experimenta un chat potenciado por IA que entiende el contexto, sugiere respuestas y te ayuda a comunicarte mejor.
         </p>
         <div className="space-y-8">
             <div className="flex items-start gap-4">
-                <PanelsIcon className="h-8 w-8 text-primary mt-1" />
+                <MessagesSquare className="h-8 w-8 text-primary mt-1" />
                 <div>
-                    <h3 className="font-semibold text-lg">Paneles Visuales</h3>
-                    <p className="text-muted-foreground">Organiza todo con tableros Kanban, calendarios y diagramas de Gantt.</p>
+                    <h3 className="font-semibold text-lg">Salas de Chat Dinámicas</h3>
+                    <p className="text-muted-foreground">Comunícate en tiempo real con equipos y amigos en canales organizados.</p>
                 </div>
             </div>
             <div className="flex items-start gap-4">
-                <AssistantIcon className="h-8 w-8 text-primary mt-1" />
+                <Bot className="h-8 w-8 text-primary mt-1" />
                 <div>
-                    <h3 className="font-semibold text-lg">Asistente IA</h3>
-                    <p className="text-muted-foreground">Deja que la IA te sugiera prioridades y te ayude a optimizar tu flujo de trabajo.</p>
+                    <h3 className="font-semibold text-lg">Asistente de IA</h3>
+                    <p className="text-muted-foreground">Deja que nuestro agente de IA te ayude a redactar y te dé sugerencias inteligentes.</p>
                 </div>
             </div>
              <div className="flex items-start gap-4">
-                <ProgressIcon className="h-8 w-8 text-primary mt-1" />
+                <Sparkles className="h-8 w-8 text-primary mt-1" />
                 <div>
-                    <h3 className="font-semibold text-lg">Seguimiento de Progreso</h3>
-                    <p className="text-muted-foreground">Monitoriza el avance de tus proyectos y tareas con dashboards claros y concisos.</p>
+                    <h3 className="font-semibold text-lg">Respuestas Sugeridas</h3>
+                    <p className="text-muted-foreground">Acelera tus conversaciones con respuestas generadas por IA según el contexto.</p>
                 </div>
             </div>
         </div>
       </div>
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-center">Bienvenido a PROJECTIA</h2>
+            <h2 className="text-2xl font-bold text-center">Bienvenido a ChromaChat</h2>
             <p className="text-muted-foreground text-center mb-6">Elige tu método preferido para continuar.</p>
             
             <Button variant="outline" className="w-full mb-4" onClick={handleGoogleLogin} disabled={isLoading || isGoogleLoading}>
