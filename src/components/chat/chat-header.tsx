@@ -42,7 +42,7 @@ export function ChatHeader({ user, email }: { user: User, email?: string }) {
       <div className="flex items-center gap-2">
         <MessageSquareHeart className="h-6 w-6 text-primary" />
         <h1 className="text-xl font-bold tracking-tighter bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          ChromaChat
+          BLUEDONORS CHAT
         </h1>
       </div>
       <DropdownMenu>

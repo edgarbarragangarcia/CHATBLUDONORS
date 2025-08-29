@@ -56,7 +56,7 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 flex-col items-start justify-center p-12 bg-gradient-to-br from-accent to-background">
         <div className="flex items-center gap-3 mb-8">
             <MessageSquareHeart className="h-10 w-10 text-primary" />
-            <span className="text-2xl font-bold">ChromaChat</span>
+            <span className="text-2xl font-bold">BLUEDONORS CHAT</span>
         </div>
         <h1 className="text-4xl font-bold mb-4">Conversaciones más inteligentes y fluidas.</h1>
         <p className="text-lg text-muted-foreground mb-12">
@@ -88,7 +88,7 @@ export default function LoginPage() {
       </div>
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-center">Bienvenido a ChromaChat</h2>
+            <h2 className="text-2xl font-bold text-center">Bienvenido a BLUEDONORS CHAT</h2>
             <p className="text-muted-foreground text-center mb-6">Elige tu método preferido para continuar.</p>
             
             <Button variant="outline" className="w-full mb-4" onClick={handleGoogleLogin} disabled={isLoading || isGoogleLoading}>

@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'ChromaChat',
+  title: 'BLUEDONORS CHAT',
   description: 'A modern chat application with AI-powered suggestions.',
 };
 
