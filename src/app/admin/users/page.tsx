@@ -20,25 +20,45 @@ import {
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
-// This is a placeholder. In a real app, you would fetch users from your database
-const users = [
-    { id: '1', name: 'Edgar Barragan', email: 'eabarragang@ingenes.com', avatar: '', role: 'admin' },
-    { id: '2', name: 'Nancy Torres', email: 'ntorres@ingenes.com', avatar: '', role: 'admin' },
-    { id: '6', name: 'Admin User', email: 'administrador@ingenes.com', avatar: '', role: 'admin' },
-    { id: '3', name: 'John Doe', email: 'john.doe@example.com', avatar: '', role: 'user' },
-    { id: '4', name: 'Jane Smith', email: 'jane.smith@example.com', avatar: '', role: 'user' },
-]
-
 export default async function UsersPage() {
   const supabase = createClient();
 
   const {
-    data: { user },
+    data: { user: authUser },
   } = await supabase.auth.getUser();
 
-  if (!user || !ADMIN_USERS.includes(user.email ?? '')) {
+  if (!authUser || !ADMIN_USERS.includes(authUser.email ?? '')) {
     return redirect('/');
   }
+
+  // Fetch all users from Supabase Auth
+  const { data: { users }, error } = await supabase.auth.admin.listUsers();
+
+  if (error) {
+    console.error('Error fetching users:', error);
+    // Handle the error appropriately
+    return (
+        <div className="flex-1 space-y-4 p-8 pt-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Error</CardTitle>
+                    <CardDescription>Could not fetch users.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p>There was an issue retrieving the user list from the database. Please check the server logs.</p>
+                </CardContent>
+            </Card>
+        </div>
+    );
+  }
+
+  const mappedUsers = users.map((u) => ({
+    id: u.id,
+    name: u.user_metadata?.full_name || u.email?.split('@')[0],
+    email: u.email,
+    avatar: u.user_metadata?.avatar_url,
+    role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
+  }));
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
@@ -57,13 +77,13 @@ export default async function UsersPage() {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {users.map((u) => (
+                {mappedUsers.map((u) => (
                     <TableRow key={u.id}>
                     <TableCell>
                         <div className="flex items-center gap-3">
                         <Avatar>
                             <AvatarImage src={u.avatar} />
-                            <AvatarFallback>{u.name?.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>{u.name?.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <span>{u.name}</span>
                         </div>
