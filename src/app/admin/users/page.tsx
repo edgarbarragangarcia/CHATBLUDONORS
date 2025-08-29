@@ -1,7 +1,8 @@
 
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
+import React, { useState, useEffect } from 'react';
+import type { User } from '@supabase/supabase-js';
 import {
   Table,
   TableHeader,
@@ -20,8 +21,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import React, { useState, useEffect } from 'react';
-import type { User } from '@supabase/supabase-js';
+import { getUsers } from './actions';
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
@@ -36,42 +36,28 @@ type MappedUser = {
 export default function UsersPage() {
   const [users, setUsers] = useState<MappedUser[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [authUser, setAuthUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user || !ADMIN_USERS.includes(user.email ?? '')) {
-            return;
-        }
-        setAuthUser(user);
-
-        try {
-            // This is a server action that can only be called from a server component
-            // or a server action file. To fix this, we will call it from a server action.
-            // For now, we will use mock data.
-            const { data: usersData, error: usersError } = await supabase.from('users_public').select('*');
-
-            if (usersError) throw usersError;
-            
-            const mappedUsers = usersData.map((u: any) => ({
-                id: u.id,
-                name: u.full_name || u.email?.split('@')[0],
-                email: u.email,
-                avatar: u.avatar_url,
-                role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
-            }));
-            setUsers(mappedUsers);
-        } catch (e: any) {
-            setError('Could not fetch users. RLS might be blocking the request.');
-            console.error('Error fetching users:', e);
-        } finally {
-            setLoading(false);
-        }
+      try {
+        const usersData = await getUsers();
+        
+        const mappedUsers = usersData.map((u: any) => ({
+            id: u.id,
+            name: u.user_metadata?.full_name || u.email?.split('@')[0],
+            email: u.email,
+            avatar: u.user_metadata?.avatar_url,
+            role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
+        }));
+        setUsers(mappedUsers);
+      } catch (e: any) {
+          setError('Could not fetch users. Please ensure the service_role key is correct.');
+          console.error('Error fetching users:', e);
+      } finally {
+          setLoading(false);
+      }
     };
 
     fetchUserData();
@@ -182,4 +168,3 @@ export default function UsersPage() {
     </div>
   );
 }
-
