@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
+import { Chrome } from "lucide-react"
 
 export default function LoginPage() {
   const supabase = createClient()
@@ -16,6 +17,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
 
   const handleEmailPasswordLogin = async (e: React.FormEvent) => {
@@ -38,6 +40,18 @@ export default function LoginPage() {
     }
     setIsLoading(false)
   }
+
+  const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+    setIsGoogleLoading(false);
+  };
+
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center bg-background">
@@ -63,7 +77,7 @@ export default function LoginPage() {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                disabled={isLoading}
+                                disabled={isLoading || isGoogleLoading}
                             />
                         </div>
                         <div className="grid gap-2">
@@ -74,14 +88,34 @@ export default function LoginPage() {
                                 required 
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                disabled={isLoading}
+                                disabled={isLoading || isGoogleLoading}
                             />
                         </div>
-                        <Button type="submit" className="w-full" disabled={isLoading}>
+                        <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
                             {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
                         </Button>
                     </div>
                 </form>
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      O continúa con
+                    </span>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={isLoading || isGoogleLoading}>
+                    {isGoogleLoading ? (
+                        "Redirigiendo..."
+                    ) : (
+                        <>
+                            <Chrome className="mr-2 h-4 w-4" />
+                            Google
+                        </>
+                    )}
+                </Button>
             </CardContent>
         </Card>
     </div>
