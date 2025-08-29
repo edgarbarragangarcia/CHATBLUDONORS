@@ -1,12 +1,12 @@
 
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-// This function fetches all users from Supabase Auth
+// This function fetches all users from Supabase Auth using the admin client
 export async function getUsers() {
-  const supabase = createClient();
+  const supabase = createAdminClient();
   const { data: { users }, error } = await supabase.auth.admin.listUsers();
   if (error) {
     console.error('Error fetching users:', error.message);
@@ -15,9 +15,9 @@ export async function getUsers() {
   return users;
 }
 
-// This function fetches all available chats from the 'chats' table
+// This function fetches all available chats from the 'chats' table using the admin client
 export async function getChats() {
-    const supabase = createClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase.from('chats').select('*');
     if (error) {
         console.error('Error fetching chats:', error.message);
@@ -26,9 +26,9 @@ export async function getChats() {
     return data;
 }
 
-// This function fetches all permissions from the 'user_chat_permissions' table
+// This function fetches all permissions from the 'user_chat_permissions' table using the admin client
 export async function getAllUserChatPermissions() {
-    const supabase = createClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase.from('user_chat_permissions').select('*');
      if (error) {
         console.error('Error fetching permissions:', error.message);
@@ -37,9 +37,9 @@ export async function getAllUserChatPermissions() {
     return data;
 }
 
-// This function updates or inserts a permission in the 'user_chat_permissions' table
+// This function updates or inserts a permission in the 'user_chat_permissions' table using the admin client
 export async function updateUserPermission(userId: string, chatId: string, hasAccess: boolean) {
-    const supabase = createClient();
+    const supabase = createAdminClient();
     const { error } = await supabase
         .from('user_chat_permissions')
         .upsert(

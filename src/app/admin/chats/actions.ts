@@ -1,10 +1,10 @@
 
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export async function getChats() {
-  const supabase = createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase.from('chats').select('*').order('name');
   if (error) {
     console.error('Error fetching chats:', error.message);

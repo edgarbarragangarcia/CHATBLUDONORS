@@ -4,16 +4,9 @@ import { cookies } from 'next/headers'
 export function createClient() {
   const cookieStore = cookies()
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-  // When the service role key is provided, we want to use it to create an admin client.
-  // This is necessary for server-side operations that require elevated privileges,
-  // such as listing all users.
   return createServerClient(
-    supabaseUrl,
-    supabaseServiceRoleKey || supabaseAnonKey,
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         get(name: string) {
@@ -38,12 +31,43 @@ export function createClient() {
           }
         },
       },
-      auth: {
-        // We only want to disable auto-refresh for the admin client.
-        // For regular users (anon key), we want it enabled.
-        autoRefreshToken: !supabaseServiceRoleKey,
-        persistSession: !supabaseServiceRoleKey,
-      }
     }
   )
+}
+
+
+export function createAdminClient() {
+    const cookieStore = cookies()
+
+    // This client is meant for server-side operations that require admin privileges.
+    // It uses the SERVICE_ROLE_KEY for authentication.
+    return createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+            cookies: {
+                get(name: string) {
+                    return cookieStore.get(name)?.value
+                },
+                set(name: string, value: string, options: CookieOptions) {
+                    try {
+                        cookieStore.set({ name, value, ...options })
+                    } catch (error) {
+                        // The `set` method was called from a Server Component.
+                    }
+                },
+                remove(name: string, options: CookieOptions) {
+                    try {
+                        cookieStore.set({ name, value: '', ...options })
+                    } catch (error) {
+                        // The `delete` method was called from a Server Component.
+                    }
+                },
+            },
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+            },
+        }
+    );
 }
