@@ -43,9 +43,9 @@ type MappedUser = {
 }
 
 const CHATS = [
-    { id: 'chat-general', name: 'Chat General' },
-    { id: 'chat-support', name: 'Chat Soporte' },
-    { id: 'chat-project-x', name: 'Chat Proyecto X' },
+    { id: 'general', name: 'Chat General' },
+    { id: 'support', name: 'Chat Soporte' },
+    { id: 'project-x', name: 'Chat Proyecto X' },
 ];
 
 
@@ -67,9 +67,9 @@ export default function UsersPage() {
             role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
             // Placeholder permissions - in a real app, you'd fetch this from your DB
             permissions: {
-                'chat-general': true,
-                'chat-support': Math.random() > 0.5,
-                'chat-project-x': Math.random() > 0.5,
+                'general': true,
+                'support': Math.random() > 0.5,
+                'project-x': Math.random() > 0.5,
             }
         }));
         setUsers(mappedUsers);
@@ -177,7 +177,6 @@ export default function UsersPage() {
                                     checked={u.permissions[chat.id] ?? false}
                                     onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
                                     aria-label={`Toggle access to ${chat.name} for ${u.name}`}
-                                    disabled={u.role === 'admin'} // Example: disable for admins
                                 />
                              </TableCell>
                         ))}
@@ -190,4 +189,3 @@ export default function UsersPage() {
     </div>
   );
 }
-
