@@ -18,15 +18,10 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
+import { getChats } from './actions';
+
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
-
-// Placeholder data for chats
-const chats = [
-    { id: '1', name: 'General', participants: ['Edgar Barragan', 'Nancy Torres', 'John Doe'] },
-    { id: '2', name: 'Support Team', participants: ['Nancy Torres', 'Jane Smith'] },
-    { id: '3', name: 'Project X', participants: ['Edgar Barragan', 'John Doe', 'Jane Smith'] },
-]
 
 export default async function ChatsPage() {
   const supabase = createClient();
@@ -39,6 +34,8 @@ export default async function ChatsPage() {
     return redirect('/');
   }
 
+  const chats = await getChats();
+
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
        <Card>
@@ -47,9 +44,9 @@ export default async function ChatsPage() {
                 <CardTitle>Chats</CardTitle>
                 <CardDescription>Create and manage chat rooms.</CardDescription>
             </div>
-            <Button>
+            <Button disabled>
                 <PlusCircle className="mr-2 h-4 w-4" />
-                Create Chat
+                Create Chat (Soon)
             </Button>
         </CardHeader>
         <CardContent>
@@ -57,14 +54,14 @@ export default async function ChatsPage() {
                 <TableHeader>
                 <TableRow>
                     <TableHead>Chat Name</TableHead>
-                    <TableHead>Participants</TableHead>
+                    <TableHead>Description</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {chats.map((c) => (
                     <TableRow key={c.id}>
                     <TableCell className="font-medium">{c.name}</TableCell>
-                    <TableCell>{c.participants.join(', ')}</TableCell>
+                    <TableCell>{c.description}</TableCell>
                     </TableRow>
                 ))}
                 </TableBody>

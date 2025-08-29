@@ -1,21 +1,39 @@
+
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { ChatRoomList } from '@/components/chat/chat-room-list';
 
-// These would normally come from your database
-const ALL_CHATS = [
-    { id: 'general', name: 'Chat General', description: 'Conversaciones sobre temas generales.' },
-    { id: 'support', name: 'Chat de Soporte', description: 'Resolución de dudas y problemas técnicos.' },
-    { id: 'project-x', name: 'Proyecto X', description: 'Discusiones del equipo sobre el Proyecto X.' },
-];
+// This function now fetches real data from your Supabase tables.
+async function getPermittedChatsForUser(userId: string) {
+    const supabase = createClient();
+    
+    // 1. Get all chats
+    const { data: allChats, error: chatsError } = await supabase.from('chats').select('*');
+    if (chatsError) {
+        console.error('Error fetching chats:', chatsError.message);
+        return [];
+    }
 
-async function getUserPermissions(userId: string) {
-    // In a real app, you would fetch this from your `user_chat_permissions` table in Supabase.
-    // For this example, we'll simulate it based on our admin panel's logic.
-    // Let's assume every user has access to general, and the rest is random for demonstration.
-    return ['general', Math.random() > 0.5 ? 'support' : null, Math.random() > 0.5 ? 'project-x' : null].filter(Boolean) as string[];
+    // 2. Get user's permissions
+    const { data: permissions, error: permissionsError } = await supabase
+        .from('user_chat_permissions')
+        .select('chat_id')
+        .eq('user_id', userId)
+        .eq('has_access', true);
+    
+    if (permissionsError) {
+        console.error('Error fetching user permissions:', permissionsError.message);
+        // Return no chats if permissions can't be fetched
+        return [];
+    }
+
+    const permittedChatIds = new Set(permissions.map(p => p.chat_id));
+
+    // 3. Filter all chats to only include those the user has access to
+    const availableChats = allChats.filter(chat => permittedChatIds.has(chat.id));
+    
+    return availableChats;
 }
-
 
 export default async function Home() {
   const supabase = createClient();
@@ -28,8 +46,7 @@ export default async function Home() {
     return redirect('/login');
   }
 
-  const permittedChatIds = await getUserPermissions(user.id);
-  const availableChats = ALL_CHATS.filter(chat => permittedChatIds.includes(chat.id));
+  const availableChats = await getPermittedChatsForUser(user.id);
 
   return <ChatRoomList user={user} availableChats={availableChats} />;
 }

@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import type { User } from '@supabase/supabase-js';
 import {
   Table,
@@ -20,87 +20,128 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { getUsers } from './actions';
 import { Switch } from '@/components/ui/switch';
+import { getUsers, getChats, getAllUserChatPermissions, updateUserPermission } from './actions';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
-// Define a type for user permissions
-type UserPermissions = {
-  [key: string]: boolean; // e.g., { 'chat-general': true, 'chat-support': false }
-};
+type Chat = {
+    id: string;
+    name: string;
+    description: string;
+}
 
+type UserPermission = {
+    user_id: string;
+    chat_id: string;
+    has_access: boolean;
+}
 
-type MappedUser = {
+type UserWithPermissions = {
   id: string;
   name: string | undefined;
   email: string | undefined;
   avatar: any;
   role: string;
-  permissions: UserPermissions; // Add permissions to each user
+  permissions: { [chatId: string]: boolean };
 }
 
-const CHATS = [
-    { id: 'general', name: 'Chat General' },
-    { id: 'support', name: 'Chat Soporte' },
-    { id: 'project-x', name: 'Chat Proyecto X' },
-];
-
-
 export default function UsersPage() {
-  const [users, setUsers] = useState<MappedUser[]>([]);
+  const [users, setUsers] = useState<UserWithPermissions[]>([]);
+  const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchInitialData = async () => {
       try {
-        const usersData = await getUsers();
+        setLoading(true);
+        const [usersData, chatsData, permissionsData] = await Promise.all([
+          getUsers(),
+          getChats(),
+          getAllUserChatPermissions(),
+        ]);
         
-        const mappedUsers = usersData.map((u: any) => ({
-            id: u.id,
-            name: u.user_metadata?.full_name || u.email?.split('@')[0],
-            email: u.email,
-            avatar: u.user_metadata?.avatar_url,
-            role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
-            // Placeholder permissions - in a real app, you'd fetch this from your DB
-            permissions: {
-                'general': true,
-                'support': Math.random() > 0.5,
-                'project-x': Math.random() > 0.5,
-            }
-        }));
+        setChats(chatsData);
+
+        // Create a map for quick permission lookup
+        const permissionsMap = new Map<string, boolean>();
+        permissionsData.forEach(p => {
+            permissionsMap.set(`${p.user_id}-${p.chat_id}`, p.has_access);
+        });
+
+        const mappedUsers = usersData.map((u: any) => {
+            const userPermissions: { [chatId: string]: boolean } = {};
+            chatsData.forEach(chat => {
+                // Default to false if no explicit permission is found
+                userPermissions[chat.id] = permissionsMap.get(`${u.id}-${chat.id}`) ?? false;
+            });
+            
+            return {
+                id: u.id,
+                name: u.user_metadata?.full_name || u.email?.split('@')[0],
+                email: u.email,
+                avatar: u.user_metadata?.avatar_url,
+                role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
+                permissions: userPermissions,
+            };
+        });
         setUsers(mappedUsers);
       } catch (e: any) {
-          setError('Could not fetch users. Please ensure the service_role key is correct.');
-          console.error('Error fetching users:', e);
+          setError('Could not fetch data. Please check Supabase connection and policies.');
+          console.error('Error fetching data:', e);
       } finally {
           setLoading(false);
       }
     };
 
-    fetchUserData();
+    fetchInitialData();
   }, []);
 
   const handlePermissionChange = (userId: string, chatId: string, newPermission: boolean) => {
+      // Optimistic UI update
       setUsers(prevUsers => 
           prevUsers.map(user => {
               if (user.id === userId) {
                   return {
                       ...user,
-                      permissions: {
-                          ...user.permissions,
-                          [chatId]: newPermission,
-                      }
+                      permissions: { ...user.permissions, [chatId]: newPermission }
                   };
               }
               return user;
           })
-      )
-      // In a real app, you would also call an action here to update the database.
-      console.log(`User ${userId} permission for ${chatId} changed to ${newPermission}`);
+      );
+
+      // Call server action
+      startTransition(async () => {
+          try {
+              await updateUserPermission(userId, chatId, newPermission);
+              toast({
+                  title: 'Permiso actualizado',
+                  description: `El acceso para el chat ha sido ${newPermission ? 'concedido' : 'revocado'}.`,
+              });
+          } catch (error) {
+              toast({
+                  title: 'Error al actualizar',
+                  description: 'No se pudo guardar el cambio. Por favor, inténtalo de nuevo.',
+                  variant: 'destructive',
+              });
+              // Revert UI change on error
+              setUsers(prevUsers => 
+                  prevUsers.map(user => {
+                      if (user.id === userId) {
+                          return { ...user, permissions: { ...user.permissions, [chatId]: !newPermission } };
+                      }
+                      return user;
+                  })
+              );
+          }
+      });
   }
   
   if (loading) {
@@ -108,11 +149,11 @@ export default function UsersPage() {
         <div className="flex-1 space-y-4 p-8 pt-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Users</CardTitle>
-                    <CardDescription>Loading user data...</CardDescription>
+                    <CardTitle>User Access Management</CardTitle>
+                    <CardDescription>Loading data from Supabase...</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <p>Please wait...</p>
+                <CardContent className="flex items-center justify-center p-16">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                 </CardContent>
             </Card>
         </div>
@@ -125,16 +166,14 @@ export default function UsersPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Error</CardTitle>
-                    <CardDescription>Could not fetch users.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>{error}</p>
+                    <p className="text-destructive">{error}</p>
                 </CardContent>
             </Card>
         </div>
     );
   }
-
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
@@ -150,14 +189,14 @@ export default function UsersPage() {
                     <TableHead className="w-[250px]">User</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
-                    {CHATS.map(chat => (
+                    {chats.map(chat => (
                         <TableHead key={chat.id} className="text-center">{chat.name}</TableHead>
                     ))}
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {users.map((u) => (
-                    <TableRow key={u.id}>
+                    <TableRow key={u.id} className={isPending ? 'opacity-50' : ''}>
                         <TableCell>
                             <div className="flex items-center gap-3">
                                 <Avatar>
@@ -171,12 +210,13 @@ export default function UsersPage() {
                         <TableCell>
                             <Badge variant={u.role === 'admin' ? 'default' : 'secondary'}>{u.role}</Badge>
                         </TableCell>
-                        {CHATS.map(chat => (
+                        {chats.map(chat => (
                              <TableCell key={chat.id} className="text-center">
                                 <Switch
                                     checked={u.permissions[chat.id] ?? false}
                                     onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
                                     aria-label={`Toggle access to ${chat.name} for ${u.name}`}
+                                    disabled={isPending}
                                 />
                              </TableCell>
                         ))}
@@ -189,3 +229,4 @@ export default function UsersPage() {
     </div>
   );
 }
+
