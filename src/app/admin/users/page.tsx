@@ -27,7 +27,6 @@ const users = [
     { id: '6', name: 'Admin User', email: 'administrador@ingenes.com', avatar: '', role: 'admin' },
     { id: '3', name: 'John Doe', email: 'john.doe@example.com', avatar: '', role: 'user' },
     { id: '4', name: 'Jane Smith', email: 'jane.smith@example.com', avatar: '', role: 'user' },
-    { id: '5', name: 'Test User', email: 'test.user@example.com', avatar: '', role: 'user' },
 ]
 
 export default async function UsersPage() {
