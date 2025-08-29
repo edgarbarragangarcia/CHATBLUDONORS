@@ -556,31 +556,30 @@ const SidebarMenuButton = React.forwardRef<
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : href ? "a" : "button"
+    const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
     const button = (
-      <Comp
-        ref={ref}
-        data-sidebar="menu-button"
-        data-size={size}
-        data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
-        {...(href ? { href } : props)} // Pass href if it exists, otherwise pass props
-        {...props}
-      >
-        {props.children}
-      </Comp>
-    )
-
-    const content = href ? (
-      <Link href={href} legacyBehavior passHref>
-        {button}
-      </Link>
-    ) : (
-      button
-    )
+        <Comp
+          ref={ref as React.Ref<any>}
+          data-sidebar="menu-button"
+          data-size={size}
+          data-active={isActive}
+          className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+          {...props}
+        >
+          {props.children}
+        </Comp>
+      );
     
+      const content = href ? (
+        <Link href={href} passHref>
+          {button}
+        </Link>
+      ) : (
+        button
+      );
+
     if (!tooltip) {
       return content
     }
