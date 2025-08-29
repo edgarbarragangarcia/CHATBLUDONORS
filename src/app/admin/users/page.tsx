@@ -2,7 +2,6 @@
 'use client';
 
 import { createClient } from '@/lib/supabase/client';
-import { redirect } from 'next/navigation';
 import {
   Table,
   TableHeader,
@@ -47,40 +46,23 @@ export default function UsersPage() {
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user || !ADMIN_USERS.includes(user.email ?? '')) {
-            // This is a client component, so we redirect with router
-            // For simplicity, we can just render null or a message
-            // as the layout already protects the route.
             return;
         }
         setAuthUser(user);
 
-        // Fetching users requires an admin client, which can't be used
-        // directly in the browser. This needs to be an API route
-        // or a server action for security reasons.
-        // For now, let's use placeholder data to build the UI.
         try {
-            // In a real scenario, this would be an API call to a secure endpoint
-            // const { data, error } = await supabase.auth.admin.listUsers();
-            // For demonstration, using static data.
-            const { data, error: fetchError } = await supabase.from('users_public').select('*');
+            // This is a server action that can only be called from a server component
+            // or a server action file. To fix this, we will call it from a server action.
+            // For now, we will use mock data.
+            const { data: usersData, error: usersError } = await supabase.from('users_public').select('*');
 
-            if (fetchError) {
-                throw fetchError;
-            }
-
-            // A mock of what listUsers() would return
-            const mockUsers = [
-                { id: '1', email: 'administrador@ingenes.com', user_metadata: { full_name: 'administrador' } },
-                { id: '2', email: 'eabarragang@ingenes.com', user_metadata: { full_name: 'Edgar Alexander Barragan Garcia', avatar_url: '' } },
-                { id: '3', email: 'user3@example.com', user_metadata: { full_name: 'Test User' } },
-            ];
-
-
-            const mappedUsers = mockUsers.map((u) => ({
+            if (usersError) throw usersError;
+            
+            const mappedUsers = usersData.map((u: any) => ({
                 id: u.id,
-                name: u.user_metadata?.full_name || u.email?.split('@')[0],
+                name: u.full_name || u.email?.split('@')[0],
                 email: u.email,
-                avatar: u.user_metadata?.avatar_url,
+                avatar: u.avatar_url,
                 role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
             }));
             setUsers(mappedUsers);
@@ -134,7 +116,7 @@ export default function UsersPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Error</CardTitle>
-                    <CardDescription>Could not fetch users.</CardCardDescription>
+                    <CardDescription>Could not fetch users.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <p>{error}</p>
@@ -156,13 +138,13 @@ export default function UsersPage() {
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead padding="checkbox">
+                    <TableCell className="p-2 w-[40px]">
                         <Checkbox
                             checked={selectedUsers.length === users.length && users.length > 0}
                             onCheckedChange={handleSelectAll}
                             aria-label="Select all"
                         />
-                    </TableHead>
+                    </TableCell>
                     <TableHead>User</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
@@ -171,7 +153,7 @@ export default function UsersPage() {
                 <TableBody>
                 {users.map((u) => (
                     <TableRow key={u.id} data-state={selectedUsers.includes(u.id) ? 'selected' : undefined}>
-                    <TableCell padding="checkbox">
+                    <TableCell className="p-2">
                         <Checkbox
                             checked={selectedUsers.includes(u.id)}
                             onCheckedChange={(checked) => handleSelectUser(u.id, !!checked)}
@@ -200,3 +182,4 @@ export default function UsersPage() {
     </div>
   );
 }
+
