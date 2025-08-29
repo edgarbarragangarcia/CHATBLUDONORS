@@ -18,12 +18,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com'];
+const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
 // This is a placeholder. In a real app, you would fetch users from your database
 const users = [
     { id: '1', name: 'Edgar Barragan', email: 'eabarragang@ingenes.com', avatar: '', role: 'admin' },
     { id: '2', name: 'Nancy Torres', email: 'ntorres@ingenes.com', avatar: '', role: 'admin' },
+    { id: '6', name: 'Admin User', email: 'administrador@ingenes.com', avatar: '', role: 'admin' },
     { id: '3', name: 'John Doe', email: 'john.doe@example.com', avatar: '', role: 'user' },
     { id: '4', name: 'Jane Smith', email: 'jane.smith@example.com', avatar: '', role: 'user' },
     { id: '5', name: 'Test User', email: 'test.user@example.com', avatar: '', role: 'user' },

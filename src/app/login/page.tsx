@@ -1,20 +1,42 @@
 "use client"
 
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChromeIcon } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useToast } from "@/hooks/use-toast"
 
 export default function LoginPage() {
   const supabase = createClient()
+  const router = useRouter()
+  const { toast } = useToast()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${location.origin}/auth/callback`,
-      },
+
+  const handleEmailPasswordLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     })
+
+    if (error) {
+        toast({
+            title: "Error signing in",
+            description: error.message,
+            variant: "destructive",
+        })
+    } else {
+        router.push("/")
+        router.refresh()
+    }
+    setIsLoading(false)
   }
 
   return (
@@ -30,15 +52,36 @@ export default function LoginPage() {
             </CardDescription>
             </CardHeader>
             <CardContent>
-            <Button
-                onClick={handleGoogleLogin}
-                className="w-full transition-transform hover:scale-105"
-                variant="default"
-                size="lg"
-            >
-                <ChromeIcon className="mr-2 h-5 w-5" />
-                Sign in with Google
-            </Button>
+                <form onSubmit={handleEmailPasswordLogin}>
+                    <div className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="m@example.com"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                disabled={isLoading}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="password">Password</Label>
+                            <Input 
+                                id="password" 
+                                type="password" 
+                                required 
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                disabled={isLoading}
+                            />
+                        </div>
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? "Signing in..." : "Sign In"}
+                        </Button>
+                    </div>
+                </form>
             </CardContent>
         </Card>
     </div>

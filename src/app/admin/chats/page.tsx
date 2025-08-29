@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 
-const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com'];
+const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
 // Placeholder data for chats
 const chats = [

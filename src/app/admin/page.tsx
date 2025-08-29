@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Users, MessageCircle } from 'lucide-react';
 
-const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com'];
+const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
 export default async function AdminPage() {
   const supabase = createClient();
