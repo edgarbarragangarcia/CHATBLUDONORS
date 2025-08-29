@@ -22,8 +22,16 @@ import {
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { getUsers } from './actions';
+import { Switch } from '@/components/ui/switch';
+
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
+
+// Define a type for user permissions
+type UserPermissions = {
+  [key: string]: boolean; // e.g., { 'chat-general': true, 'chat-support': false }
+};
+
 
 type MappedUser = {
   id: string;
@@ -31,11 +39,18 @@ type MappedUser = {
   email: string | undefined;
   avatar: any;
   role: string;
+  permissions: UserPermissions; // Add permissions to each user
 }
+
+const CHATS = [
+    { id: 'chat-general', name: 'Chat General' },
+    { id: 'chat-support', name: 'Chat Soporte' },
+    { id: 'chat-project-x', name: 'Chat Proyecto X' },
+];
+
 
 export default function UsersPage() {
   const [users, setUsers] = useState<MappedUser[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,6 +65,12 @@ export default function UsersPage() {
             email: u.email,
             avatar: u.user_metadata?.avatar_url,
             role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
+            // Placeholder permissions - in a real app, you'd fetch this from your DB
+            permissions: {
+                'chat-general': true,
+                'chat-support': Math.random() > 0.5,
+                'chat-project-x': Math.random() > 0.5,
+            }
         }));
         setUsers(mappedUsers);
       } catch (e: any) {
@@ -63,22 +84,24 @@ export default function UsersPage() {
     fetchUserData();
   }, []);
 
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedUsers(users.map((u) => u.id));
-    } else {
-      setSelectedUsers([]);
-    }
-  };
-
-  const handleSelectUser = (userId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedUsers((prev) => [...prev, userId]);
-    } else {
-      setSelectedUsers((prev) => prev.filter((id) => id !== userId));
-    }
-  };
+  const handlePermissionChange = (userId: string, chatId: string, newPermission: boolean) => {
+      setUsers(prevUsers => 
+          prevUsers.map(user => {
+              if (user.id === userId) {
+                  return {
+                      ...user,
+                      permissions: {
+                          ...user.permissions,
+                          [chatId]: newPermission,
+                      }
+                  };
+              }
+              return user;
+          })
+      )
+      // In a real app, you would also call an action here to update the database.
+      console.log(`User ${userId} permission for ${chatId} changed to ${newPermission}`);
+  }
   
   if (loading) {
     return (
@@ -117,48 +140,47 @@ export default function UsersPage() {
     <div className="flex-1 space-y-4 p-8 pt-6">
        <Card>
         <CardHeader>
-          <CardTitle>Users</CardTitle>
-          <CardDescription>Manage your application users and their roles.</CardDescription>
+          <CardTitle>User Access Management</CardTitle>
+          <CardDescription>Enable or disable access to chats for each user.</CardDescription>
         </CardHeader>
         <CardContent>
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableCell className="p-2 w-[40px]">
-                        <Checkbox
-                            checked={selectedUsers.length === users.length && users.length > 0}
-                            onCheckedChange={handleSelectAll}
-                            aria-label="Select all"
-                        />
-                    </TableCell>
-                    <TableHead>User</TableHead>
+                    <TableHead className="w-[250px]">User</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
+                    {CHATS.map(chat => (
+                        <TableHead key={chat.id} className="text-center">{chat.name}</TableHead>
+                    ))}
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {users.map((u) => (
-                    <TableRow key={u.id} data-state={selectedUsers.includes(u.id) ? 'selected' : undefined}>
-                    <TableCell className="p-2">
-                        <Checkbox
-                            checked={selectedUsers.includes(u.id)}
-                            onCheckedChange={(checked) => handleSelectUser(u.id, !!checked)}
-                            aria-label={`Select user ${u.name}`}
-                        />
-                    </TableCell>
-                    <TableCell>
-                        <div className="flex items-center gap-3">
-                        <Avatar>
-                            <AvatarImage src={u.avatar} />
-                            <AvatarFallback>{u.name?.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                        <span>{u.name}</span>
-                        </div>
-                    </TableCell>
-                    <TableCell>{u.email}</TableCell>
-                    <TableCell>
-                        <Badge variant={u.role === 'admin' ? 'default' : 'secondary'}>{u.role}</Badge>
-                    </TableCell>
+                    <TableRow key={u.id}>
+                        <TableCell>
+                            <div className="flex items-center gap-3">
+                                <Avatar>
+                                    <AvatarImage src={u.avatar} />
+                                    <AvatarFallback>{u.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                                <span className="font-medium">{u.name}</span>
+                            </div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">{u.email}</TableCell>
+                        <TableCell>
+                            <Badge variant={u.role === 'admin' ? 'default' : 'secondary'}>{u.role}</Badge>
+                        </TableCell>
+                        {CHATS.map(chat => (
+                             <TableCell key={chat.id} className="text-center">
+                                <Switch
+                                    checked={u.permissions[chat.id] ?? false}
+                                    onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
+                                    aria-label={`Toggle access to ${chat.name} for ${u.name}`}
+                                    disabled={u.role === 'admin'} // Example: disable for admins
+                                />
+                             </TableCell>
+                        ))}
                     </TableRow>
                 ))}
                 </TableBody>
@@ -168,3 +190,4 @@ export default function UsersPage() {
     </div>
   );
 }
+
