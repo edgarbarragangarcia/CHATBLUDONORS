@@ -1,7 +1,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { ChatRoomList } from '@/components/chat/chat-room-list';
+import { ChatLayout } from '@/components/chat/chat-layout';
 
 // This function now fetches real data from your Supabase tables.
 async function getPermittedChatsForUser(userId: string) {
@@ -46,5 +46,5 @@ export default async function Home() {
   const { id, email, user_metadata } = user;
   const serializableUser = { id, email, user_metadata };
 
-  return <ChatRoomList user={serializableUser as any} availableChats={availableChats as any[]} />;
+  return <ChatLayout user={serializableUser as any} availableChats={availableChats as any[]} />;
 }

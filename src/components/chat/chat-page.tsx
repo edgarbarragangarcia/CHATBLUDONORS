@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
@@ -6,12 +7,9 @@ import { type User } from "@supabase/supabase-js"
 import { generateSuggestedReplies } from "@/ai/flows/suggested-replies"
 
 import { Card } from "@/components/ui/card"
-import { ChatHeader } from "./chat-header"
 import { MessageList } from "./message-list"
 import { MessageForm } from "./message-form"
 import { SuggestedReplies } from "./suggested-replies"
-import { ArrowLeft } from "lucide-react"
-import Link from "next/link"
 
 export type Message = {
   id: string
@@ -40,6 +38,20 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
       }
     }
     // For other users, we'd look them up. Here we return a generic profile.
+    // A proper implementation would query a `profiles` table.
+     const { data, error } = await supabase
+      .from('users')
+      .select('raw_user_meta_data')
+      .eq('id', userId)
+      .single()
+
+    if (!error && data) {
+       return {
+         name: data.raw_user_meta_data?.full_name || `User ${userId.substring(0,6)}`,
+         avatar: data.raw_user_meta_data?.avatar_url || null
+       }
+    }
+
     return {
       name: `User ${userId.substring(0, 6)}`,
       avatar: null,
@@ -47,6 +59,8 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   }
 
   const fetchMessages = useCallback(async () => {
+    if (!chatId) return;
+    
     const { data, error } = await supabase
       .from("messages")
       .select("*")
@@ -55,6 +69,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
 
     if (error) {
       console.error("Error fetching messages:", error)
+      setMessages([]);
       return
     }
 
@@ -130,7 +145,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   }, [supabase, fetchMessages, chatId])
 
   const handleSendMessage = async (content: string) => {
-    if (content.trim() === "") return
+    if (content.trim() === "" || !chatId) return
 
     const { error } = await supabase
       .from("messages")
@@ -142,27 +157,16 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   }
 
   return (
-    <div className="flex h-screen w-full flex-col bg-muted/40">
-      <ChatHeader user={user} email={email} />
-      <main className="flex-1 overflow-hidden p-4 md:p-6 flex flex-col">
-        <div className="mb-4">
-            <Link href="/" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="h-4 w-4" />
-                Volver a todas las salas
-            </Link>
+    <main className="h-full flex flex-col bg-card">
+        <MessageList messages={messages} currentUserId={user.id} />
+        <div className="p-4 border-t">
+            <SuggestedReplies 
+                suggestions={suggestedReplies} 
+                onSelect={(reply) => handleSendMessage(reply)}
+                isLoading={isGenerating}
+            />
+            <MessageForm onSendMessage={handleSendMessage} />
         </div>
-        <Card className="h-full flex flex-col flex-1">
-            <MessageList messages={messages} currentUserId={user.id} />
-            <div className="p-4 border-t">
-                <SuggestedReplies 
-                    suggestions={suggestedReplies} 
-                    onSelect={(reply) => handleSendMessage(reply)}
-                    isLoading={isGenerating}
-                />
-                <MessageForm onSendMessage={handleSendMessage} />
-            </div>
-        </Card>
-      </main>
-    </div>
+    </main>
   )
 }

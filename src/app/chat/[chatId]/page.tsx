@@ -1,3 +1,4 @@
+
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import ChatPage from '@/components/chat/chat-page'
@@ -17,6 +18,18 @@ export default async function ChatRoutePage({ params }: { params: { chatId: stri
   // NOTE: In a real app, you should add a step here to verify
   // that the user actually has permission to access params.chatId
   // before rendering the page.
+  const { data: permission } = await supabase
+    .from('user_chat_permissions')
+    .select('has_access')
+    .eq('user_id', user.id)
+    .eq('chat_id', params.chatId)
+    .single();
+
+  if (!permission?.has_access) {
+    // Or redirect to a dedicated "access-denied" page
+    return redirect('/'); 
+  }
+
 
   // The user object needs to be destructured and reconstructed
   // to avoid passing a non-serializable object to the client component.
