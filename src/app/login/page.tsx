@@ -11,9 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { 
     GoogleIcon,
     MessageSquareHeart,
-    VisualPanelsIcon,
-    AiAssistantIcon,
-    ProgressTrackingIcon
 } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -63,68 +60,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-background text-foreground">
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-start justify-center p-12 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-        <div className="flex items-center gap-3 mb-8">
-            <MessageSquareHeart className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold tracking-wider text-gray-900">INTERFAZ DE AGENTES</span>
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4">
+       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#2f2f3e_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      
+      <div className="w-full max-w-sm">
+        <div className="flex flex-col items-center justify-center mb-8">
+             <MessageSquareHeart className="h-10 w-10 mb-4 text-primary" />
+             <h1 className="text-2xl font-bold tracking-wider text-foreground">INTERFAZ DE AGENTES</h1>
         </div>
-        <h1 className="text-5xl font-bold mb-4 text-gray-900">Transforma tus ideas en proyectos exitosos.</h1>
-        <p className="text-lg text-muted-foreground mb-12 max-w-xl">
-            Gestiona tus proyectos con una herramienta visual, intuitiva y potenciada por IA que se adapta a tu forma de trabajar.
-        </p>
-        <div className="space-y-8">
-            <div className="flex items-start gap-4">
-                <VisualPanelsIcon className="h-8 w-8 text-primary mt-1" />
-                <div>
-                    <h3 className="font-semibold text-lg text-gray-800">Paneles Visuales</h3>
-                    <p className="text-muted-foreground">Organiza todo con tableros Kanban, calendarios y diagramas de Gantt.</p>
-                </div>
-            </div>
-            <div className="flex items-start gap-4">
-                <AiAssistantIcon className="h-8 w-8 text-primary mt-1" />
-                <div>
-                    <h3 className="font-semibold text-lg text-gray-800">Asistente IA</h3>
-                    <p className="text-muted-foreground">Deja que la IA te sugiera prioridades y te ayude a optimizar tu flujo de trabajo.</p>
-                </div>
-            </div>
-             <div className="flex items-start gap-4">
-                <ProgressTrackingIcon className="h-8 w-8 text-primary mt-1" />
-                <div>
-                    <h3 className="font-semibold text-lg text-gray-800">Seguimiento de Progreso</h3>
-                    <p className="text-muted-foreground">Monitoriza el avance de tus proyectos y tareas con dashboards claros y concisos.</p>
-                </div>
-            </div>
-        </div>
-      </div>
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
-        <div className="w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-center">Bienvenido a INTERFAZ DE AGENTES</h2>
-            <p className="text-muted-foreground text-center mb-6">Ingresa tus credenciales para continuar.</p>
-            
+
+        <div className="rounded-xl border bg-card/80 p-6 shadow-lg backdrop-blur-sm md:p-8">
             <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-2 bg-muted/50">
                     <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
                     <TabsTrigger value="register">Registrarse</TabsTrigger>
                 </TabsList>
                 <TabsContent value="login">
-                     <div className="py-4">
-                        <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
-                            <GoogleIcon className="mr-2 h-4 w-4" />
-                            Continuar con Google
-                        </Button>
-                    </div>
-
-                    <div className="relative my-2">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-white px-2 text-muted-foreground">
-                                O continuar con
-                            </span>
-                        </div>
-                    </div>
                     <form onSubmit={handleEmailPasswordLogin} className="mt-4">
                         <div className="grid gap-4">
                             <div className="grid gap-2">
@@ -137,6 +88,7 @@ export default function LoginPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     disabled={isLoading}
+                                    className="bg-input/70"
                                 />
                             </div>
                             <div className="grid gap-2">
@@ -149,13 +101,29 @@ export default function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     disabled={isLoading}
+                                    className="bg-input/70"
                                 />
                             </div>
-                            <Button type="submit" className="w-full" disabled={isLoading}>
+                            <Button type="submit" className="w-full mt-2" disabled={isLoading}>
                                 {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
                             </Button>
                         </div>
                     </form>
+                    
+                    <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-card px-2 text-muted-foreground">
+                                O
+                            </span>
+                        </div>
+                    </div>
+                     <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
+                        <GoogleIcon className="mr-2 h-4 w-4" />
+                        Continuar con Google
+                    </Button>
                 </TabsContent>
                 <TabsContent value="register">
                    <div className="text-center text-muted-foreground p-8">
