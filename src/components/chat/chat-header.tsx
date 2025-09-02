@@ -39,7 +39,7 @@ export function ChatHeader({ user, email }: { user: User, email?: string }) {
     : email?.charAt(0).toUpperCase() ?? "U"
 
   return (
-    <header className="flex h-16 items-center justify-between bg-card px-4 md:px-6 shadow-sm z-10">
+    <header className="flex h-16 items-center justify-between bg-background px-4 md:px-6 shadow-sm z-10">
       <div className="flex items-center gap-3">
         <MessageSquareHeart className="h-6 w-6 text-primary" />
         <h1 className="text-lg font-bold tracking-tight">
