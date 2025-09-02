@@ -11,7 +11,7 @@ body {
     --background: 240 5% 12%; /* Dark Charcoal */
     --foreground: 0 0% 98%; /* White */
     
-    --card: 240 5% 16% / 0.8;
+    --card: 240 5% 16%; /* Slightly lighter than background */
     --card-foreground: 0 0% 98%;
     
     --popover: 240 10% 3.9%;
@@ -26,7 +26,7 @@ body {
     --muted: 240 3.7% 20.9%;
     --muted-foreground: 240 5% 64.9%;
 
-    --accent: 240 3.7% 15.9%;
+    --accent: 240 3.7% 25.9%; /* Made accent slightly brighter for better hover */
     --accent-foreground: 0 0% 98%;
     
     --destructive: 0 84.2% 60.2%;
@@ -55,7 +55,7 @@ body {
   .dark {
     --background: 240 5% 12%; /* Dark Charcoal */
     --foreground: 0 0% 98%; /* White */
-    --card: 240 5% 16% / 0.8;
+    --card: 240 5% 16%; /* Slightly lighter than background */
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -65,7 +65,7 @@ body {
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 3.7% 20.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+    --accent: 240 3.7% 25.9%; /* Made accent slightly brighter for better hover */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;

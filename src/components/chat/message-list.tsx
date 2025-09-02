@@ -40,13 +40,13 @@ export function MessageList({ messages, currentUserId }: { messages: Message[], 
                   "max-w-[70%] rounded-lg p-3 text-sm shadow-md",
                   isCurrentUser
                     ? "bg-primary text-primary-foreground"
-                    : "bg-card"
+                    : "bg-card text-card-foreground"
                 )}
               >
                 {!isCurrentUser && (
                   <p className="font-semibold text-xs pb-1">{message.user_name}</p>
                 )}
-                <p>{message.content}</p>
+                <p className="whitespace-pre-wrap">{message.content}</p>
               </div>
               {isCurrentUser && (
                  <Avatar className="h-9 w-9">

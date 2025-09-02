@@ -157,9 +157,9 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   }
 
   return (
-    <main className="h-full flex flex-col bg-card rounded-lg">
+    <main className="h-full flex flex-col bg-background rounded-lg">
         <MessageList messages={messages} currentUserId={user.id} />
-        <div className="p-4 border-t">
+        <div className="p-4 border-t bg-background">
             <SuggestedReplies 
                 suggestions={suggestedReplies} 
                 onSelect={(reply) => handleSendMessage(reply)}

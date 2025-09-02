@@ -42,19 +42,19 @@ export function ChatHeader({ user, email }: { user: User & { app_metadata: { rol
   const userName = user?.user_metadata.full_name || email;
 
   return (
-    <header className="flex h-16 items-center justify-between bg-gradient-to-r from-blue-400 to-blue-600 text-white px-4 md:px-6 shadow-md z-10">
+    <header className="flex h-16 items-center justify-between bg-background px-4 md:px-6 border-b z-10">
       <div className="flex items-center gap-3">
-        <MessageSquareHeart className="h-6 w-6" />
-        <h1 className="text-lg font-bold tracking-tight">
+        <MessageSquareHeart className="h-6 w-6 text-primary" />
+        <h1 className="text-lg font-bold tracking-tight text-foreground">
           INTERFAZ DE AGENTES
         </h1>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative flex items-center gap-3 rounded-full hover:bg-white/20 p-2">
-            <Avatar className="h-9 w-9 border-2 border-blue-800 group-hover:border-white transition-colors">
+          <Button variant="ghost" className="relative flex items-center gap-3 rounded-full hover:bg-accent p-2">
+            <Avatar className="h-9 w-9 border-2 border-primary/50 group-hover:border-primary transition-colors">
               <AvatarImage src={user?.user_metadata.avatar_url} alt={userName} />
-              <AvatarFallback className="bg-white/25 text-white">{userInitial}</AvatarFallback>
+              <AvatarFallback className="bg-muted text-foreground">{userInitial}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col items-start">
                 <span className="font-medium text-sm leading-none truncate max-w-[150px]">{userName}</span>
