@@ -138,18 +138,18 @@ export default function LoginPage() {
                 </div>
             </div>
 
-            <div className="hidden lg:flex flex-col items-center justify-center rounded-xl border bg-card/80 p-8 shadow-lg backdrop-blur-sm">
+            <div className="hidden lg:flex flex-col items-center justify-center rounded-xl border bg-card/80 p-8 shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                 <Image 
                     src="https://picsum.photos/600/400"
                     alt="AI Agents" 
                     width={600} 
                     height={400}
-                    data-ai-hint="robot AI"
+                    data-ai-hint="AI chat"
                     className="rounded-lg mb-6 shadow-xl"
                 />
-                <h2 className="text-2xl font-bold text-primary mb-3">Potencia tu equipo con Agentes de IA</h2>
+                <h2 className="text-2xl font-bold text-primary mb-3">Chatea con Agentes de IA Especializados</h2>
                 <p className="text-muted-foreground text-center max-w-md">
-                    Nuestra plataforma te permite desplegar agentes de inteligencia artificial especializados para automatizar tareas, analizar datos y optimizar la comunicación en tus salas de chat. Aumenta la eficiencia y lleva a tu equipo al siguiente nivel.
+                    Nuestra plataforma te permite interactuar con diferentes agentes de IA, cada uno diseñado para una tarea específica. Optimiza tu flujo de trabajo y obtén respuestas precisas al instante.
                 </p>
             </div>
        </div>
