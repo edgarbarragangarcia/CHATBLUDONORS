@@ -86,13 +86,15 @@ const SidebarProvider = React.forwardRef<
         }
 
         // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+        if (typeof document !== 'undefined') {
+          document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+        }
       },
       [setOpenProp, open]
     )
 
     // Helper to toggle the sidebar.
-    const toggleSidebar = React.useCallback(() => {
+    const toggleSidebar = React. useCallback(() => {
       return isMobile
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open)
@@ -158,6 +160,7 @@ const SidebarProvider = React.forwardRef<
 )
 SidebarProvider.displayName = "SidebarProvider"
 
+
 const Sidebar = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
@@ -192,40 +195,10 @@ const Sidebar = React.forwardRef<
             )}
             {...props}
         >
-        {/* This is what handles the sidebar gap on desktop */}
-        <div
-          className={cn(
-            "duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear",
-            "group-[.is-collapsible.collapsed]:w-[--sidebar-width-icon]",
-            variant === "floating" || variant === "inset"
-              ? "group-[.is-collapsible.collapsed]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
-              : "group-[.is-collapsible.collapsed]:w-[--sidebar-width-icon]"
-          )}
-        />
-        <div
-          className={cn(
-            "duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
-            side === "left"
-              ? "left-0"
-              : "right-0",
-            // Adjust the padding for floating and inset variants.
-            variant === "floating" || variant === "inset"
-              ? "p-2 group-[.is-collapsible.collapsed]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
-              : "group-[.is-collapsible.collapsed]:w-[--sidebar-width-icon] group-[.left]:border-r group-[.right]:border-l",
-            className
-          )}
-          {...props}
-        >
-          <div
-            data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-[.floating]:rounded-lg group-[.floating]:border group-[.floating]:border-sidebar-border group-[.floating]:shadow"
-          >
-            {children}
-          </div>
+          {children}
         </div>
-      </div>
-     </SidebarProvider>
-      )
+      </SidebarProvider>
+    );
   }
 )
 Sidebar.displayName = "Sidebar"
