@@ -30,8 +30,8 @@ export default async function AdminLayout({
     const isAdmin = !!user && (user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email ?? ''));
 
   return (
-    <div className="flex h-screen bg-muted/40">
-      <Sidebar className="bg-background border-r">
+    <div className="flex h-screen bg-background">
+      <Sidebar className="bg-background/80 backdrop-blur-sm border-r">
           <SidebarContent>
             <SidebarHeader>
               <div className="flex items-center gap-2">

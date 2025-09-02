@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useEffect, useRef } from "react"
@@ -40,7 +41,7 @@ export function MessageList({ messages, currentUserId }: { messages: Message[], 
                   "max-w-[70%] rounded-lg p-3 text-sm shadow-md",
                   isCurrentUser
                     ? "bg-primary text-primary-foreground"
-                    : "bg-card text-card-foreground"
+                    : "bg-card text-card-foreground border"
                 )}
               >
                 {!isCurrentUser && (

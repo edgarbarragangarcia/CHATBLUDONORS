@@ -61,9 +61,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
-       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#2f2f3e_1px,transparent_1px)] [background-size:16px_16px]"></div>
-      
+    <div className="flex min-h-screen w-full items-center justify-center bg-transparent p-4">
        <div className="grid w-full max-w-6xl grid-cols-1 gap-8 lg:grid-cols-2">
             <div className="flex flex-col items-center justify-center">
                 <div className="w-full max-w-sm">
@@ -72,7 +70,7 @@ export default function LoginPage() {
                         <h1 className="text-2xl font-bold tracking-wider text-foreground">INTERFAZ DE AGENTES</h1>
                     </div>
 
-                    <div className="rounded-xl border bg-card/80 p-6 shadow-lg backdrop-blur-sm md:p-8">
+                    <div className="rounded-xl border bg-background/80 p-6 shadow-lg backdrop-blur-sm md:p-8">
                         <Tabs defaultValue="login" className="w-full">
                             <TabsList className="grid w-full grid-cols-2 bg-muted/50">
                                 <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
@@ -91,7 +89,7 @@ export default function LoginPage() {
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 disabled={isLoading}
-                                                className="bg-input/70"
+                                                className="bg-background/70"
                                             />
                                         </div>
                                         <div className="grid gap-2">
@@ -104,7 +102,7 @@ export default function LoginPage() {
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
                                                 disabled={isLoading}
-                                                className="bg-input/70"
+                                                className="bg-background/70"
                                             />
                                         </div>
                                         <Button type="submit" className="w-full mt-2" disabled={isLoading}>
@@ -118,7 +116,7 @@ export default function LoginPage() {
                                         <span className="w-full border-t" />
                                     </div>
                                     <div className="relative flex justify-center text-xs uppercase">
-                                        <span className="bg-card px-2 text-muted-foreground">
+                                        <span className="bg-background px-2 text-muted-foreground">
                                             O
                                         </span>
                                     </div>
@@ -138,7 +136,7 @@ export default function LoginPage() {
                 </div>
             </div>
 
-            <div className="hidden lg:flex flex-col items-center justify-center rounded-xl border bg-card/80 p-8 shadow-xl shadow-lime-500/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+            <div className="hidden lg:flex flex-col items-center justify-center rounded-xl border bg-background/80 p-8 shadow-xl shadow-lime-500/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                 <Image 
                     src="https://picsum.photos/600/400"
                     alt="AI Agents" 
