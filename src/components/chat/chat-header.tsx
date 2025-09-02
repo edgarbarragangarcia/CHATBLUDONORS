@@ -52,7 +52,7 @@ export function ChatHeader({ user, email }: { user: User & { app_metadata: { rol
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative flex items-center gap-3 rounded-full hover:bg-white/20 p-2">
-            <Avatar className="h-9 w-9 border-2 border-transparent group-hover:border-white transition-colors">
+            <Avatar className="h-9 w-9 border-2 border-blue-800 group-hover:border-white transition-colors">
               <AvatarImage src={user?.user_metadata.avatar_url} alt={userName} />
               <AvatarFallback className="bg-white/25 text-white">{userInitial}</AvatarFallback>
             </Avatar>
