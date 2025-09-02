@@ -34,27 +34,33 @@ export default async function AdminLayout({
     const isAdmin = user?.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user?.email ?? '');
 
   return (
-    <Sidebar>
-        <SidebarContent>
-          <SidebarHeader>
-            <div className="flex items-center gap-2">
-              <Package className="size-5" />
-              <span className="text-lg font-semibold">Admin Panel</span>
-            </div>
-          </SidebarHeader>
-          <AdminSidebarItems isAdmin={isAdmin} />
-        </SidebarContent>
-        <SidebarFooter>
-           <SidebarMenu>
-             <SidebarMenuItem>
-                <SidebarMenuButton href="/">
-                    <PanelLeft />
-                    Back to App
-                </SidebarMenuButton>
-             </SidebarMenuItem>
-           </SidebarMenu>
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset>{children}</SidebarInset>
+    <div className="flex h-screen bg-muted/40">
+      <Sidebar>
+          <SidebarContent>
+            <SidebarHeader>
+              <div className="flex items-center gap-2">
+                <Package className="size-5" />
+                <span className="text-lg font-semibold">Admin Panel</span>
+              </div>
+            </SidebarHeader>
+            <AdminSidebarItems isAdmin={isAdmin} />
+          </SidebarContent>
+          <SidebarFooter>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton href="/">
+                      <PanelLeft />
+                      Back to App
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarFooter>
+        </Sidebar>
+      <div className="flex flex-col flex-1">
+        <main className="flex-1 overflow-y-auto">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 }
