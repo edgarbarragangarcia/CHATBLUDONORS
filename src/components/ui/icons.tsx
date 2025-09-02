@@ -1,5 +1,17 @@
 import * as React from 'react';
 
+export const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+    >
+        <path d="M21.35 11.1H12.18V13.83H18.68C18.36 17.64 15.19 19.27 12.19 19.27C9.37 19.27 7.13 17.03 7.13 14.21C7.13 11.39 9.37 9.15 12.19 9.15C13.82 9.15 14.93 9.72 15.57 10.33L17.6 8.3C16.17 6.95 14.37 6.25 12.19 6.25C8.09 6.25 4.75 9.59 4.75 13.69C4.75 17.79 8.09 21.13 12.19 21.13C16.71 21.13 20.35 18.39 20.35 13.9C20.35 13.09 20.25 12.29 20.05 11.53L21.35 11.1Z" fill="#4285F4"/>
+    </svg>
+);
+
+
 export const VisualPanelsIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
         viewBox="0 0 24 24" 

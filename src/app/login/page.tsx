@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { 
+    GoogleIcon,
     MessageSquareHeart,
     VisualPanelsIcon,
     AiAssistantIcon,
@@ -43,6 +44,22 @@ export default function LoginPage() {
       router.refresh();
     }
     setIsLoading(false);
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+    if (error) {
+      toast({
+        title: "Error al iniciar sesión con Google",
+        description: "No se pudo autenticar con Google. Por favor, inténtalo de nuevo.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -83,7 +100,7 @@ export default function LoginPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-sm">
             <h2 className="text-2xl font-bold text-center">Bienvenido a INTERFAZ DE AGENTES</h2>
-            <p className="text-muted-foreground text-center mb-6">Ingresa con tu correo electrónico para continuar.</p>
+            <p className="text-muted-foreground text-center mb-6">Ingresa tus credenciales para continuar.</p>
             
             <Tabs defaultValue="login" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
@@ -91,6 +108,23 @@ export default function LoginPage() {
                     <TabsTrigger value="register">Registrarse</TabsTrigger>
                 </TabsList>
                 <TabsContent value="login">
+                     <div className="py-4">
+                        <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
+                            <GoogleIcon className="mr-2 h-4 w-4" />
+                            Continuar con Google
+                        </Button>
+                    </div>
+
+                    <div className="relative my-2">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-white px-2 text-muted-foreground">
+                                O continuar con
+                            </span>
+                        </div>
+                    </div>
                     <form onSubmit={handleEmailPasswordLogin} className="mt-4">
                         <div className="grid gap-4">
                             <div className="grid gap-2">
