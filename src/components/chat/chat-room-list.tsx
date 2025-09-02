@@ -19,14 +19,19 @@ interface ChatRoomListProps {
 
 export function ChatRoomList({ availableChats, selectedChatId, onSelectChat }: ChatRoomListProps) {
     return (
-        <div className="h-full p-4 bg-card border-r flex flex-col">
+        <div className="h-full p-4 bg-gradient-to-br from-blue-200 to-red-900 border-r flex flex-col text-white">
             <h2 className="text-xl font-bold mb-4">Salas de Chat</h2>
             <nav className="flex flex-col gap-2">
                 {availableChats.map((chat) => (
                     <Button
                         key={chat.id}
                         variant={selectedChatId === chat.id ? 'secondary' : 'ghost'}
-                        className="w-full justify-start gap-3"
+                        className={cn(
+                            "w-full justify-start gap-3",
+                            selectedChatId === chat.id 
+                                ? "bg-white/20 text-white" 
+                                : "hover:bg-white/10 hover:text-white"
+                        )}
                         onClick={() => onSelectChat(chat.id)}
                     >
                         <MessageSquareText className="h-5 w-5" />

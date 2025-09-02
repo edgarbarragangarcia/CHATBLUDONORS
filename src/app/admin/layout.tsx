@@ -3,9 +3,6 @@ import * as React from 'react';
 import { createClient } from '@/lib/supabase/server';
 import {
   Package,
-  Home,
-  Users,
-  MessageCircle,
   PanelLeft,
 } from 'lucide-react';
 import {
@@ -15,7 +12,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import AdminSidebarItems from './sidebar-items';
@@ -31,11 +27,11 @@ export default async function AdminLayout({
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     
-    const isAdmin = user?.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user?.email ?? '');
+    const isAdmin = !!user && (user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email ?? ''));
 
   return (
     <div className="flex h-screen bg-muted/40">
-      <Sidebar>
+      <Sidebar className="bg-gradient-to-br from-blue-200 to-red-900 text-white">
           <SidebarContent>
             <SidebarHeader>
               <div className="flex items-center gap-2">
@@ -48,7 +44,7 @@ export default async function AdminLayout({
           <SidebarFooter>
             <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/">
+                  <SidebarMenuButton href="/" className="hover:bg-white/10 hover:text-white">
                       <PanelLeft />
                       Back to App
                   </SidebarMenuButton>
