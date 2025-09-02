@@ -13,6 +13,7 @@ import {
     MessageSquareHeart,
 } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Image from "next/image";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -60,79 +61,98 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
        <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#2f2f3e_1px,transparent_1px)] [background-size:16px_16px]"></div>
       
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col items-center justify-center mb-8">
-             <MessageSquareHeart className="h-10 w-10 mb-4 text-primary" />
-             <h1 className="text-2xl font-bold tracking-wider text-foreground">INTERFAZ DE AGENTES</h1>
-        </div>
-
-        <div className="rounded-xl border bg-card/80 p-6 shadow-lg backdrop-blur-sm md:p-8">
-            <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-                    <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
-                    <TabsTrigger value="register">Registrarse</TabsTrigger>
-                </TabsList>
-                <TabsContent value="login">
-                    <form onSubmit={handleEmailPasswordLogin} className="mt-4">
-                        <div className="grid gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="tu@email.com"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    disabled={isLoading}
-                                    className="bg-input/70"
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="password">Contraseña</Label>
-                                <Input 
-                                    id="password" 
-                                    type="password"
-                                    placeholder="Tu contraseña" 
-                                    required 
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    disabled={isLoading}
-                                    className="bg-input/70"
-                                />
-                            </div>
-                            <Button type="submit" className="w-full mt-2" disabled={isLoading}>
-                                {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
-                            </Button>
-                        </div>
-                    </form>
-                    
-                    <div className="relative my-6">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-card px-2 text-muted-foreground">
-                                O
-                            </span>
-                        </div>
+       <div className="grid w-full max-w-6xl grid-cols-1 gap-8 lg:grid-cols-2">
+            <div className="flex flex-col items-center justify-center">
+                <div className="w-full max-w-sm">
+                    <div className="flex flex-col items-center justify-center mb-8">
+                        <MessageSquareHeart className="h-10 w-10 mb-4 text-primary" />
+                        <h1 className="text-2xl font-bold tracking-wider text-foreground">INTERFAZ DE AGENTES</h1>
                     </div>
-                     <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
-                        <GoogleIcon className="mr-2 h-4 w-4" />
-                        Continuar con Google
-                    </Button>
-                </TabsContent>
-                <TabsContent value="register">
-                   <div className="text-center text-muted-foreground p-8">
-                       <p>La funcionalidad de registro estará disponible próximamente.</p>
-                   </div>
-                </TabsContent>
-            </Tabs>
-        </div>
-      </div>
+
+                    <div className="rounded-xl border bg-card/80 p-6 shadow-lg backdrop-blur-sm md:p-8">
+                        <Tabs defaultValue="login" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2 bg-muted/50">
+                                <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
+                                <TabsTrigger value="register">Registrarse</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="login">
+                                <form onSubmit={handleEmailPasswordLogin} className="mt-4">
+                                    <div className="grid gap-4">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="email">Email</Label>
+                                            <Input
+                                                id="email"
+                                                type="email"
+                                                placeholder="tu@email.com"
+                                                required
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                disabled={isLoading}
+                                                className="bg-input/70"
+                                            />
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="password">Contraseña</Label>
+                                            <Input 
+                                                id="password" 
+                                                type="password"
+                                                placeholder="Tu contraseña" 
+                                                required 
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                disabled={isLoading}
+                                                className="bg-input/70"
+                                            />
+                                        </div>
+                                        <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+                                            {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                                        </Button>
+                                    </div>
+                                </form>
+                                
+                                <div className="relative my-6">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <span className="w-full border-t" />
+                                    </div>
+                                    <div className="relative flex justify-center text-xs uppercase">
+                                        <span className="bg-card px-2 text-muted-foreground">
+                                            O
+                                        </span>
+                                    </div>
+                                </div>
+                                <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
+                                    <GoogleIcon className="mr-2 h-5 w-5" />
+                                    Continuar con Google
+                                </Button>
+                            </TabsContent>
+                            <TabsContent value="register">
+                            <div className="text-center text-muted-foreground p-8">
+                                <p>La funcionalidad de registro estará disponible próximamente.</p>
+                            </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+                </div>
+            </div>
+
+            <div className="hidden lg:flex flex-col items-center justify-center rounded-xl border bg-card/80 p-8 shadow-lg backdrop-blur-sm">
+                <Image 
+                    src="https://picsum.photos/600/400"
+                    alt="AI Agents" 
+                    width={600} 
+                    height={400}
+                    data-ai-hint="robot AI"
+                    className="rounded-lg mb-6 shadow-xl"
+                />
+                <h2 className="text-2xl font-bold text-primary mb-3">Potencia tu equipo con Agentes de IA</h2>
+                <p className="text-muted-foreground text-center max-w-md">
+                    Nuestra plataforma te permite desplegar agentes de inteligencia artificial especializados para automatizar tareas, analizar datos y optimizar la comunicación en tus salas de chat. Aumenta la eficiencia y lleva a tu equipo al siguiente nivel.
+                </p>
+            </div>
+       </div>
     </div>
   );
 }
