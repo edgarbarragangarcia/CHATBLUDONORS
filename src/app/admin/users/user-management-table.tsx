@@ -173,67 +173,67 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
-       <Card>
-        <CardHeader>
-          <CardTitle>User Access Management</CardTitle>
-          <CardDescription>Enable or disable access to chats for each user.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead className="w-[250px]">User</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    {chats.map(chat => (
-                        <TableHead key={chat.id} className="text-center">{chat.name}</TableHead>
-                    ))}
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {users.map((u) => (
-                    <TableRow key={u.id} className={(isPending || isRolePending) ? 'opacity-50' : ''}>
-                        <TableCell>
-                            <div className="flex items-center gap-3">
-                                <Avatar>
-                                    <AvatarImage src={u.avatar} />
-                                    <AvatarFallback>{u.name?.charAt(0).toUpperCase()}</AvatarFallback>
-                                </Avatar>
-                                <span className="font-medium">{u.name}</span>
-                            </div>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">{u.email}</TableCell>
-                        <TableCell>
-                           <Select
-                                value={u.role}
-                                onValueChange={(value: 'admin' | 'user') => handleRoleChange(u.id, value)}
-                                disabled={isRolePending}
-                           >
-                                <SelectTrigger className="w-[110px]">
-                                    <SelectValue placeholder="Select role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="user">User</SelectItem>
-                                    <SelectItem value="admin">Admin</SelectItem>
-                                </SelectContent>
-                           </Select>
-                        </TableCell>
+        <div className="mb-4">
+            <h2 className="text-3xl font-bold tracking-tight">User Access Management</h2>
+            <p className="text-muted-foreground">Enable or disable access to chats for each user.</p>
+        </div>
+        <Card>
+            <CardContent className="p-0">
+                <Table>
+                    <TableHeader>
+                    <TableRow>
+                        <TableHead className="w-[250px]">User</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
                         {chats.map(chat => (
-                             <TableCell key={chat.id} className="text-center">
-                                <Switch
-                                    checked={u.permissions[chat.id] ?? false}
-                                    onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
-                                    aria-label={`Toggle access to ${chat.name} for ${u.name}`}
-                                    disabled={isPending}
-                                />
-                             </TableCell>
+                            <TableHead key={chat.id} className="text-center">{chat.name}</TableHead>
                         ))}
                     </TableRow>
-                ))}
-                </TableBody>
-            </Table>
-        </CardContent>
-       </Card>
+                    </TableHeader>
+                    <TableBody>
+                    {users.map((u) => (
+                        <TableRow key={u.id} className={(isPending || isRolePending) ? 'opacity-50' : ''}>
+                            <TableCell>
+                                <div className="flex items-center gap-3">
+                                    <Avatar>
+                                        <AvatarImage src={u.avatar} />
+                                        <AvatarFallback>{u.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                                    </Avatar>
+                                    <span className="font-medium">{u.name}</span>
+                                </div>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">{u.email}</TableCell>
+                            <TableCell>
+                               <Select
+                                    value={u.role}
+                                    onValueChange={(value: 'admin' | 'user') => handleRoleChange(u.id, value)}
+                                    disabled={isRolePending}
+                               >
+                                    <SelectTrigger className="w-[110px]">
+                                        <SelectValue placeholder="Select role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="user">User</SelectItem>
+                                        <SelectItem value="admin">Admin</SelectItem>
+                                    </SelectContent>
+                               </Select>
+                            </TableCell>
+                            {chats.map(chat => (
+                                 <TableCell key={chat.id} className="text-center">
+                                    <Switch
+                                        checked={u.permissions[chat.id] ?? false}
+                                        onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
+                                        aria-label={`Toggle access to ${chat.name} for ${u.name}`}
+                                        disabled={isPending}
+                                    />
+                                 </TableCell>
+                            ))}
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+            </CardContent>
+        </Card>
     </div>
   );
 }

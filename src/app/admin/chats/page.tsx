@@ -12,9 +12,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
@@ -38,18 +35,18 @@ export default async function ChatsPage() {
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
-       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
             <div>
-                <CardTitle>Chats</CardTitle>
-                <CardDescription>Create and manage chat rooms.</CardDescription>
+                <h2 className="text-3xl font-bold tracking-tight">Chats</h2>
+                <p className="text-muted-foreground">Create and manage chat rooms.</p>
             </div>
             <Button disabled>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Create Chat (Soon)
             </Button>
-        </CardHeader>
-        <CardContent>
+        </div>
+       <Card>
+        <CardContent className='p-0'>
             <Table>
                 <TableHeader>
                 <TableRow>

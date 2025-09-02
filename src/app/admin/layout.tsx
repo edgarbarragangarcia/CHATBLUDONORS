@@ -31,7 +31,7 @@ export default async function AdminLayout({
 
   return (
     <div className="flex h-screen bg-muted/40">
-      <Sidebar className="bg-gradient-to-r from-blue-400 to-blue-600 text-white">
+      <Sidebar className="bg-background border-r">
           <SidebarContent>
             <SidebarHeader>
               <div className="flex items-center gap-2">
@@ -44,7 +44,7 @@ export default async function AdminLayout({
           <SidebarFooter>
             <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/" className="hover:bg-white/10 hover:text-white">
+                  <SidebarMenuButton href="/" className="hover:bg-accent hover:text-accent-foreground">
                       <PanelLeft />
                       Back to App
                   </SidebarMenuButton>

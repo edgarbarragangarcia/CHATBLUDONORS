@@ -18,21 +18,15 @@ import { cn } from '@/lib/utils';
 
 export default function AdminSidebarItems({ isAdmin }: { isAdmin: boolean }) {
     const pathname = usePathname();
-    const isActive = (path: string) => pathname === path;
+    const isActive = (path: string) => pathname.startsWith(path);
 
     const buttonClass = (path: string) => cn(
-        "hover:bg-white/10 hover:text-white",
-        isActive(path) && "bg-white/20 text-white"
+        "hover:bg-accent hover:text-accent-foreground",
+        isActive(path) && "bg-accent text-accent-foreground"
     );
 
     return (
         <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton href="/admin" className={buttonClass('/admin')}>
-                <Home />
-                Dashboard
-              </SidebarMenuButton>
-            </SidebarMenuItem>
             {isAdmin && (
                  <SidebarMenuItem>
                     <SidebarMenuButton href="/admin/users" className={buttonClass('/admin/users')}>
