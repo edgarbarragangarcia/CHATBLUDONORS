@@ -149,7 +149,7 @@ export default function LoginPage() {
                 />
                 <h2 className="text-2xl font-bold text-primary mb-3">Chatea con Agentes de IA Especializados</h2>
                 <p className="text-muted-foreground text-center max-w-md">
-                    Nuestra plataforma te permite interactuar con diferentes agentes de IA, cada uno diseñado para una tarea específica. Optimiza tu flujo de trabajo y obtén respuestas precisas al instante.
+                    Nuestra plataforma te permite chatear con diferentes agentes de IA en salas dedicadas para obtener respuestas precisas al instante.
                 </p>
             </div>
        </div>
