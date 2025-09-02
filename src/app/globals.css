@@ -10,7 +10,7 @@ body {
   :root {
     --background: 240 11% 95%;
     --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
+    --card: 255 255% 255% / 0.6;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
@@ -84,5 +84,6 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    background-image: linear-gradient(to bottom right, hsl(210, 100%, 95%), hsl(330, 100%, 95%));
   }
 }
