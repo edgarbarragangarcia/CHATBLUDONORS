@@ -15,7 +15,7 @@ import {
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { LogOut, MessageSquareHeart, Shield } from "lucide-react"
+import { LogOut, MessageSquareHeart, Shield, User as UserIcon } from "lucide-react"
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
@@ -27,6 +27,7 @@ export function ChatHeader({ user, email }: { user: User, email?: string }) {
   const handleLogout = async () => {
     await supabase.auth.signOut()
     router.push("/login")
+    router.refresh()
   }
 
   const goToAdmin = () => {
@@ -38,42 +39,50 @@ export function ChatHeader({ user, email }: { user: User, email?: string }) {
     : email?.charAt(0).toUpperCase() ?? "U"
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
-      <div className="flex items-center gap-2">
+    <header className="flex h-16 items-center justify-between bg-card px-4 md:px-6 shadow-sm z-10">
+      <div className="flex items-center gap-3">
         <MessageSquareHeart className="h-6 w-6 text-primary" />
-        <h1 className="text-xl font-bold tracking-tighter bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <h1 className="text-lg font-bold tracking-tight">
           INTERFAZ DE AGENTES
         </h1>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-            <Avatar className="h-10 w-10">
+            <Avatar className="h-10 w-10 border-2 border-transparent group-hover:border-primary transition-colors">
               <AvatarImage src={user?.user_metadata.avatar_url} alt={user?.user_metadata.full_name} />
               <AvatarFallback>{userInitial}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuContent className="w-64" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user?.user_metadata.full_name || email}</p>
-              <p className="text-xs leading-none text-muted-foreground">{email}</p>
+            <div className="flex items-center gap-3 py-2">
+                <Avatar className="h-12 w-12">
+                    <AvatarImage src={user?.user_metadata.avatar_url} alt={user?.user_metadata.full_name} />
+                    <AvatarFallback>{userInitial}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col space-y-1">
+                    <p className="text-base font-medium leading-none">{user?.user_metadata.full_name || email}</p>
+                    <p className="text-sm leading-none text-muted-foreground">{email}</p>
+                </div>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-             {isAdmin && (
-                <DropdownMenuItem onClick={goToAdmin} className="cursor-pointer">
-                    <Shield className="mr-2 h-4 w-4" />
-                    <span>Admin Panel</span>
-                </DropdownMenuItem>
-             )}
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
+           {isAdmin && (
+            <>
+                <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={goToAdmin} className="cursor-pointer py-2 text-base">
+                        <Shield className="mr-3 h-5 w-5 text-muted-foreground" />
+                        <span>Panel de Administrador</span>
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+            </>
+            )}
+          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 hover:!text-red-500 focus:!text-red-500 py-2 text-base">
+            <LogOut className="mr-3 h-5 w-5" />
+            <span>Cerrar Sesión</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
