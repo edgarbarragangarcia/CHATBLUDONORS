@@ -57,7 +57,7 @@ export function ChatHeader({ user, email }: { user: User & { app_metadata: { rol
               <AvatarFallback className="bg-white/25 text-white">{userInitial}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col items-start">
-                <span className="font-medium text-sm leading-none">{userName}</span>
+                <span className="font-medium text-sm leading-none truncate max-w-[150px]">{userName}</span>
             </div>
           </Button>
         </DropdownMenuTrigger>
@@ -68,9 +68,9 @@ export function ChatHeader({ user, email }: { user: User & { app_metadata: { rol
                     <AvatarImage src={user?.user_metadata.avatar_url} alt={userName} />
                     <AvatarFallback>{userInitial}</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col space-y-1">
-                    <p className="text-base font-medium leading-none">{userName}</p>
-                    <p className="text-sm leading-none text-muted-foreground">{email}</p>
+                <div className="flex flex-col space-y-1 overflow-hidden">
+                    <p className="text-base font-medium leading-none truncate">{userName}</p>
+                    <p className="text-sm leading-none text-muted-foreground truncate">{email}</p>
                 </div>
             </div>
           </DropdownMenuLabel>
