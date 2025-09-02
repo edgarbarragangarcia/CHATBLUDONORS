@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -9,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { 
     GoogleIcon, 
-    ProjectiaLogo,
+    MessageSquareHeart,
     VisualPanelsIcon,
     AiAssistantIcon,
     ProgressTrackingIcon
@@ -61,8 +62,8 @@ export default function LoginPage() {
     <div className="flex min-h-screen w-full bg-background text-foreground">
       <div className="hidden lg:flex lg:w-1/2 flex-col items-start justify-center p-12 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
         <div className="flex items-center gap-3 mb-8">
-            <ProjectiaLogo className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold tracking-wider text-gray-900">PROJECTIA</span>
+            <MessageSquareHeart className="h-8 w-8 text-primary" />
+            <span className="text-2xl font-bold tracking-wider text-gray-900">INTERFAZ DE AGENTES</span>
         </div>
         <h1 className="text-5xl font-bold mb-4 text-gray-900">Transforma tus ideas en proyectos exitosos.</h1>
         <p className="text-lg text-muted-foreground mb-12 max-w-xl">
@@ -94,7 +95,7 @@ export default function LoginPage() {
       </div>
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-center">Bienvenido a PROJECTIA</h2>
+            <h2 className="text-2xl font-bold text-center">Bienvenido a INTERFAZ DE AGENTES</h2>
             <p className="text-muted-foreground text-center mb-6">Elige tu método preferido para continuar.</p>
             
             <Button variant="outline" className="w-full mb-4" onClick={handleGoogleLogin} disabled={isLoading || isGoogleLoading}>

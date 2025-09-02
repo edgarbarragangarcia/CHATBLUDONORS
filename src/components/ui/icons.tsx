@@ -23,19 +23,6 @@ export const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export const ProjectiaLogo = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg 
-        viewBox="0 0 24 24" 
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-    >
-        <path d="M4 4h16v16H4V4z" fill="none"/>
-        <path d="M6.5 10.5v3h3v-3h-3zm7 0v3h3v-3h-3zM11 4l-3 8h2l1-3h4l1 3h2L13 4h-2z" fill="currentColor"/>
-    </svg>
-);
-
-
 export const VisualPanelsIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
         viewBox="0 0 24 24" 
