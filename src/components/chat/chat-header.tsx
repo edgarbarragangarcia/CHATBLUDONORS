@@ -1,3 +1,4 @@
+
 "use client"
 
 import { createClient } from "@/lib/supabase/client"
@@ -37,6 +38,8 @@ export function ChatHeader({ user, email }: { user: User & { app_metadata: { rol
   const userInitial = user?.user_metadata.full_name
     ? user.user_metadata.full_name.charAt(0).toUpperCase()
     : email?.charAt(0).toUpperCase() ?? "U"
+  
+  const userName = user?.user_metadata.full_name || email;
 
   return (
     <header className="flex h-16 items-center justify-between bg-gradient-to-r from-blue-400 to-blue-600 text-white px-4 md:px-6 shadow-md z-10">
@@ -48,22 +51,25 @@ export function ChatHeader({ user, email }: { user: User & { app_metadata: { rol
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/20">
-            <Avatar className="h-10 w-10 border-2 border-transparent group-hover:border-white transition-colors">
-              <AvatarImage src={user?.user_metadata.avatar_url} alt={user?.user_metadata.full_name} />
+          <Button variant="ghost" className="relative flex items-center gap-3 rounded-full hover:bg-white/20 p-2">
+            <Avatar className="h-9 w-9 border-2 border-transparent group-hover:border-white transition-colors">
+              <AvatarImage src={user?.user_metadata.avatar_url} alt={userName} />
               <AvatarFallback className="bg-white/25 text-white">{userInitial}</AvatarFallback>
             </Avatar>
+            <div className="flex flex-col items-start">
+                <span className="font-medium text-sm leading-none">{userName}</span>
+            </div>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex items-center gap-3 py-2">
                 <Avatar className="h-12 w-12">
-                    <AvatarImage src={user?.user_metadata.avatar_url} alt={user?.user_metadata.full_name} />
+                    <AvatarImage src={user?.user_metadata.avatar_url} alt={userName} />
                     <AvatarFallback>{userInitial}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col space-y-1">
-                    <p className="text-base font-medium leading-none">{user?.user_metadata.full_name || email}</p>
+                    <p className="text-base font-medium leading-none">{userName}</p>
                     <p className="text-sm leading-none text-muted-foreground">{email}</p>
                 </div>
             </div>
