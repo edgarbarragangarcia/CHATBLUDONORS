@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { GoogleIcon, MessageSquareHeart, MessagesSquare, Bot, Sparkles } from "@/components/ui/icons";
+import { GoogleIcon, MessageSquareCode, MessagesSquare, Bot, Sparkles } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function LoginPage() {
@@ -53,12 +53,12 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen w-full bg-background text-foreground">
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-start justify-center p-12 bg-gradient-to-br from-accent to-background">
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-start justify-center p-12">
         <div className="flex items-center gap-3 mb-8">
-            <MessageSquareHeart className="h-10 w-10 text-primary" />
-            <span className="text-2xl font-bold">INTERFAZ DE AGENTES</span>
+            <MessageSquareCode className="h-10 w-10 text-primary" />
+            <span className="text-2xl font-bold tracking-wider">INTERFAZ DE AGENTES</span>
         </div>
-        <h1 className="text-4xl font-bold mb-4">Conversaciones más inteligentes y fluidas.</h1>
+        <h1 className="text-5xl font-bold mb-4">Conversaciones más inteligentes y fluidas.</h1>
         <p className="text-lg text-muted-foreground mb-12">
             Experimenta un chat potenciado por IA que entiende el contexto, sugiere respuestas y te ayuda a comunicarte mejor.
         </p>

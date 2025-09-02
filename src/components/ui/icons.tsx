@@ -23,7 +23,7 @@ export const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export const MessageSquareHeart = (props: React.SVGProps<SVGSVGElement>) => (
+export const MessageSquareCode = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
         viewBox="0 0 24 24" 
         fill="none" 
@@ -35,10 +35,10 @@ export const MessageSquareHeart = (props: React.SVGProps<SVGSVGElement>) => (
         {...props}
     >
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2z"></path>
-        <path d="M12.4 7.5a2.1 2.1 0 0 0-2.8 0L9 8l.2.3a2.1 2.1 0 0 0 2.8 2.8L12.5 11l.5.5.5-.5a2.1 2.1 0 0 0 0-2.8Z"></path>
+        <path d="m10 8-2 2 2 2"></path>
+        <path d="m14 8 2 2-2 2"></path>
     </svg>
 );
-
 
 export const MessagesSquare = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
@@ -55,7 +55,6 @@ export const MessagesSquare = (props: React.SVGProps<SVGSVGElement>) => (
         <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"></path>
     </svg>
 );
-
 
 export const Bot = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
@@ -92,5 +91,21 @@ export const Sparkles = (props: React.SVGProps<SVGSVGElement>) => (
         <path d="M19 17v4"></path>
         <path d="M3 5h4"></path>
         <path d="M17 19h4"></path>
+    </svg>
+);
+
+export const MessageSquareHeart = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+    >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2z"></path>
+        <path d="M12.4 7.5a2.1 2.1 0 0 0-2.8 0L9 8l.2.3a2.1 2.1 0 0 0 2.8 2.8L12.5 11l.5.5.5-.5a2.1 2.1 0 0 0 0-2.8Z"></path>
     </svg>
 );
