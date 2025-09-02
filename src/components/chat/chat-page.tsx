@@ -157,7 +157,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   }
 
   return (
-    <main className="h-full flex flex-col bg-card">
+    <main className="h-full flex flex-col bg-card rounded-lg">
         <MessageList messages={messages} currentUserId={user.id} />
         <div className="p-4 border-t">
             <SuggestedReplies 
