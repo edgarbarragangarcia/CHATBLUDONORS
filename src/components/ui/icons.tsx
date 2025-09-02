@@ -1,27 +1,23 @@
 import * as React from 'react';
 
 export const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M15.545 6.545a9 9 0 1 1-11.09 11.09A9 9 0 0 1 15.545 6.545Z" />
-    <path d="M17 8h1a4 4 0 0 1 4 4v2" />
-    <path d="M8 17a4 4 0 0 1-4-4V8" />
-    <path d="M12 12v6" />
-    <path d="M12 6V3" />
-    <path d="m6 6 2 2" />
-    <path d="m16 16 2 2" />
-  </svg>
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="24" 
+        height="24" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        {...props}
+    >
+        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
+        <path d="M12 15.5V12.5H18.5C18.5 15.5 16 18.5 12 18.5C9 18.5 6.5 16 6.5 13C6.5 10 9 7.5 12 7.5C13.7 7.5 15.2 8.2 16.2 9.4L18.5 7.1C16.9 5.5 14.6 4.5 12 4.5C7.9 4.5 4.5 7.9 4.5 12C4.5 16.1 7.9 19.5 12 19.5C15.1 19.5 17.7 18.3 19.2 16.3" />
+    </svg>
 );
+
 
 export const VisualPanelsIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg 
@@ -78,7 +74,7 @@ export const MessageSquareHeart = (props: React.SVGProps<SVGSVGElement>) => (
         viewBox="0 0 24 24" 
         fill="none" 
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
         xmlns="http://www.w3.org/2000/svg"
