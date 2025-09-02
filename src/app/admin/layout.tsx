@@ -1,13 +1,11 @@
 
-'use client';
-
 import * as React from 'react';
+import { createClient } from '@/lib/supabase/server';
 import {
   Package,
   Home,
   Users,
   MessageCircle,
-  Settings,
   PanelLeft,
 } from 'lucide-react';
 import {
@@ -17,29 +15,26 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarProvider,
   SidebarInset,
   SidebarFooter,
-  SidebarTrigger,
-  SidebarGroup,
-  SidebarGroupLabel,
 } from '@/components/ui/sidebar';
-import { usePathname } from 'next/navigation';
+import AdminSidebarItems from './sidebar-items';
 
-export default function AdminLayout({
+
+const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
+
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    const isAdmin = user?.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user?.email ?? '');
 
   return (
-    <SidebarProvider>
-      <Sidebar>
+    <Sidebar>
         <SidebarContent>
           <SidebarHeader>
             <div className="flex items-center gap-2">
@@ -47,26 +42,7 @@ export default function AdminLayout({
               <span className="text-lg font-semibold">Admin Panel</span>
             </div>
           </SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton href="/admin" isActive={isActive('/admin')}>
-                <Home />
-                Dashboard
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton href="/admin/users" isActive={isActive('/admin/users')}>
-                <Users />
-                Users
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton href="/admin/chats" isActive={isActive('/admin/chats')}>
-                <MessageCircle />
-                Chats
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <AdminSidebarItems isAdmin={isAdmin} />
         </SidebarContent>
         <SidebarFooter>
            <SidebarMenu>
@@ -80,6 +56,5 @@ export default function AdminLayout({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>{children}</SidebarInset>
-    </SidebarProvider>
   );
 }
