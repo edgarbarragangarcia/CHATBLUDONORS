@@ -11,29 +11,35 @@ export default function AdminNavbar({ isAdmin }: { isAdmin: boolean }) {
     const pathname = usePathname();
 
     const navLinkClass = (path: string) => cn(
-        "transition-colors hover:text-foreground",
-        pathname.startsWith(path) ? "text-foreground" : "text-muted-foreground"
+        "flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+        pathname.startsWith(path) ? "text-primary bg-muted" : ""
     );
 
     return (
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+            <Link href="/admin" className="flex items-center gap-2 text-lg font-semibold md:text-base">
                 <Package className="h-6 w-6" />
-                <span>Admin Panel</span>
+                <span className="sr-only">Admin Panel</span>
             </Link>
-            <nav className="flex-1 flex items-center gap-4 text-sm font-medium">
+            <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 flex-1">
+                <Link
+                    href="/admin"
+                    className="flex items-center gap-2 text-lg font-semibold md:text-base"
+                >
+                    <span className="">Admin Panel</span>
+                </Link>
                 {isAdmin && (
-                    <Link href="/admin/users" className={navLinkClass('/admin/users')}>
-                        <Users className="h-5 w-5 inline-block mr-1" />
+                     <Link href="/admin/users" className={navLinkClass('/admin/users')}>
+                        <Users className="h-4 w-4" />
                         Users
                     </Link>
                 )}
-                <Link href="/admin/chats" className={navLinkClass('/admin/chats')}>
-                    <MessageCircle className="h-5 w-5 inline-block mr-1" />
+                 <Link href="/admin/chats" className={navLinkClass('/admin/chats')}>
+                    <MessageCircle className="h-4 w-4" />
                     Chats
                 </Link>
             </nav>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-auto">
                 <Button asChild variant="outline" size="sm">
                     <Link href="/">
                         <PanelLeft className="h-4 w-4 mr-2" />
