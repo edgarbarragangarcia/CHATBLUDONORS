@@ -21,9 +21,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { updateUserPermission } from './actions';
+import { updateUserPermission, updateUserRole } from './actions';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
@@ -47,7 +47,7 @@ type UserWithPermissions = {
   name: string | undefined;
   email: string | undefined;
   avatar: any;
-  role: string;
+  role: 'admin' | 'user';
   permissions: { [chatId: string]: boolean };
 }
 
@@ -61,10 +61,10 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
   const [users, setUsers] = useState<UserWithPermissions[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [isRolePending, startRoleTransition] = useTransition();
   const { toast } = useToast();
 
   useEffect(() => {
-    // The data is now passed as props, so we just need to map it.
     const permissionsMap = new Map<string, boolean>();
     initialPermissions.forEach(p => {
         permissionsMap.set(`${p.user_id}-${p.chat_id}`, p.has_access);
@@ -75,13 +75,15 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
         initialChats.forEach(chat => {
             userPermissions[chat.id] = permissionsMap.get(`${u.id}-${chat.id}`) ?? false;
         });
+
+        const role = u.app_metadata?.role === 'admin' || ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user';
         
         return {
             id: u.id,
             name: u.user_metadata?.full_name || u.email?.split('@')[0],
             email: u.email,
             avatar: u.user_metadata?.avatar_url,
-            role: ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user',
+            role: role,
             permissions: userPermissions,
         };
     });
@@ -130,6 +132,45 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
       });
   }
 
+  const handleRoleChange = (userId: string, newRole: 'admin' | 'user') => {
+      const oldRole = users.find(u => u.id === userId)?.role;
+      // Optimistic UI update
+      setUsers(prevUsers => 
+          prevUsers.map(user => {
+              if (user.id === userId) {
+                  return { ...user, role: newRole };
+              }
+              return user;
+          })
+      );
+
+      // Call server action
+      startRoleTransition(async () => {
+          try {
+              await updateUserRole(userId, newRole);
+              toast({
+                  title: 'Rol actualizado',
+                  description: `El usuario ahora es ${newRole}.`,
+              });
+          } catch (error) {
+              toast({
+                  title: 'Error al actualizar rol',
+                  description: 'No se pudo guardar el cambio. Por favor, inténtalo de nuevo.',
+                  variant: 'destructive',
+              });
+              // Revert UI change on error
+              setUsers(prevUsers => 
+                  prevUsers.map(user => {
+                      if (user.id === userId) {
+                          return { ...user, role: oldRole || 'user' };
+                      }
+                      return user;
+                  })
+              );
+          }
+      });
+  }
+
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
        <Card>
@@ -151,7 +192,7 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
                 </TableHeader>
                 <TableBody>
                 {users.map((u) => (
-                    <TableRow key={u.id} className={isPending ? 'opacity-50' : ''}>
+                    <TableRow key={u.id} className={(isPending || isRolePending) ? 'opacity-50' : ''}>
                         <TableCell>
                             <div className="flex items-center gap-3">
                                 <Avatar>
@@ -163,7 +204,19 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
                         </TableCell>
                         <TableCell className="text-muted-foreground">{u.email}</TableCell>
                         <TableCell>
-                            <Badge variant={u.role === 'admin' ? 'default' : 'secondary'}>{u.role}</Badge>
+                           <Select
+                                value={u.role}
+                                onValueChange={(value: 'admin' | 'user') => handleRoleChange(u.id, value)}
+                                disabled={isRolePending}
+                           >
+                                <SelectTrigger className="w-[110px]">
+                                    <SelectValue placeholder="Select role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="user">User</SelectItem>
+                                    <SelectItem value="admin">Admin</SelectItem>
+                                </SelectContent>
+                           </Select>
                         </TableCell>
                         {chats.map(chat => (
                              <TableCell key={chat.id} className="text-center">

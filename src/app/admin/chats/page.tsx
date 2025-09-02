@@ -30,7 +30,7 @@ export default async function ChatsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user || !ADMIN_USERS.includes(user.email ?? '')) {
+  if (!user || !(user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email ?? ''))) {
     return redirect('/');
   }
 

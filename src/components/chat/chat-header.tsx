@@ -19,10 +19,10 @@ import { LogOut, MessageSquareHeart, Shield, User as UserIcon } from "lucide-rea
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
-export function ChatHeader({ user, email }: { user: User, email?: string }) {
+export function ChatHeader({ user, email }: { user: User & { app_metadata: { role?: 'admin' | 'user' } }, email?: string }) {
   const supabase = createClient()
   const router = useRouter()
-  const isAdmin = ADMIN_USERS.includes(email ?? '');
+  const isAdmin = user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(email ?? '');
 
   const handleLogout = async () => {
     await supabase.auth.signOut()

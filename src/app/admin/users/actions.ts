@@ -56,3 +56,21 @@ export async function updateUserPermission(userId: string, chatId: string, hasAc
     revalidatePath('/admin/users');
     revalidatePath('/');
 }
+
+
+// This function updates a user's role in Supabase Auth metadata
+export async function updateUserRole(userId: string, newRole: 'admin' | 'user') {
+    const supabase = createAdminClient();
+    
+    const { error } = await supabase.auth.admin.updateUserById(
+        userId,
+        { app_metadata: { role: newRole } }
+    );
+
+    if (error) {
+        console.error('Error updating user role:', error.message);
+        throw new Error('Could not update user role in Supabase.');
+    }
+
+    revalidatePath('/admin/users');
+}
