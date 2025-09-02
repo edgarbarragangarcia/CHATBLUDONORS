@@ -39,19 +39,19 @@ export function ChatHeader({ user, email }: { user: User & { app_metadata: { rol
     : email?.charAt(0).toUpperCase() ?? "U"
 
   return (
-    <header className="flex h-16 items-center justify-between bg-background px-4 md:px-6 shadow-sm z-10">
+    <header className="flex h-16 items-center justify-between bg-gradient-to-r from-blue-400 to-blue-600 text-white px-4 md:px-6 shadow-md z-10">
       <div className="flex items-center gap-3">
-        <MessageSquareHeart className="h-6 w-6 text-primary" />
+        <MessageSquareHeart className="h-6 w-6" />
         <h1 className="text-lg font-bold tracking-tight">
           INTERFAZ DE AGENTES
         </h1>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-            <Avatar className="h-10 w-10 border-2 border-transparent group-hover:border-primary transition-colors">
+          <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/20">
+            <Avatar className="h-10 w-10 border-2 border-transparent group-hover:border-white transition-colors">
               <AvatarImage src={user?.user_metadata.avatar_url} alt={user?.user_metadata.full_name} />
-              <AvatarFallback>{userInitial}</AvatarFallback>
+              <AvatarFallback className="bg-white/25 text-white">{userInitial}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
