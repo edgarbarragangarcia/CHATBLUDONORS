@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { 
-    GoogleIcon, 
     MessageSquareHeart,
     VisualPanelsIcon,
     AiAssistantIcon,
@@ -24,7 +23,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleEmailPasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,17 +43,6 @@ export default function LoginPage() {
       router.refresh();
     }
     setIsLoading(false);
-  };
-
-  const handleGoogleLogin = async () => {
-    setIsGoogleLoading(true);
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${location.origin}/auth/callback`,
-      },
-    });
-    setIsGoogleLoading(false);
   };
 
   return (
@@ -96,29 +83,7 @@ export default function LoginPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-sm">
             <h2 className="text-2xl font-bold text-center">Bienvenido a INTERFAZ DE AGENTES</h2>
-            <p className="text-muted-foreground text-center mb-6">Elige tu método preferido para continuar.</p>
-            
-            <Button variant="outline" className="w-full mb-4" onClick={handleGoogleLogin} disabled={isLoading || isGoogleLoading}>
-                 {isGoogleLoading ? (
-                        "Redirigiendo..."
-                    ) : (
-                        <>
-                            <GoogleIcon className="mr-2 h-5 w-5" />
-                            Continuar con Google
-                        </>
-                    )}
-            </Button>
-
-             <div className="relative my-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      O CONTINUAR CON EMAIL
-                    </span>
-                  </div>
-            </div>
+            <p className="text-muted-foreground text-center mb-6">Ingresa con tu correo electrónico para continuar.</p>
             
             <Tabs defaultValue="login" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
@@ -137,7 +102,7 @@ export default function LoginPage() {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    disabled={isLoading || isGoogleLoading}
+                                    disabled={isLoading}
                                 />
                             </div>
                             <div className="grid gap-2">
@@ -149,10 +114,10 @@ export default function LoginPage() {
                                     required 
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    disabled={isLoading || isGoogleLoading}
+                                    disabled={isLoading}
                                 />
                             </div>
-                            <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
+                            <Button type="submit" className="w-full" disabled={isLoading}>
                                 {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
                             </Button>
                         </div>
