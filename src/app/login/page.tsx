@@ -138,7 +138,7 @@ export default function LoginPage() {
                 </div>
             </div>
 
-            <div className="hidden lg:flex flex-col items-center justify-center rounded-xl border bg-card/80 p-8 shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+            <div className="hidden lg:flex flex-col items-center justify-center rounded-xl border bg-card/80 p-8 shadow-xl shadow-lime-500/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                 <Image 
                     src="https://picsum.photos/600/400"
                     alt="AI Agents" 
