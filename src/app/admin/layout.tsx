@@ -31,7 +31,7 @@ export default async function AdminLayout({
 
   return (
     <div className="flex h-screen bg-muted/40">
-      <Sidebar className="bg-gradient-to-br from-blue-200 to-red-900 text-white">
+      <Sidebar className="bg-gradient-to-r from-blue-400 to-blue-600 text-white">
           <SidebarContent>
             <SidebarHeader>
               <div className="flex items-center gap-2">

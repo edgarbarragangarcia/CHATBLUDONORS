@@ -19,7 +19,7 @@ interface ChatRoomListProps {
 
 export function ChatRoomList({ availableChats, selectedChatId, onSelectChat }: ChatRoomListProps) {
     return (
-        <div className="h-full p-4 bg-gradient-to-br from-blue-200 to-red-900 border-r flex flex-col text-white">
+        <div className="h-full p-4 bg-gradient-to-r from-blue-400 to-blue-600 border-r flex flex-col text-white">
             <h2 className="text-xl font-bold mb-4">Salas de Chat</h2>
             <nav className="flex flex-col gap-2">
                 {availableChats.map((chat) => (
