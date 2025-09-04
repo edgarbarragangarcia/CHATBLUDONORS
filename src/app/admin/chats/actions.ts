@@ -23,11 +23,18 @@ export async function createChat(formData: FormData) {
     throw new Error('Name and description are required');
   }
 
+  // Generate a unique ID based on the name
+  const chatId = name.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .substring(0, 50); // Limit length
+
   const supabase = await createAdminClient();
   const { data, error } = await supabase
     .from('chats')
     .insert([
       {
+        id: chatId,
         name: name.trim(),
         description: description.trim(),
         webhook_url: webhookUrl?.trim() || null
