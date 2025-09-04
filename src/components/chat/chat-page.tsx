@@ -186,12 +186,16 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     if (!chatWebhookUrl) return null
     
     try {
+      console.log('Sending to webhook:', chatWebhookUrl)
+      
       const response = await fetch(chatWebhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: content, user_id: user.id, chat_id: chatId })
+        body: JSON.stringify({ message: content, user_id: user.id, chat_id: chatId }),
+        // Agregar timeout para evitar que se cuelgue
+        signal: AbortSignal.timeout(10000) // 10 segundos timeout
       })
       
       if (response.ok) {
@@ -214,11 +218,22 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
         }
       } else {
         console.error('Webhook responded with status:', response.status)
+        return null
       }
     } catch (error) {
-      console.error('Error sending to webhook:', error)
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          console.error('Webhook request timed out')
+        } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+          console.error('Webhook URL is not reachable or invalid:', chatWebhookUrl)
+        } else {
+          console.error('Error sending to webhook:', error)
+        }
+      } else {
+        console.error('Unknown error sending to webhook:', error)
+      }
+      return null
     }
-    return null
   }
 
   const handleSendMessage = async (content: string) => {
@@ -226,7 +241,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
 
     console.log('Sending message:', content)
 
-    // Primero guardamos el mensaje del usuario
+    // Primero guardamos el mensaje del usuario - esto siempre debe funcionar
     const { data: insertedMessage, error: userMessageError } = await supabase
       .from("messages")
       .insert([{ content, user_id: user.id, chat_id: chatId }])
@@ -264,24 +279,37 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
       })
     }
 
-    // Si hay webhook configurado, enviamos el mensaje y procesamos la respuesta
+    // Si hay webhook configurado, intentamos enviar el mensaje (opcional)
     if (chatWebhookUrl) {
-      const webhookResponse = await sendToWebhook(content)
-      
-      if (webhookResponse) {
-        // Guardamos la respuesta del webhook como un mensaje del sistema
-        const { error: botMessageError } = await supabase
-          .from("messages")
-          .insert([{ 
-            content: webhookResponse, 
-            user_id: 'system', // ID especial para mensajes del bot
-            chat_id: chatId 
-          }])
+      try {
+        console.log('Attempting to send to webhook:', chatWebhookUrl)
+        const webhookResponse = await sendToWebhook(content)
         
-        if (botMessageError) {
-          console.error("Error sending bot message:", botMessageError)
+        if (webhookResponse) {
+          console.log('Webhook response received:', webhookResponse)
+          // Guardamos la respuesta del webhook como un mensaje del sistema
+          const { error: botMessageError } = await supabase
+            .from("messages")
+            .insert([{ 
+              content: webhookResponse, 
+              user_id: 'system', // ID especial para mensajes del bot
+              chat_id: chatId 
+            }])
+          
+          if (botMessageError) {
+            console.error("Error sending bot message:", botMessageError)
+          } else {
+            console.log('Bot message saved successfully')
+          }
+        } else {
+          console.log('Webhook no disponible o no respondió - el chat continúa funcionando normalmente')
         }
+      } catch (webhookError) {
+        console.warn('Webhook no pudo procesarse, pero el mensaje del usuario se guardó correctamente:', webhookError)
+        // El mensaje del usuario ya se guardó, así que el chat sigue funcionando
       }
+    } else {
+      console.log('No hay webhook configurado para este chat')
     }
   }
 
