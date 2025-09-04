@@ -74,21 +74,10 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-2">
-          <Link href="/" className={navLinkClass('/')}>
-            <MessageCircle className="h-4 w-4" />
-            <span>Chats</span>
-            {pathname === '/' && (
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-xl" />
-            )}
-          </Link>
-          
           {isAdmin && (
             <Link href="/admin" className={navLinkClass('/admin')}>
               <Settings className="h-4 w-4" />
               <span>Administración</span>
-              {pathname.startsWith('/admin') && (
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-xl" />
-              )}
             </Link>
           )}
         </nav>
@@ -184,20 +173,6 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
       {isMobileMenuOpen && (
         <div className="md:hidden glass border-t border-border/50">
           <nav className="flex flex-col gap-1 p-4">
-            <Link 
-              href="/" 
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-modern",
-                pathname === '/' 
-                  ? "text-primary-foreground bg-primary shadow-modern" 
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <MessageCircle className="h-5 w-5" />
-              <span>Chats</span>
-            </Link>
-            
             {isAdmin && (
               <Link 
                 href="/admin" 
