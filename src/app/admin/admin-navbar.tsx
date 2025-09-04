@@ -36,14 +36,6 @@ export default function AdminNavbar({ isAdmin }: { isAdmin: boolean }) {
 
                 {/* Navigation */}
                 <nav className="hidden md:flex items-center gap-2">
-                    <Link href="/admin" className={navLinkClass('/admin')}>
-                        <Home className="h-4 w-4" />
-                        <span>Dashboard</span>
-                        {pathname === '/admin' && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-xl" />
-                        )}
-                    </Link>
-                    
                     {isAdmin && (
                         <Link href="/admin/users" className={navLinkClass('/admin/users')}>
                             <Users className="h-4 w-4" />
@@ -95,20 +87,6 @@ export default function AdminNavbar({ isAdmin }: { isAdmin: boolean }) {
             {isMobileMenuOpen && (
                 <div className="md:hidden glass border-t border-border/50">
                     <nav className="flex flex-col gap-1 p-4">
-                        <Link 
-                            href="/admin" 
-                            className={cn(
-                                "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-modern",
-                                pathname === '/admin' 
-                                    ? "text-primary-foreground bg-primary shadow-modern" 
-                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                            )}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            <Home className="h-5 w-5" />
-                            <span>Dashboard</span>
-                        </Link>
-                        
                         {isAdmin && (
                             <Link 
                                 href="/admin/users" 
