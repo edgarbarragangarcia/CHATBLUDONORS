@@ -42,8 +42,8 @@ export function CreateChatDialog() {
       <DialogTrigger asChild>
         <Button className="w-full sm:w-auto">
           <PlusCircle className="mr-2 h-4 w-4" />
-          <span className="hidden sm:inline">Create Chat</span>
-          <span className="sm:hidden">Create</span>
+          <span className="hidden sm:inline">Crear Chat</span>
+          <span className="sm:hidden">Crear</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

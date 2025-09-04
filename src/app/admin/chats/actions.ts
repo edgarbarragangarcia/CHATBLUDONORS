@@ -51,3 +51,35 @@ export async function createChat(formData: FormData) {
   revalidatePath('/admin/chats');
   return data;
 }
+
+export async function deleteChat(chatId: string) {
+  if (!chatId) {
+    throw new Error('ID del chat es requerido');
+  }
+
+  const supabase = await createAdminClient();
+  
+  // First delete all messages in the chat
+  const { error: messagesError } = await supabase
+    .from('messages')
+    .delete()
+    .eq('chat_id', chatId);
+
+  if (messagesError) {
+    console.error('Error deleting messages:', messagesError.message);
+    throw new Error('No se pudieron eliminar los mensajes del chat.');
+  }
+
+  // Then delete the chat
+  const { error } = await supabase
+    .from('chats')
+    .delete()
+    .eq('id', chatId);
+
+  if (error) {
+    console.error('Error deleting chat:', error.message);
+    throw new Error('No se pudo eliminar el chat.');
+  }
+
+  revalidatePath('/admin/chats');
+}

@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/card';
 import { getChats } from './actions';
 import { CreateChatDialog } from './create-chat-dialog';
+import { DeleteChatButton } from './delete-chat-button';
 
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
@@ -27,42 +28,51 @@ export default async function ChatsPage() {
   } = await supabase.auth.getUser();
 
   if (!user || !(user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email ?? ''))) {
-    return redirect('/');
+    redirect('/login');
   }
 
   const chats = await getChats();
 
   return (
-    <div className="flex-1 space-y-4 p-4 sm:p-6 lg:p-8 pt-4 sm:pt-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
-            <div>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Chats</h2>
-                <p className="text-sm sm:text-base text-muted-foreground">Create and manage chat rooms.</p>
-            </div>
-            <CreateChatDialog />
+    <div className="container mx-auto py-8">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-bold">Chats</h1>
+          <p className="text-muted-foreground">Crear y gestionar salas de chat</p>
         </div>
-       <Card>
-        <CardContent className='p-0'>
-            <div className="overflow-x-auto">
-                <Table>
-                    <TableHeader>
-                    <TableRow>
-                        <TableHead className="min-w-[150px]">Chat Name</TableHead>
-                        <TableHead className="min-w-[200px]">Description</TableHead>
-                    </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                    {chats.map((c: { id: string; name: string; description: string }) => (
-                        <TableRow key={c.id}>
-                        <TableCell className="font-medium">{c.name}</TableCell>
-                        <TableCell className="text-sm sm:text-base">{c.description}</TableCell>
-                        </TableRow>
-                    ))}
-                    </TableBody>
-                </Table>
-            </div>
+        <CreateChatDialog />
+      </div>
+
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Descripción</TableHead>
+                <TableHead>Creado</TableHead>
+                <TableHead>Mensajes</TableHead>
+                <TableHead>Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {chats.map((chat) => (
+                <TableRow key={chat.id}>
+                  <TableCell className="font-medium">{chat.name}</TableCell>
+                  <TableCell>{chat.description}</TableCell>
+                  <TableCell>
+                    {new Date(chat.created_at).toLocaleDateString('es-ES')}
+                  </TableCell>
+                  <TableCell>{chat.message_count || 0}</TableCell>
+                  <TableCell>
+                    <DeleteChatButton chatId={chat.id} chatName={chat.name} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
-       </Card>
+      </Card>
     </div>
   );
 }
