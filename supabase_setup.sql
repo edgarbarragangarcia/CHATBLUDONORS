@@ -2,7 +2,8 @@
 create table if not exists chats (
   id text not null primary key,
   name text not null,
-  description text
+  description text,
+  webhook_url text
 );
 
 comment on table chats is 'Stores public information about each chat room.';

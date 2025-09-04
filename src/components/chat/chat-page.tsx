@@ -25,9 +25,18 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   const [messages, setMessages] = useState<Message[]>([])
   const [suggestedReplies, setSuggestedReplies] = useState<string[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
+  const [chatWebhookUrl, setChatWebhookUrl] = useState<string | null>(null)
   const supabase = createClient()
 
   const getProfileForUser = async (userId: string) => {
+    // Caso especial para mensajes del sistema/bot
+    if (userId === 'system') {
+      return {
+        name: 'Asistente IA',
+        avatar: null,
+      }
+    }
+    
     // In a real app, you would fetch this from a 'profiles' table.
     // For this example, we'll simulate it for simplicity.
     // If it's the current user, we use their metadata.
@@ -57,6 +66,8 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
       avatar: null,
     }
   }
+
+
 
   const fetchMessages = useCallback(async () => {
     if (!chatId) return;
@@ -88,6 +99,19 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   }, [supabase, user.id, user.user_metadata.full_name, user.user_metadata.avatar_url, email, chatId])
 
 
+  // Función para obtener el webhook URL del chat
+  const fetchChatWebhook = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('chats')
+      .select('webhook_url')
+      .eq('id', chatId)
+      .single()
+    
+    if (!error && data) {
+      setChatWebhookUrl(data.webhook_url)
+    }
+  }, [supabase, chatId])
+
   const fetchSuggestions = async (currentMessages: Message[]) => {
     if (currentMessages.length === 0) return
     setIsGenerating(true)
@@ -112,6 +136,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
 
   useEffect(() => {
     fetchMessages()
+    fetchChatWebhook() // Cargar el webhook URL del chat
 
     const channel = supabase
       .channel(`messages-for-${chatId}`)
@@ -142,17 +167,62 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, fetchMessages, chatId])
+  }, [supabase, fetchMessages, fetchChatWebhook, chatId])
+
+  // Función para enviar mensaje al webhook de n8n
+  const sendToWebhook = async (content: string): Promise<string | null> => {
+    if (!chatWebhookUrl) return null
+    
+    try {
+      const response = await fetch(chatWebhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: content, user_id: user.id, chat_id: chatId })
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        return data.response || data.message || null
+      }
+    } catch (error) {
+      console.error('Error sending to webhook:', error)
+    }
+    return null
+  }
 
   const handleSendMessage = async (content: string) => {
     if (content.trim() === "" || !chatId) return
 
-    const { error } = await supabase
+    // Primero guardamos el mensaje del usuario
+    const { error: userMessageError } = await supabase
       .from("messages")
       .insert([{ content, user_id: user.id, chat_id: chatId }])
     
-    if (error) {
-      console.error("Error sending message:", error)
+    if (userMessageError) {
+      console.error("Error sending user message:", userMessageError)
+      return
+    }
+
+    // Si hay webhook configurado, enviamos el mensaje y procesamos la respuesta
+    if (chatWebhookUrl) {
+      const webhookResponse = await sendToWebhook(content)
+      
+      if (webhookResponse) {
+        // Guardamos la respuesta del webhook como un mensaje del sistema
+        const { error: botMessageError } = await supabase
+          .from("messages")
+          .insert([{ 
+            content: webhookResponse, 
+            user_id: 'system', // ID especial para mensajes del bot
+            chat_id: chatId 
+          }])
+        
+        if (botMessageError) {
+          console.error("Error sending bot message:", botMessageError)
+        }
+      }
     }
   }
 

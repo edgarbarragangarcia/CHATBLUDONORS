@@ -86,6 +86,7 @@ export function CreateChatDialog() {
                 disabled={isLoading}
               />
             </div>
+
           </div>
           <DialogFooter>
             <Button
