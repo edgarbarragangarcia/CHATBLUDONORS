@@ -13,9 +13,8 @@ import {
   Card,
   CardContent,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
 import { getChats } from './actions';
+import { CreateChatDialog } from './create-chat-dialog';
 
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
@@ -40,11 +39,7 @@ export default async function ChatsPage() {
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Chats</h2>
                 <p className="text-sm sm:text-base text-muted-foreground">Create and manage chat rooms.</p>
             </div>
-            <Button disabled className="w-full sm:w-auto">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Create Chat (Soon)</span>
-                <span className="sm:hidden">Create (Soon)</span>
-            </Button>
+            <CreateChatDialog />
         </div>
        <Card>
         <CardContent className='p-0'>
