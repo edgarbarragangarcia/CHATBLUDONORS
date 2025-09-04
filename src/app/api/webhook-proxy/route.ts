@@ -84,10 +84,20 @@ export async function POST(request: NextRequest) {
     try {
       const jsonResponse = JSON.parse(responseText)
       console.log('Respuesta del webhook (JSON):', jsonResponse)
+      
+      // Si es un array, tomar el primer elemento
+      let finalResponse = jsonResponse
+      if (Array.isArray(jsonResponse) && jsonResponse.length > 0) {
+        finalResponse = jsonResponse[0]
+      }
+      
+      // Extraer el contenido del mensaje
+      const messageContent = finalResponse.output || finalResponse.response || finalResponse.message || finalResponse
+      
       return NextResponse.json(
         { 
           success: true, 
-          response: jsonResponse.response || jsonResponse.message || jsonResponse 
+          response: messageContent 
         },
         { status: 200 }
       )

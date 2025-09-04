@@ -53,34 +53,8 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
 
 
 
-  const fetchMessages = useCallback(async () => {
-    if (!chatId) return;
-    
-    const { data, error } = await supabase
-      .from("messages")
-      .select("*")
-      .eq('chat_id', chatId)
-      .order("created_at", { ascending: true })
-
-    if (error) {
-      console.error("Error fetching messages:", error)
-      setMessages([]);
-      return
-    }
-
-    const messagesWithProfiles = await Promise.all(
-      data.map(async (msg) => {
-        const profile = await getProfileForUser(msg.user_id)
-        return {
-          ...msg,
-          user_name: profile.name,
-          user_avatar: profile.avatar,
-        }
-      })
-    )
-
-    setMessages(messagesWithProfiles)
-  }, [supabase, user.id, user.user_metadata.full_name, user.user_metadata.avatar_url, email, chatId])
+  // Los mensajes ahora se manejan completamente en memoria
+  // No necesitamos fetchMessages desde Supabase
 
   // Función para obtener el webhook URL del chat usando el contexto
   const fetchChatWebhook = useCallback(async () => {
@@ -117,52 +91,16 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   }
 
   useEffect(() => {
-    fetchMessages()
     fetchChatWebhook() // Cargar el webhook URL del chat
+    console.log('Chat inicializado en modo memoria para:', chatId)
+  }, [fetchChatWebhook, chatId])
 
-    console.log('Setting up real-time subscription for chat:', chatId)
-    
-    const channel = supabase
-      .channel(`messages-for-${chatId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `chat_id=eq.${chatId}` },
-        async (payload) => {
-          console.log('Real-time message received:', payload)
-          const newMsg = payload.new
-          const profile = await getProfileForUser(newMsg.user_id)
-          const newMessage: Message = {
-            id: newMsg.id,
-            created_at: newMsg.created_at,
-            content: newMsg.content,
-            user_id: newMsg.user_id,
-            user_name: profile.name,
-            user_avatar: profile.avatar,
-            chat_id: newMsg.chat_id,
-          }
-          console.log('Adding new message to state:', newMessage)
-          setMessages((prevMessages) => {
-              // Verificar si el mensaje ya existe para evitar duplicados
-              const messageExists = prevMessages.some(msg => msg.id === newMessage.id)
-              if (messageExists) {
-                console.log('Message already exists, skipping')
-                return prevMessages
-              }
-              const updatedMessages = [...prevMessages, newMessage]
-              fetchSuggestions(updatedMessages);
-              return updatedMessages;
-          })
-        }
-      )
-      .subscribe((status) => {
-        console.log('Subscription status:', status)
-      })
-
-    return () => {
-      console.log('Cleaning up real-time subscription')
-      supabase.removeChannel(channel)
-    }
-  }, [supabase, fetchMessages, fetchChatWebhook, chatId])
+  // Generar sugerencias cuando los mensajes cambien (temporalmente deshabilitado)
+  // useEffect(() => {
+  //   if (messages.length > 0) {
+  //     fetchSuggestions(messages)
+  //   }
+  // }, [messages])
 
   // Función para enviar mensaje al webhook usando proxy interno (sin CORS)
   const sendToWebhook = async (content: string): Promise<string | null> => {
@@ -224,75 +162,53 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   const handleSendMessage = async (content: string) => {
     if (content.trim() === "" || !chatId) return
 
-    console.log('Sending message:', content)
+    console.log('Enviando mensaje (solo memoria):', content)
 
-    // Primero guardamos el mensaje del usuario - esto siempre debe funcionar
-    const { data: insertedMessage, error: userMessageError } = await supabase
-      .from("messages")
-      .insert([{ content, user_id: user.id, chat_id: chatId }])
-      .select()
-    
-    if (userMessageError) {
-      console.error("Error sending user message:", userMessageError)
-      return
+    // Crear mensaje del usuario directamente en memoria
+    const userProfile = getProfileForUser(user.id)
+    const userMessage: Message = {
+      id: `user-${Date.now()}-${Math.random()}`, // ID único temporal
+      created_at: new Date().toISOString(),
+      content: content,
+      user_id: user.id,
+      user_name: userProfile.name,
+      user_avatar: userProfile.avatar,
+      chat_id: chatId,
     }
 
-    console.log('Message inserted successfully:', insertedMessage)
+    // Agregar el mensaje del usuario al estado local inmediatamente
+    console.log('Agregando mensaje del usuario al estado local:', userMessage)
+    setMessages(prev => [...prev, userMessage])
 
-    // Agregar el mensaje inmediatamente al estado local para una respuesta instantánea
-    if (insertedMessage && insertedMessage[0]) {
-      const profile = await getProfileForUser(insertedMessage[0].user_id)
-      const newMessage: Message = {
-        id: insertedMessage[0].id,
-        created_at: insertedMessage[0].created_at,
-        content: insertedMessage[0].content,
-        user_id: insertedMessage[0].user_id,
-        user_name: profile.name,
-        user_avatar: profile.avatar,
-        chat_id: insertedMessage[0].chat_id,
-      }
-      
-      console.log('Adding message immediately to local state:', newMessage)
-      setMessages(prev => {
-        // Verificar si el mensaje ya existe para evitar duplicados
-        const messageExists = prev.some(msg => msg.id === newMessage.id)
-        if (messageExists) {
-          console.log('Message already exists in state, skipping')
-          return prev
-        }
-        return [...prev, newMessage]
-      })
-    }
-
-    // Si hay webhook configurado, intentamos enviar el mensaje (opcional)
+    // Si hay webhook configurado, intentamos enviar el mensaje
     if (chatWebhookUrl) {
       try {
-        console.log('Attempting to send to webhook:', chatWebhookUrl)
+        console.log('Enviando al webhook:', chatWebhookUrl)
         const webhookResponse = await sendToWebhook(content)
         
         if (webhookResponse) {
-          console.log('Webhook response received:', webhookResponse)
-          // Guardamos la respuesta del webhook como un mensaje del sistema
-          // Usamos un UUID especial para el sistema: 00000000-0000-0000-0000-000000000000
-          const { error: botMessageError } = await supabase
-            .from("messages")
-            .insert([{ 
-              content: webhookResponse, 
-              user_id: '00000000-0000-0000-0000-000000000000', // UUID especial para mensajes del bot
-              chat_id: chatId 
-            }])
+          console.log('Respuesta del webhook recibida:', webhookResponse)
           
-          if (botMessageError) {
-            console.error("Error sending bot message:", botMessageError)
-          } else {
-            console.log('Bot message saved successfully')
+          // Crear mensaje del bot directamente en memoria
+          const botProfile = getProfileForUser('00000000-0000-0000-0000-000000000000')
+          const botMessage: Message = {
+            id: `bot-${Date.now()}-${Math.random()}`, // ID único temporal
+            created_at: new Date().toISOString(),
+            content: webhookResponse !== null && typeof webhookResponse === 'object' && 'output' in webhookResponse ? webhookResponse.output : webhookResponse,
+            user_id: '00000000-0000-0000-0000-000000000000',
+            user_name: botProfile.name,
+            user_avatar: botProfile.avatar,
+            chat_id: chatId,
           }
+          
+          // Agregar respuesta del bot al estado local
+          console.log('Agregando respuesta del bot al estado local:', botMessage)
+          setMessages(prev => [...prev, botMessage])
         } else {
           console.log('Webhook no disponible o no respondió - el chat continúa funcionando normalmente')
         }
       } catch (webhookError) {
-        console.warn('Webhook no pudo procesarse, pero el mensaje del usuario se guardó correctamente:', webhookError)
-        // El mensaje del usuario ya se guardó, así que el chat sigue funcionando
+        console.warn('Error con el webhook, pero el mensaje se mantiene en memoria:', webhookError)
       }
     } else {
       console.log('No hay webhook configurado para este chat')

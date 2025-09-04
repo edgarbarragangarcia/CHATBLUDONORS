@@ -54,7 +54,7 @@ const generateSuggestedRepliesFlow = ai.defineFlow(
     outputSchema: GenerateSuggestedRepliesOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    const result = await prompt(input);
+    return result.output!;
   }
 );
