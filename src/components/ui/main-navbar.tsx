@@ -60,7 +60,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-border/50 backdrop-blur-xl">
-      <div className="flex h-16 items-center px-4 sm:px-6 max-w-7xl mx-auto">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6 max-w-7xl mx-auto">
         {/* Logo and Brand - Left Section */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-modern">
