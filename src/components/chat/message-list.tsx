@@ -4,7 +4,7 @@
 import { useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import type { Message } from "./chat-page"
+import type { Message } from "@/contexts/messages-context"
 
 export function MessageList({ messages, currentUserId }: { messages: Message[], currentUserId: string }) {
   const scrollRef = useRef<HTMLDivElement>(null)

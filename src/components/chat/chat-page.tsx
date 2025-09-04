@@ -5,24 +5,16 @@ import { useState, useEffect, useCallback } from "react"
 import { type User } from "@supabase/supabase-js"
 import { generateSuggestedReplies } from "@/ai/flows/suggested-replies"
 import { useWebhook } from "@/contexts/webhook-context"
+import { useMessages, type Message } from "@/contexts/messages-context"
 
 import { Card } from "@/components/ui/card"
 import { MessageList } from "./message-list"
 import { MessageForm } from "./message-form"
 import { SuggestedReplies } from "./suggested-replies"
 
-export type Message = {
-  id: string
-  created_at: string
-  content: string
-  user_id: string
-  user_avatar: string | null
-  user_name: string | null
-  chat_id: string;
-}
-
 export default function ChatPage({ user, email, chatId }: { user: User, email?: string, chatId: string }) {
-  const [messages, setMessages] = useState<Message[]>([])
+  const { getMessages, addMessage } = useMessages()
+  const messages = getMessages(chatId)
   const [suggestedReplies, setSuggestedReplies] = useState<string[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
   const [chatWebhookUrl, setChatWebhookUrl] = useState<string | null>(null)
@@ -176,9 +168,9 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
       chat_id: chatId,
     }
 
-    // Agregar el mensaje del usuario al estado local inmediatamente
-    console.log('Agregando mensaje del usuario al estado local:', userMessage)
-    setMessages(prev => [...prev, userMessage])
+    // Agregar el mensaje del usuario al contexto global inmediatamente
+    console.log('Agregando mensaje del usuario al contexto global:', userMessage)
+    addMessage(chatId, userMessage)
 
     // Si hay webhook configurado, intentamos enviar el mensaje
     if (chatWebhookUrl) {
@@ -194,16 +186,16 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
           const botMessage: Message = {
             id: `bot-${Date.now()}-${Math.random()}`, // ID único temporal
             created_at: new Date().toISOString(),
-            content: webhookResponse !== null && typeof webhookResponse === 'object' && 'output' in webhookResponse ? webhookResponse.output : webhookResponse,
+            content: webhookResponse !== null && typeof webhookResponse === 'object' && 'output' in webhookResponse ? (webhookResponse as any).output : String(webhookResponse),
             user_id: '00000000-0000-0000-0000-000000000000',
             user_name: botProfile.name,
             user_avatar: botProfile.avatar,
             chat_id: chatId,
           }
           
-          // Agregar respuesta del bot al estado local
-          console.log('Agregando respuesta del bot al estado local:', botMessage)
-          setMessages(prev => [...prev, botMessage])
+          // Agregar el mensaje del bot al contexto global inmediatamente
+          console.log('Agregando mensaje del bot al contexto global:', botMessage)
+          addMessage(chatId, botMessage)
         } else {
           console.log('Webhook no disponible o no respondió - el chat continúa funcionando normalmente')
         }

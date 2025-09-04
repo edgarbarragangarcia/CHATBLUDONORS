@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider";
 import { WebhookProvider } from "@/contexts/webhook-context";
+import { MessagesProvider } from "@/contexts/messages-context";
 import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -23,8 +24,10 @@ export default function RootLayout({
       <body className={cn(inter.variable, "font-body antialiased", process.env.NODE_ENV === 'development' ? 'debug-screens' : '')}>
         <ThemeProvider>
           <WebhookProvider>
-            {children}
-            <Toaster />
+            <MessagesProvider>
+              {children}
+              <Toaster />
+            </MessagesProvider>
           </WebhookProvider>
         </ThemeProvider>
       </body>
