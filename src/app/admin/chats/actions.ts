@@ -52,6 +52,37 @@ export async function createChat(formData: FormData) {
   return data;
 }
 
+export async function updateChat(formData: FormData) {
+  const chatId = formData.get('chatId') as string;
+  const name = formData.get('name') as string;
+  const description = formData.get('description') as string;
+  const webhookUrl = formData.get('webhookUrl') as string;
+
+  if (!chatId || !name || !description) {
+    throw new Error('ID del chat, nombre y descripción son requeridos');
+  }
+
+  const supabase = await createAdminClient();
+  const { data, error } = await supabase
+    .from('chats')
+    .update({
+      name: name.trim(),
+      description: description.trim(),
+      webhook_url: webhookUrl?.trim() || null
+    })
+    .eq('id', chatId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating chat:', error.message);
+    throw new Error('No se pudo actualizar el chat.');
+  }
+
+  revalidatePath('/admin/chats');
+  return data;
+}
+
 export async function deleteChat(chatId: string) {
   if (!chatId) {
     throw new Error('ID del chat es requerido');

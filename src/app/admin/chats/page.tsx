@@ -16,6 +16,7 @@ import {
 import { getChats } from './actions';
 import { CreateChatDialog } from './create-chat-dialog';
 import { DeleteChatButton } from './delete-chat-button';
+import { EditChatDialog } from '@/components/edit-chat-dialog';
 
 
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
@@ -65,7 +66,17 @@ export default async function ChatsPage() {
                   </TableCell>
                   <TableCell>{chat.message_count || 0}</TableCell>
                   <TableCell>
-                    <DeleteChatButton chatId={chat.id} chatName={chat.name} />
+                    <div className="flex items-center gap-2">
+                      <EditChatDialog 
+                        chat={{
+                          id: chat.id,
+                          name: chat.name,
+                          description: chat.description,
+                          webhook_url: chat.webhook_url
+                        }} 
+                      />
+                      <DeleteChatButton chatId={chat.id} chatName={chat.name} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
