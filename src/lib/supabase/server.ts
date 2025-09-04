@@ -39,7 +39,8 @@ export function createClient() {
 
 export function createAdminClient() {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-        throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set. Admin client cannot be created.');
+        // Throw a specific error that can be caught and handled in the UI
+        throw new Error('MISSING_SERVICE_KEY');
     }
     // This client is meant for server-side operations that require admin privileges.
     // It uses the SERVICE_ROLE_KEY for authentication and should not interact with user cookies.
