@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { 
     GoogleIcon,
-    MessageSquareHeart,
+    AiAssistantIcon,
 } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
@@ -67,13 +67,13 @@ export default function LoginPage() {
                 <div className="w-full max-w-md">
                     <div className="text-center mb-6 sm:mb-8 space-y-3 sm:space-y-4">
                         <div className="flex justify-center">
-                            <div className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/10">
-                                <MessageSquareHeart className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
+                            <div className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg">
+                                <AiAssistantIcon className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
                             </div>
                         </div>
                         <div className="space-y-1 sm:space-y-2">
-                            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Interfaz de Agentes INGENIABOTS</h1>
-                            <p className="text-base sm:text-lg text-muted-foreground">Sistema de comunicación inteligente</p>
+                            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">INGENIABOTS</h1>
+                <p className="text-base sm:text-lg text-muted-foreground">Interfaz Integradora de Agentes</p>
                         </div>
                     </div>
 
@@ -144,8 +144,8 @@ export default function LoginPage() {
                             <TabsContent value="register" className="mt-6">
                                 <div className="text-center p-8 space-y-4">
                                     <div className="flex justify-center">
-                                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted/50">
-                                            <MessageSquareHeart className="h-6 w-6 text-muted-foreground" />
+                                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-muted/60 to-muted/40 shadow-sm">
+                                            <AiAssistantIcon className="h-6 w-6 text-muted-foreground" />
                                         </div>
                                     </div>
                                     <div className="space-y-2">

@@ -45,8 +45,8 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
             <MessageCircle className="h-5 w-5 text-primary" />
           </div>
           <div className="hidden sm:block">
-            <h1 className="heading-4 text-foreground">Interfaz de Agentes INGENIABOTS</h1>
-            <p className="caption text-muted-foreground">Sistema de comunicación</p>
+            <h1 className="heading-4 text-foreground">INGENIABOTS</h1>
+              <p className="caption text-muted-foreground">Interfaz Integradora de Agentes</p>
           </div>
         </Link>
 

@@ -79,7 +79,7 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
                         <Menu className="h-5 w-5" />
                         <span className="ml-2">Salas</span>
                     </Button>
-                    <h1 className="heading-4">Interfaz de Agentes INGENIABOTS</h1>
+                    <h1 className="heading-4">INGENIABOTS</h1>
                     <div className="w-16" /> {/* Spacer */}
                 </div>
 
