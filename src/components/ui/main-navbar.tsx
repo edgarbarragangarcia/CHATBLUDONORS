@@ -1,12 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { MessageCircle, Settings, User, LogOut, Menu, X } from 'lucide-react';
+import { MessageCircle, Settings, User, LogOut, Menu, X, Shield } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+} from '@/components/ui/dropdown-menu';
 
 interface MainNavbarProps {
   user?: {
@@ -24,7 +34,19 @@ interface MainNavbarProps {
 
 export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
+
+  const goToAdmin = () => {
+    router.push('/admin');
+  };
 
   const navLinkClass = (path: string) => cn(
     "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-modern relative overflow-hidden group",
@@ -78,41 +100,69 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
             <ThemeToggle />
           </div>
           
-          {/* User Info */}
-          <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              {userAvatar ? (
-                <img 
-                  src={userAvatar} 
-                  alt={userName}
-                  className="w-8 h-8 rounded-full object-cover ring-2 ring-border/20"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border/20">
-                  <User className="h-4 w-4 text-primary" />
-                </div>
-              )}
-              <div className="text-right">
-                <p className="text-sm font-medium text-foreground">{userName}</p>
-                <p className="caption text-muted-foreground">
-                  {isAdmin ? 'Administrador' : 'Usuario'}
-                </p>
-              </div>
-            </div>
+          {/* User Menu */}
+          <div className="hidden md:block">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative flex items-center gap-2 rounded-xl hover:bg-accent/50 p-2">
+                  {userAvatar ? (
+                    <img 
+                      src={userAvatar} 
+                      alt={userName}
+                      className="w-8 h-8 rounded-full object-cover ring-2 ring-border/20"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border/20">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
+                  )}
+                  <div className="text-right hidden lg:block">
+                    <p className="text-sm font-medium text-foreground">{userName}</p>
+                    <p className="caption text-muted-foreground">
+                      {isAdmin ? 'Administrador' : 'Usuario'}
+                    </p>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex items-center gap-3 py-2">
+                    {userAvatar ? (
+                      <img 
+                        src={userAvatar} 
+                        alt={userName}
+                        className="w-12 h-12 rounded-full object-cover ring-2 ring-border/20"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border/20">
+                        <User className="h-5 w-5 text-primary" />
+                      </div>
+                    )}
+                    <div className="flex flex-col space-y-1 overflow-hidden">
+                      <p className="text-base font-medium leading-none truncate">{userName}</p>
+                      <p className="text-sm leading-none text-muted-foreground truncate">{user?.email}</p>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {isAdmin && (
+                  <>
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem onClick={goToAdmin} className="cursor-pointer py-2 text-base">
+                        <Shield className="mr-3 h-5 w-5 text-muted-foreground" />
+                        <span>Panel de Administrador</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 hover:!text-red-500 focus:!text-red-500 py-2 text-base">
+                  <LogOut className="mr-3 h-5 w-5" />
+                  <span>Cerrar Sesión</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-
-          {/* Logout Button */}
-          <form action="/auth/signout" method="post" className="hidden sm:block">
-            <Button 
-              type="submit" 
-              variant="outline" 
-              size="sm" 
-              className="rounded-xl transition-modern hover:shadow-modern"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden lg:inline ml-2">Cerrar Sesión</span>
-            </Button>
-          </form>
 
           {/* Mobile Menu Button */}
           <Button
@@ -164,45 +214,75 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
               </Link>
             )}
             
-            {/* Mobile User Info & Actions */}
+            {/* Mobile User Menu & Actions */}
             <div className="mt-4 pt-4 border-t border-border/50 space-y-4">
-              <div className="flex items-center gap-3 px-4 py-2">
-                {userAvatar ? (
-                  <img 
-                    src={userAvatar} 
-                    alt={userName}
-                    className="w-10 h-10 rounded-full object-cover ring-2 ring-border/20"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border/20">
-                    <User className="h-5 w-5 text-primary" />
-                  </div>
-                )}
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">{userName}</p>
-                  <p className="caption text-muted-foreground">
-                    {isAdmin ? 'Administrador' : 'Usuario'}
-                  </p>
-                </div>
+              <div className="px-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-accent/50 justify-start">
+                      {userAvatar ? (
+                        <img 
+                          src={userAvatar} 
+                          alt={userName}
+                          className="w-10 h-10 rounded-full object-cover ring-2 ring-border/20"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border/20">
+                          <User className="h-5 w-5 text-primary" />
+                        </div>
+                      )}
+                      <div className="flex-1 text-left">
+                        <p className="text-sm font-medium text-foreground">{userName}</p>
+                        <p className="caption text-muted-foreground">
+                          {isAdmin ? 'Administrador' : 'Usuario'}
+                        </p>
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-64" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex items-center gap-3 py-2">
+                        {userAvatar ? (
+                          <img 
+                            src={userAvatar} 
+                            alt={userName}
+                            className="w-12 h-12 rounded-full object-cover ring-2 ring-border/20"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border/20">
+                            <User className="h-5 w-5 text-primary" />
+                          </div>
+                        )}
+                        <div className="flex flex-col space-y-1 overflow-hidden">
+                          <p className="text-base font-medium leading-none truncate">{userName}</p>
+                          <p className="text-sm leading-none text-muted-foreground truncate">{user?.email}</p>
+                        </div>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {isAdmin && (
+                      <>
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem onClick={() => { goToAdmin(); setIsMobileMenuOpen(false); }} className="cursor-pointer py-2 text-base">
+                            <Shield className="mr-3 h-5 w-5 text-muted-foreground" />
+                            <span>Panel de Administrador</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    <DropdownMenuItem onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="cursor-pointer text-red-500 hover:!text-red-500 focus:!text-red-500 py-2 text-base">
+                      <LogOut className="mr-3 h-5 w-5" />
+                      <span>Cerrar Sesión</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
               
               {/* Mobile Theme Toggle */}
               <div className="px-4">
                 <ThemeToggle />
               </div>
-              
-              {/* Mobile Logout */}
-              <form action="/auth/signout" method="post" className="px-4">
-                <Button 
-                  type="submit" 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full rounded-xl transition-modern hover:shadow-modern justify-start"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Cerrar Sesión
-                </Button>
-              </form>
             </div>
           </nav>
         </div>
