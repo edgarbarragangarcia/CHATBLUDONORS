@@ -61,26 +61,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-transparent p-4">
-       <div className="grid w-full max-w-6xl grid-cols-1 gap-8 lg:grid-cols-2">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6">
+       <div className="grid w-full max-w-6xl grid-cols-1 gap-8 lg:gap-12 lg:grid-cols-2">
             <div className="flex flex-col items-center justify-center">
-                <div className="w-full max-w-sm">
-                    <div className="flex flex-col items-center justify-center mb-8">
-                        <MessageSquareHeart className="h-10 w-10 mb-4 text-primary" />
-                        <h1 className="text-2xl font-bold tracking-wider text-foreground">INTERFAZ DE AGENTES</h1>
+                <div className="w-full max-w-md">
+                    <div className="text-center mb-6 sm:mb-8 space-y-3 sm:space-y-4">
+                        <div className="flex justify-center">
+                            <div className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/10">
+                                <MessageSquareHeart className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
+                            </div>
+                        </div>
+                        <div className="space-y-1 sm:space-y-2">
+                            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Interfaz de Agentes INGENIABOTS</h1>
+                            <p className="text-base sm:text-lg text-muted-foreground">Sistema de comunicación inteligente</p>
+                        </div>
                     </div>
 
-                    <div className="rounded-xl border bg-background/80 p-6 shadow-lg backdrop-blur-sm md:p-8">
+                    <div className="glass rounded-2xl p-6 sm:p-8 shadow-modern-lg">
                         <Tabs defaultValue="login" className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-                                <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
-                                <TabsTrigger value="register">Registrarse</TabsTrigger>
+                            <TabsList className="grid w-full grid-cols-2 glass rounded-xl p-1">
+                                <TabsTrigger value="login" className="rounded-lg transition-modern">Iniciar Sesión</TabsTrigger>
+                                <TabsTrigger value="register" className="rounded-lg transition-modern">Registrarse</TabsTrigger>
                             </TabsList>
-                            <TabsContent value="login">
-                                <form onSubmit={handleEmailPasswordLogin} className="mt-4">
-                                    <div className="grid gap-4">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="email">Email</Label>
+                            <TabsContent value="login" className="mt-6">
+                                <form onSubmit={handleEmailPasswordLogin} className="space-y-6">
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="email" className="body-medium font-medium">Correo Electrónico</Label>
                                             <Input
                                                 id="email"
                                                 type="email"
@@ -89,11 +96,11 @@ export default function LoginPage() {
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 disabled={isLoading}
-                                                className="bg-background/70"
+                                                className="rounded-xl h-11 sm:h-12 transition-modern focus:shadow-modern"
                                             />
                                         </div>
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="password">Contraseña</Label>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="password" className="body-medium font-medium">Contraseña</Label>
                                             <Input 
                                                 id="password" 
                                                 type="password"
@@ -102,53 +109,79 @@ export default function LoginPage() {
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
                                                 disabled={isLoading}
-                                                className="bg-background/70"
+                                                className="rounded-xl h-11 sm:h-12 transition-modern focus:shadow-modern"
                                             />
                                         </div>
-                                        <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+                                        <Button 
+                                            type="submit" 
+                                            className="w-full h-11 sm:h-12 rounded-xl transition-modern hover:shadow-modern" 
+                                            disabled={isLoading}
+                                        >
                                             {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
                                         </Button>
                                     </div>
                                 </form>
                                 
-                                <div className="relative my-6">
+                                <div className="relative my-8">
                                     <div className="absolute inset-0 flex items-center">
-                                        <span className="w-full border-t" />
+                                        <span className="w-full border-t border-border/50" />
                                     </div>
-                                    <div className="relative flex justify-center text-xs uppercase">
-                                        <span className="bg-background px-2 text-muted-foreground">
-                                            O
+                                    <div className="relative flex justify-center">
+                                        <span className="bg-background px-4 caption text-muted-foreground uppercase tracking-wider">
+                                            O continúa con
                                         </span>
                                     </div>
                                 </div>
-                                <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
-                                    <GoogleIcon className="mr-2 h-5 w-5" />
-                                    Continuar con Google
+                                <Button 
+                                    variant="outline" 
+                                    className="w-full h-12 rounded-xl transition-modern hover:shadow-modern" 
+                                    onClick={handleGoogleLogin}
+                                >
+                                    <GoogleIcon className="mr-3 h-5 w-5" />
+                                    Google
                                 </Button>
                             </TabsContent>
-                            <TabsContent value="register">
-                            <div className="text-center text-muted-foreground p-8">
-                                <p>La funcionalidad de registro estará disponible próximamente.</p>
-                            </div>
+                            <TabsContent value="register" className="mt-6">
+                                <div className="text-center p-8 space-y-4">
+                                    <div className="flex justify-center">
+                                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted/50">
+                                            <MessageSquareHeart className="h-6 w-6 text-muted-foreground" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h3 className="heading-4">Próximamente</h3>
+                                        <p className="body-medium text-muted-foreground">La funcionalidad de registro estará disponible pronto.</p>
+                                    </div>
+                                </div>
                             </TabsContent>
                         </Tabs>
                     </div>
                 </div>
             </div>
 
-            <div className="hidden lg:flex flex-col items-center justify-center rounded-xl border bg-background/80 p-8 shadow-xl shadow-lime-500/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                <Image 
-                    src="https://picsum.photos/600/400"
-                    alt="AI Agents" 
-                    width={600} 
-                    height={400}
-                    data-ai-hint="AI chat"
-                    className="rounded-lg mb-6 shadow-xl"
-                />
-                <h2 className="text-2xl font-bold text-primary mb-3">Chatea con Agentes de IA Especializados</h2>
-                <p className="text-muted-foreground text-center max-w-md">
-                    Nuestra plataforma te permite chatear con diferentes agentes de IA en salas dedicadas para obtener respuestas precisas al instante.
-                </p>
+            <div className="hidden lg:flex flex-col items-center justify-center glass rounded-2xl p-8 shadow-modern-lg transition-modern hover:shadow-modern">
+                <div className="relative mb-8">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl blur-xl"></div>
+                    <Image 
+                        src="https://picsum.photos/600/400"
+                        alt="AI Agents" 
+                        width={600} 
+                        height={400}
+                        data-ai-hint="AI chat"
+                        className="relative rounded-2xl shadow-modern"
+                    />
+                </div>
+                <div className="text-center space-y-4 max-w-md">
+                    <h2 className="heading-2 text-foreground">Comunicación Inteligente</h2>
+                    <p className="body-large text-muted-foreground">
+                        Conecta con agentes especializados en salas dedicadas para obtener respuestas precisas y personalizadas al instante.
+                    </p>
+                    <div className="flex justify-center gap-2 pt-4">
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                        <div className="w-2 h-2 rounded-full bg-primary/60 animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 rounded-full bg-primary/30 animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                    </div>
+                </div>
             </div>
        </div>
     </div>

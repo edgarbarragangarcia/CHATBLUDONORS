@@ -83,7 +83,7 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
             name: u.user_metadata?.full_name || u.email?.split('@')[0],
             email: u.email,
             avatar: u.user_metadata?.avatar_url,
-            role: role,
+            role: role as 'admin' | 'user',
             permissions: userPermissions,
         };
     });
@@ -138,7 +138,7 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
       setUsers(prevUsers => 
           prevUsers.map(user => {
               if (user.id === userId) {
-                  return { ...user, role: newRole };
+                  return { ...user, role: newRole as 'admin' | 'user' };
               }
               return user;
           })
@@ -172,66 +172,75 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
   }
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
+    <div className="flex-1 space-y-4 p-4 sm:p-6 lg:p-8 pt-4 sm:pt-6">
         <div className="mb-4">
-            <h2 className="text-3xl font-bold tracking-tight">User Access Management</h2>
-            <p className="text-muted-foreground">Enable or disable access to chats for each user.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">User Access Management</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">Enable or disable access to chats for each user.</p>
         </div>
         <Card>
             <CardContent className="p-0">
-                <Table>
-                    <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-[250px]">User</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Role</TableHead>
-                        {chats.map(chat => (
-                            <TableHead key={chat.id} className="text-center">{chat.name}</TableHead>
-                        ))}
-                    </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                    {users.map((u) => (
-                        <TableRow key={u.id} className={(isPending || isRolePending) ? 'opacity-50' : ''}>
-                            <TableCell>
-                                <div className="flex items-center gap-3">
-                                    <Avatar>
-                                        <AvatarImage src={u.avatar} />
-                                        <AvatarFallback>{u.name?.charAt(0).toUpperCase()}</AvatarFallback>
-                                    </Avatar>
-                                    <span className="font-medium">{u.name}</span>
-                                </div>
-                            </TableCell>
-                            <TableCell className="text-muted-foreground">{u.email}</TableCell>
-                            <TableCell>
-                               <Select
-                                    value={u.role}
-                                    onValueChange={(value: 'admin' | 'user') => handleRoleChange(u.id, value)}
-                                    disabled={isRolePending}
-                               >
-                                    <SelectTrigger className="w-[110px]">
-                                        <SelectValue placeholder="Select role" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="user">User</SelectItem>
-                                        <SelectItem value="admin">Admin</SelectItem>
-                                    </SelectContent>
-                               </Select>
-                            </TableCell>
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[200px] sm:w-[250px] min-w-[180px]">User</TableHead>
+                            <TableHead className="hidden sm:table-cell">Email</TableHead>
+                            <TableHead className="min-w-[100px]">Role</TableHead>
                             {chats.map(chat => (
-                                 <TableCell key={chat.id} className="text-center">
-                                    <Switch
-                                        checked={u.permissions[chat.id] ?? false}
-                                        onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
-                                        aria-label={`Toggle access to ${chat.name} for ${u.name}`}
-                                        disabled={isPending}
-                                    />
-                                 </TableCell>
+                                <TableHead key={chat.id} className="text-center min-w-[80px] sm:min-w-[100px]">
+                                    <span className="hidden sm:inline">{chat.name}</span>
+                                    <span className="sm:hidden">{chat.name.substring(0, 8)}...</span>
+                                </TableHead>
                             ))}
                         </TableRow>
-                    ))}
-                    </TableBody>
-                </Table>
+                        </TableHeader>
+                        <TableBody>
+                        {users.map((u) => (
+                            <TableRow key={u.id} className={(isPending || isRolePending) ? 'opacity-50' : ''}>
+                                <TableCell>
+                                    <div className="flex items-center gap-2 sm:gap-3">
+                                        <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                                            <AvatarImage src={u.avatar} />
+                                            <AvatarFallback className="text-xs sm:text-sm">{u.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                                        </Avatar>
+                                        <div className="min-w-0">
+                                            <span className="font-medium text-sm sm:text-base truncate block">{u.name}</span>
+                                            <span className="text-xs text-muted-foreground sm:hidden truncate block">{u.email}</span>
+                                        </div>
+                                    </div>
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell text-muted-foreground">{u.email}</TableCell>
+                                <TableCell>
+                                   <Select
+                                        value={u.role}
+                                        onValueChange={(value: 'admin' | 'user') => handleRoleChange(u.id, value)}
+                                        disabled={isRolePending}
+                                   >
+                                        <SelectTrigger className="w-[90px] sm:w-[110px] h-8 sm:h-10">
+                                            <SelectValue placeholder="Select role" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="user">User</SelectItem>
+                                            <SelectItem value="admin">Admin</SelectItem>
+                                        </SelectContent>
+                                   </Select>
+                                </TableCell>
+                                {chats.map(chat => (
+                                     <TableCell key={chat.id} className="text-center">
+                                        <Switch
+                                            checked={u.permissions[chat.id] ?? false}
+                                            onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
+                                            aria-label={`Toggle access to ${chat.name} for ${u.name}`}
+                                            disabled={isPending}
+                                            className="scale-75 sm:scale-100"
+                                        />
+                                     </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
+                </div>
             </CardContent>
         </Card>
     </div>

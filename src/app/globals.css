@@ -3,90 +3,129 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: hsl(var(--background));
-  background-image: radial-gradient(hsl(var(--muted)) 1px, transparent 0);
-  background-size: 30px 30px;
+  background-image: 
+    radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, hsl(var(--primary) / 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
 }
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* White */
-    --foreground: 240 5.9% 10%; /* Dark Gray */
+    /* Modern Blue-Gray Base */
+    --background: 0 0% 100%; /* Pure White */
+    --foreground: 222 84% 4.9%; /* Rich Dark Blue */
     
-    --card: 240 4.8% 95.9%; /* Light Gray */
-    --card-foreground: 240 5.9% 10%;
+    /* Card System */
+    --card: 0 0% 100%; /* White Cards */
+    --card-foreground: 222 84% 4.9%;
     
+    /* Popover System */
     --popover: 0 0% 100%;
-    --popover-foreground: 240 5.9% 10%;
+    --popover-foreground: 222 84% 4.9%;
     
-    --primary: 262.1 83.3% 57.8%; /* Vibrant Violet */
+    /* Primary Brand - Modern Blue */
+    --primary: 221.2 83.2% 53.3%; /* Vibrant Blue */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    /* Secondary - Soft Gray */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
     
-    --muted: 240 3.7% 88.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    /* Muted - Light Gray System */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 240 4.8% 95.9%; 
-    --accent-foreground: 240 5.9% 10%;
+    /* Accent - Light Blue */
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
     
+    /* Destructive - Modern Red */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 210 40% 98%;
     
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 262.1 83.3% 57.8%;
+    /* Borders and Inputs */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
 
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 240 4.8% 95.9%;
-    --sidebar-foreground: 240 5.9% 10%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 0 0% 100%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 240 5.9% 90%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Chart Colors - Modern Palette */
+    --chart-1: 221.2 83.2% 53.3%; /* Primary Blue */
+    --chart-2: 142.1 76.2% 36.3%; /* Green */
+    --chart-3: 346.8 77.2% 49.8%; /* Pink */
+    --chart-4: 35.5 91.7% 32.9%; /* Orange */
+    --chart-5: 262.1 83.3% 57.8%; /* Purple */
+    
+    /* Border Radius */
+    --radius: 0.75rem; /* Slightly more rounded */
+    
+    /* Sidebar System */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 84% 4.9%;
+    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221.2 83.2% 53.3%;
   }
 
   .dark {
-    --background: 240 5% 12%; /* Dark Charcoal */
-    --foreground: 0 0% 98%; /* White */
-    --card: 240 5% 16%; /* Slightly lighter than background */
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 262.1 83.3% 57.8%; /* Vibrant Violet */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 3.7% 20.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 25.9%; /* Made accent slightly brighter for better hover */
-    --accent-foreground: 0 0% 98%;
+    /* Modern Dark Theme */
+    --background: 222.2 84% 4.9%; /* Rich Dark Blue */
+    --foreground: 210 40% 98%; /* Off White */
+    
+    /* Card System - Dark */
+    --card: 222.2 84% 4.9%; /* Same as background for seamless look */
+    --card-foreground: 210 40% 98%;
+    
+    /* Popover System - Dark */
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary - Bright Blue for Dark Mode */
+    --primary: 217.2 91.2% 59.8%; /* Brighter Blue */
+    --primary-foreground: 222.2 84% 4.9%;
+    
+    /* Secondary - Dark Gray */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    
+    /* Muted - Medium Gray */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    /* Accent - Subtle Blue */
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    /* Destructive - Bright Red for Dark */
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 25%;
-    --input: 240 5% 22%;
-    --ring: 262.1 83.3% 57.8%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Borders and Inputs - Dark */
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 217.2 91.2% 59.8%;
+    
+    /* Chart Colors - Dark Mode Optimized */
+    --chart-1: 217.2 91.2% 59.8%; /* Bright Blue */
+    --chart-2: 142.1 70.6% 45.3%; /* Green */
+    --chart-3: 346.8 77.2% 49.8%; /* Pink */
+    --chart-4: 35.5 91.7% 32.9%; /* Orange */
+    --chart-5: 262.1 83.3% 57.8%; /* Purple */
+    
+    /* Sidebar System - Dark */
+    --sidebar-background: 222.2 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-primary-foreground: 222.2 84% 4.9%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
@@ -103,5 +142,67 @@ body {
 @layer utilities {
   .bg-card {
     background-color: hsl(var(--card));
+  }
+  
+  /* Typography Utilities */
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .heading-1 {
+    @apply text-4xl md:text-5xl font-bold tracking-tight font-heading;
+  }
+  
+  .heading-2 {
+    @apply text-3xl md:text-4xl font-semibold tracking-tight font-heading;
+  }
+  
+  .heading-3 {
+    @apply text-2xl md:text-3xl font-semibold tracking-tight font-heading;
+  }
+  
+  .heading-4 {
+    @apply text-xl md:text-2xl font-medium tracking-tight font-heading;
+  }
+  
+  .body-large {
+    @apply text-lg leading-relaxed font-body;
+  }
+  
+  .body-medium {
+    @apply text-base leading-relaxed font-body;
+  }
+  
+  .body-small {
+    @apply text-sm leading-relaxed font-body;
+  }
+  
+  .caption {
+    @apply text-xs text-muted-foreground font-medium uppercase tracking-wider;
+  }
+  
+  /* Glass Effect */
+  .glass {
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+  
+  /* Modern Shadows */
+  .shadow-modern {
+    box-shadow: 0 4px 6px -1px hsl(var(--foreground) / 0.1), 0 2px 4px -1px hsl(var(--foreground) / 0.06);
+  }
+  
+  .shadow-modern-lg {
+    box-shadow: 0 10px 15px -3px hsl(var(--foreground) / 0.1), 0 4px 6px -2px hsl(var(--foreground) / 0.05);
+  }
+  
+  /* Smooth Transitions */
+  .transition-modern {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }

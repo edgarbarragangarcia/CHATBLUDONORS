@@ -12,20 +12,31 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    const isAdmin = !!user && (user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email ?? ''));
+  const supabase = await createClient();
 
-    if (!isAdmin) {
-        return redirect('/');
-    }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
+  // Check if user is admin
+  const isAdmin = user.app_metadata?.role === 'admin' || 
+                  ADMIN_USERS.includes(user.email ?? '');
+
+  if (!isAdmin) {
+    redirect('/');
+  }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <AdminNavbar isAdmin={isAdmin} />
-      <main className="flex-1 overflow-y-auto">
-        {children}
+      <main className="flex-1 p-3 sm:p-6 max-w-7xl mx-auto">
+        <div className="space-y-4 sm:space-y-6">
+          {children}
+        </div>
       </main>
     </div>
   );

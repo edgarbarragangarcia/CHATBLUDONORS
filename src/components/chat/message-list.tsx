@@ -38,10 +38,10 @@ export function MessageList({ messages, currentUserId }: { messages: Message[], 
               )}
               <div
                 className={cn(
-                  "max-w-[70%] rounded-lg p-3 text-sm shadow-md",
+                  "max-w-[70%] rounded-xl p-4 text-sm shadow-modern transition-modern",
                   isCurrentUser
                     ? "bg-primary text-primary-foreground"
-                    : "bg-card text-card-foreground border"
+                    : "bg-card/50 backdrop-blur-sm text-card-foreground border border-border/50"
                 )}
               >
                 {!isCurrentUser && (

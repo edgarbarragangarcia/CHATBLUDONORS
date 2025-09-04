@@ -15,12 +15,12 @@ export function MessageForm({ onSendMessage }: { onSendMessage: (content: string
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-start gap-3">
+    <form onSubmit={handleSubmit} className="flex items-start gap-2 sm:gap-3">
       <Textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="Type your message..."
-        className="flex-1 resize-none"
+        className="flex-1 resize-none min-h-[44px] sm:min-h-[48px]"
         rows={1}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
@@ -29,8 +29,8 @@ export function MessageForm({ onSendMessage }: { onSendMessage: (content: string
           }
         }}
       />
-      <Button type="submit" size="icon" disabled={!content.trim()}>
-        <SendHorizonal className="h-5 w-5" />
+      <Button type="submit" size="icon" disabled={!content.trim()} className="h-11 w-11 sm:h-12 sm:w-12 shrink-0">
+        <SendHorizonal className="h-4 w-4 sm:h-5 sm:w-5" />
         <span className="sr-only">Send</span>
       </Button>
     </form>
