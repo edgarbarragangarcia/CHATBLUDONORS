@@ -43,8 +43,9 @@ export default async function Home() {
   const availableChats = await getPermittedChatsForUser(user.id);
 
   // Check if user is admin
+  const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
   const isAdmin = user.app_metadata?.role === 'admin' || 
-                  user.email === 'edgar.barragan@ingenes.com';
+                  ADMIN_USERS.includes(user.email ?? '');
 
   // The 'user' object might contain non-serializable properties.
   // We should pass only what's needed to the client component.
