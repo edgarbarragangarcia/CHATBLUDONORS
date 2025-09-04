@@ -137,12 +137,15 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     fetchMessages()
     fetchChatWebhook() // Cargar el webhook URL del chat
 
+    console.log('Setting up real-time subscription for chat:', chatId)
+    
     const channel = supabase
       .channel(`messages-for-${chatId}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages", filter: `chat_id=eq.${chatId}` },
         async (payload) => {
+          console.log('Real-time message received:', payload)
           const newMsg = payload.new
           const profile = await getProfileForUser(newMsg.user_id)
           const newMessage: Message = {
@@ -154,16 +157,26 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
             user_avatar: profile.avatar,
             chat_id: newMsg.chat_id,
           }
+          console.log('Adding new message to state:', newMessage)
           setMessages((prevMessages) => {
+              // Verificar si el mensaje ya existe para evitar duplicados
+              const messageExists = prevMessages.some(msg => msg.id === newMessage.id)
+              if (messageExists) {
+                console.log('Message already exists, skipping')
+                return prevMessages
+              }
               const updatedMessages = [...prevMessages, newMessage]
               fetchSuggestions(updatedMessages);
               return updatedMessages;
           })
         }
       )
-      .subscribe()
+      .subscribe((status) => {
+        console.log('Subscription status:', status)
+      })
 
     return () => {
+      console.log('Cleaning up real-time subscription')
       supabase.removeChannel(channel)
     }
   }, [supabase, fetchMessages, fetchChatWebhook, chatId])
@@ -211,14 +224,44 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   const handleSendMessage = async (content: string) => {
     if (content.trim() === "" || !chatId) return
 
+    console.log('Sending message:', content)
+
     // Primero guardamos el mensaje del usuario
-    const { error: userMessageError } = await supabase
+    const { data: insertedMessage, error: userMessageError } = await supabase
       .from("messages")
       .insert([{ content, user_id: user.id, chat_id: chatId }])
+      .select()
     
     if (userMessageError) {
       console.error("Error sending user message:", userMessageError)
       return
+    }
+
+    console.log('Message inserted successfully:', insertedMessage)
+
+    // Agregar el mensaje inmediatamente al estado local para una respuesta instantánea
+    if (insertedMessage && insertedMessage[0]) {
+      const profile = await getProfileForUser(insertedMessage[0].user_id)
+      const newMessage: Message = {
+        id: insertedMessage[0].id,
+        created_at: insertedMessage[0].created_at,
+        content: insertedMessage[0].content,
+        user_id: insertedMessage[0].user_id,
+        user_name: profile.name,
+        user_avatar: profile.avatar,
+        chat_id: insertedMessage[0].chat_id,
+      }
+      
+      console.log('Adding message immediately to local state:', newMessage)
+      setMessages(prev => {
+        // Verificar si el mensaje ya existe para evitar duplicados
+        const messageExists = prev.some(msg => msg.id === newMessage.id)
+        if (messageExists) {
+          console.log('Message already exists in state, skipping')
+          return prev
+        }
+        return [...prev, newMessage]
+      })
     }
 
     // Si hay webhook configurado, enviamos el mensaje y procesamos la respuesta
