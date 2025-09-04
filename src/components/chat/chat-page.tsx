@@ -98,7 +98,6 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     setMessages(messagesWithProfiles)
   }, [supabase, user.id, user.user_metadata.full_name, user.user_metadata.avatar_url, email, chatId])
 
-
   // Función para obtener el webhook URL del chat
   const fetchChatWebhook = useCallback(async () => {
     const { data, error } = await supabase
@@ -183,8 +182,25 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
       })
       
       if (response.ok) {
-        const data = await response.json()
-        return data.response || data.message || null
+        const responseText = await response.text()
+        
+        // Verificar si la respuesta está vacía
+        if (!responseText || responseText.trim() === '') {
+          console.warn('Webhook returned empty response')
+          return null
+        }
+        
+        try {
+          const data = JSON.parse(responseText)
+          return data.response || data.message || null
+        } catch (parseError) {
+          console.error('Error parsing webhook response as JSON:', parseError)
+          console.log('Raw response:', responseText)
+          // Si no es JSON válido, devolver el texto tal como está
+          return responseText
+        }
+      } else {
+        console.error('Webhook responded with status:', response.status)
       }
     } catch (error) {
       console.error('Error sending to webhook:', error)
