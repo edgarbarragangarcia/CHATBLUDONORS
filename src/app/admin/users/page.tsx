@@ -17,7 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
 export default async function UsersPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -50,8 +50,8 @@ export default async function UsersPage() {
                     <AlertTitle>Configuration Error: Missing Service Role Key</AlertTitle>
                     <AlertDescription>
                         <p className="font-semibold mt-2">The admin panel cannot function because the Supabase Service Role Key is missing.</p>
-                        <p className="mt-2">To fix this, you must add your Supabase Service Role Key as an environment variable named `SUPABASE_SERVICE_ROLE_KEY`.</p>
-                        <p className="mt-2">You can get this key from your Supabase project dashboard under `Project Settings > API > Project API keys`.</p>
+                        <p className="mt-2">To fix this, you must add your Supabase Service Role Key as an environment variable named <code>SUPABASE_SERVICE_ROLE_KEY</code>.</p>
+                        <p className="mt-2">You can get this key from your Supabase project dashboard under <code>Project Settings &gt; API &gt; Project API keys</code>.</p>
                         <p className="mt-2">Please add it to your environment variables and restart the application.</p>
                     </AlertDescription>
                 </Alert>

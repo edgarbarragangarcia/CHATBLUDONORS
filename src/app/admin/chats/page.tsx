@@ -21,7 +21,7 @@ import { getChats } from './actions';
 const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
 
 export default async function ChatsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -55,7 +55,7 @@ export default async function ChatsPage() {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {chats.map((c) => (
+                {chats.map((c: { id: string; name: string; description: string }) => (
                     <TableRow key={c.id}>
                     <TableCell className="font-medium">{c.name}</TableCell>
                     <TableCell>{c.description}</TableCell>

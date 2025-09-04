@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 
 // This function fetches all users from Supabase Auth using the admin client
 export async function getUsers() {
-  const supabase = createAdminClient();
+  const supabase = await createAdminClient();
   const { data: { users }, error } = await supabase.auth.admin.listUsers();
   if (error) {
     console.error('Error fetching users:', error.message);
@@ -17,7 +17,7 @@ export async function getUsers() {
 
 // This function fetches all available chats from the 'chats' table using the admin client
 export async function getChats() {
-    const supabase = createAdminClient();
+    const supabase = await createAdminClient();
     const { data, error } = await supabase.from('chats').select('*');
     if (error) {
         console.error('Error fetching chats:', error.message);
@@ -28,7 +28,7 @@ export async function getChats() {
 
 // This function fetches all permissions from the 'user_chat_permissions' table using the admin client
 export async function getAllUserChatPermissions() {
-    const supabase = createAdminClient();
+    const supabase = await createAdminClient();
     const { data, error } = await supabase.from('user_chat_permissions').select('*');
      if (error) {
         console.error('Error fetching permissions:', error.message);
@@ -39,7 +39,7 @@ export async function getAllUserChatPermissions() {
 
 // This function updates or inserts a permission in the 'user_chat_permissions' table using the admin client
 export async function updateUserPermission(userId: string, chatId: string, hasAccess: boolean) {
-    const supabase = createAdminClient();
+    const supabase = await createAdminClient();
     const { error } = await supabase
         .from('user_chat_permissions')
         .upsert(
@@ -60,7 +60,7 @@ export async function updateUserPermission(userId: string, chatId: string, hasAc
 
 // This function updates a user's role in Supabase Auth metadata
 export async function updateUserRole(userId: string, newRole: 'admin' | 'user') {
-    const supabase = createAdminClient();
+    const supabase = await createAdminClient();
     
     const { error } = await supabase.auth.admin.updateUserById(
         userId,

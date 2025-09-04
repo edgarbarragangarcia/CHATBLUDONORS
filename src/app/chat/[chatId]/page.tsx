@@ -5,7 +5,7 @@ import ChatPage from '@/components/chat/chat-page'
 import { type User } from '@supabase/supabase-js'
 
 export default async function ChatRoutePage({ params }: { params: { chatId: string } }) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const {
     data: { user },

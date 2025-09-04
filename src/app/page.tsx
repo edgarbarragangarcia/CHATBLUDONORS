@@ -6,7 +6,7 @@ import { ChatLayout } from '@/components/chat/chat-layout';
 // This function now fetches real data from your Supabase tables.
 async function getPermittedChatsForUser(userId: string) {
     // We use the standard client here, which will use the user's session
-    const supabase = createClient();
+    const supabase = await createClient();
     
     // 1. Get all chats the user has explicit permission for
     const { data: permissions, error: permissionsError } = await supabase
@@ -29,7 +29,7 @@ async function getPermittedChatsForUser(userId: string) {
 }
 
 export default async function Home() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
