@@ -20,7 +20,9 @@ export function MessageList({ messages, currentUserId }: { messages: Message[], 
       <div className="flex flex-col gap-4">
         {messages.map((message) => {
           const isCurrentUser = message.user_id === currentUserId
+          const isSystemMessage = message.user_id === '00000000-0000-0000-0000-000000000000'
           const userInitial = message.user_name ? message.user_name.charAt(0).toUpperCase() : "U"
+          const systemInitial = "🤖"
 
           return (
             <div
@@ -32,8 +34,10 @@ export function MessageList({ messages, currentUserId }: { messages: Message[], 
             >
               {!isCurrentUser && (
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src={message.user_avatar || undefined} alt={message.user_name || "User"} />
-                  <AvatarFallback>{userInitial}</AvatarFallback>
+                  <AvatarImage src={message.user_avatar || undefined} alt={isSystemMessage ? "Bot" : message.user_name || "User"} />
+                  <AvatarFallback className={isSystemMessage ? "bg-blue-500 text-white" : ""}>
+                    {isSystemMessage ? systemInitial : userInitial}
+                  </AvatarFallback>
                 </Avatar>
               )}
               <div
@@ -41,11 +45,15 @@ export function MessageList({ messages, currentUserId }: { messages: Message[], 
                   "max-w-[70%] rounded-xl p-4 text-sm shadow-modern transition-modern",
                   isCurrentUser
                     ? "bg-primary text-primary-foreground"
+                    : isSystemMessage
+                    ? "bg-blue-50 dark:bg-blue-950 text-blue-900 dark:text-blue-100 border border-blue-200 dark:border-blue-800"
                     : "bg-card/50 backdrop-blur-sm text-card-foreground border border-border/50"
                 )}
               >
                 {!isCurrentUser && (
-                  <p className="font-semibold text-xs pb-1">{message.user_name}</p>
+                  <p className="font-semibold text-xs pb-1">
+                    {isSystemMessage ? "Bot" : message.user_name}
+                  </p>
                 )}
                 <p className="whitespace-pre-wrap">{message.content}</p>
               </div>

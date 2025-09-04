@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider";
+import { WebhookProvider } from "@/contexts/webhook-context";
 import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.variable, "font-body antialiased", process.env.NODE_ENV === 'development' ? 'debug-screens' : '')}>
         <ThemeProvider>
-          {children}
-          <Toaster />
+          <WebhookProvider>
+            {children}
+            <Toaster />
+          </WebhookProvider>
         </ThemeProvider>
       </body>
     </html>

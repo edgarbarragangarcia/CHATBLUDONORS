@@ -16,16 +16,26 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { PlusCircle, Loader2 } from 'lucide-react';
 import { createChat } from './actions';
+import { useWebhook } from '@/contexts/webhook-context';
 // Using simple alerts for now - can be replaced with proper toast system later
 
 export function CreateChatDialog() {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { setWebhookUrl } = useWebhook();
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
     try {
-      await createChat(formData);
+      const newChat = await createChat(formData);
+      
+      // Actualizar el caché de webhooks inmediatamente
+      const webhookUrl = formData.get('webhookUrl') as string;
+      if (newChat && newChat.id) {
+        setWebhookUrl(newChat.id, webhookUrl?.trim() || null);
+        console.log(`Webhook cacheado para nuevo chat ${newChat.id}:`, webhookUrl?.trim() || null);
+      }
+      
       alert('Chat creado exitosamente');
       setOpen(false);
       // Reset form by closing and reopening dialog

@@ -2,9 +2,9 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { createClient } from "@/lib/supabase/client"
 import { type User } from "@supabase/supabase-js"
 import { generateSuggestedReplies } from "@/ai/flows/suggested-replies"
+import { useWebhook } from "@/contexts/webhook-context"
 
 import { Card } from "@/components/ui/card"
 import { MessageList } from "./message-list"
@@ -26,43 +26,27 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   const [suggestedReplies, setSuggestedReplies] = useState<string[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
   const [chatWebhookUrl, setChatWebhookUrl] = useState<string | null>(null)
-  const supabase = createClient()
+  const { getWebhookUrl } = useWebhook()
 
-  const getProfileForUser = async (userId: string) => {
+  const getProfileForUser = (userId: string) => {
     // Caso especial para mensajes del sistema/bot
-    if (userId === 'system') {
+    if (userId === 'system' || userId === '00000000-0000-0000-0000-000000000000') {
       return {
-        name: 'Asistente IA',
+        name: 'Bot',
         avatar: null,
       }
     }
     
-    // In a real app, you would fetch this from a 'profiles' table.
-    // For this example, we'll simulate it for simplicity.
-    // If it's the current user, we use their metadata.
+    // Si es el usuario actual, usamos sus metadatos
     if (userId === user.id) {
       return {
-        name: user.user_metadata.full_name || email,
+        name: user.user_metadata.full_name || email || 'Usuario',
         avatar: user.user_metadata.avatar_url,
       }
     }
-    // For other users, we'd look them up. Here we return a generic profile.
-    // A proper implementation would query a `profiles` table.
-     const { data, error } = await supabase
-      .from('users')
-      .select('raw_user_meta_data')
-      .eq('id', userId)
-      .single()
-
-    if (!error && data) {
-       return {
-         name: data.raw_user_meta_data?.full_name || `User ${userId.substring(0,6)}`,
-         avatar: data.raw_user_meta_data?.avatar_url || null
-       }
-    }
-
+    // Para otros usuarios, retornamos un perfil genérico
     return {
-      name: `User ${userId.substring(0, 6)}`,
+      name: `Usuario ${userId.substring(0, 6)}`,
       avatar: null,
     }
   }
@@ -98,18 +82,17 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     setMessages(messagesWithProfiles)
   }, [supabase, user.id, user.user_metadata.full_name, user.user_metadata.avatar_url, email, chatId])
 
-  // Función para obtener el webhook URL del chat
+  // Función para obtener el webhook URL del chat usando el contexto
   const fetchChatWebhook = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('chats')
-      .select('webhook_url')
-      .eq('id', chatId)
-      .single()
-    
-    if (!error && data) {
-      setChatWebhookUrl(data.webhook_url)
+    try {
+      const webhookUrl = await getWebhookUrl(chatId)
+      console.log('Chat webhook URL obtenida del contexto:', webhookUrl)
+      setChatWebhookUrl(webhookUrl)
+    } catch (error) {
+      console.error('Error fetching chat webhook from context:', error)
+      setChatWebhookUrl(null)
     }
-  }, [supabase, chatId])
+  }, [getWebhookUrl, chatId])
 
   const fetchSuggestions = async (currentMessages: Message[]) => {
     if (currentMessages.length === 0) return
@@ -181,56 +164,58 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     }
   }, [supabase, fetchMessages, fetchChatWebhook, chatId])
 
-  // Función para enviar mensaje al webhook de n8n
+  // Función para enviar mensaje al webhook usando proxy interno (sin CORS)
   const sendToWebhook = async (content: string): Promise<string | null> => {
-    if (!chatWebhookUrl) return null
+    if (!chatWebhookUrl) {
+      console.log('No hay webhook configurado para este chat')
+      return null
+    }
     
     try {
-      console.log('Sending to webhook:', chatWebhookUrl)
+      console.log('Enviando mensaje a través del proxy interno')
       
-      const response = await fetch(chatWebhookUrl, {
+      const response = await fetch('/api/webhook-proxy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: content, user_id: user.id, chat_id: chatId }),
-        // Agregar timeout para evitar que se cuelgue
-        signal: AbortSignal.timeout(10000) // 10 segundos timeout
+        body: JSON.stringify({ 
+          chatId: chatId,
+          message: content, 
+          userId: user.id 
+        }),
+        // Timeout de 20 segundos (el proxy interno tiene su propio timeout)
+        signal: AbortSignal.timeout(20000)
       })
       
       if (response.ok) {
-        const responseText = await response.text()
+        const data = await response.json()
         
-        // Verificar si la respuesta está vacía
-        if (!responseText || responseText.trim() === '') {
-          console.warn('Webhook returned empty response')
+        if (data.success) {
+          if (data.response) {
+            console.log('Respuesta del webhook recibida:', data.response)
+            return data.response
+          } else {
+            console.log('Webhook procesado exitosamente sin respuesta')
+            return null
+          }
+        } else {
+          console.warn('Error en el webhook:', data.error)
           return null
         }
-        
-        try {
-          const data = JSON.parse(responseText)
-          return data.response || data.message || null
-        } catch (parseError) {
-          console.error('Error parsing webhook response as JSON:', parseError)
-          console.log('Raw response:', responseText)
-          // Si no es JSON válido, devolver el texto tal como está
-          return responseText
-        }
       } else {
-        console.error('Webhook responded with status:', response.status)
+        console.error('Error en el proxy interno:', response.status)
         return null
       }
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          console.error('Webhook request timed out')
-        } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-          console.error('Webhook URL is not reachable or invalid:', chatWebhookUrl)
+          console.warn('Timeout en el envío del webhook (20s)')
         } else {
-          console.error('Error sending to webhook:', error)
+          console.warn('Error enviando al webhook:', error.message)
         }
       } else {
-        console.error('Unknown error sending to webhook:', error)
+        console.warn('Error desconocido enviando al webhook:', error)
       }
       return null
     }
@@ -288,11 +273,12 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
         if (webhookResponse) {
           console.log('Webhook response received:', webhookResponse)
           // Guardamos la respuesta del webhook como un mensaje del sistema
+          // Usamos un UUID especial para el sistema: 00000000-0000-0000-0000-000000000000
           const { error: botMessageError } = await supabase
             .from("messages")
             .insert([{ 
               content: webhookResponse, 
-              user_id: 'system', // ID especial para mensajes del bot
+              user_id: '00000000-0000-0000-0000-000000000000', // UUID especial para mensajes del bot
               chat_id: chatId 
             }])
           
