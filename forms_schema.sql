@@ -11,7 +11,8 @@ CREATE TABLE forms (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     settings JSONB DEFAULT '{}', -- Configuraciones adicionales del formulario
-    is_active BOOLEAN DEFAULT true
+    is_active BOOLEAN DEFAULT true,
+    webhook_url TEXT -- URL del webhook para notificaciones de respuestas
 );
 
 -- Tabla de campos de formularios

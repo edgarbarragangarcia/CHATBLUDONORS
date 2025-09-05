@@ -60,6 +60,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { createForm } from '../actions';
+import { useToast } from '@/hooks/use-toast';
 
 interface FormField {
   id: string;
@@ -74,6 +76,7 @@ interface FormField {
 interface FormData {
   title: string;
   description: string;
+  webhook_url: string;
   fields: FormField[];
 }
 
@@ -92,14 +95,17 @@ const fieldTypes = [
 
 export default function CreateFormPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
+    webhook_url: '',
     fields: []
   });
   const [editingField, setEditingField] = useState<FormField | null>(null);
   const [isFieldDialogOpen, setIsFieldDialogOpen] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const addField = (type: FormField['type']) => {
     const newField: FormField = {
@@ -143,10 +149,52 @@ export default function CreateFormPage() {
     setFormData(prev => ({ ...prev, fields: items }));
   };
 
-  const saveForm = () => {
-    // Aquí se implementaría la lógica para guardar en la base de datos
-    console.log('Guardando formulario:', formData);
-    router.push('/admin/forms');
+  const saveForm = async () => {
+    if (!formData.title.trim()) {
+      toast({
+        title: "Error",
+        description: "El título del formulario es requerido",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const formToSave = {
+        title: formData.title,
+        description: formData.description,
+        webhook_url: formData.webhook_url || undefined,
+        status: 'draft' as const,
+        fields: formData.fields.map((field, index) => ({
+          field_type: field.type,
+          label: field.label,
+          placeholder: field.placeholder,
+          help_text: field.description,
+          is_required: field.required,
+          field_order: index,
+          options: field.options,
+        }))
+      };
+
+      await createForm(formToSave);
+      
+      toast({
+        title: "Éxito",
+        description: "Formulario creado exitosamente",
+      });
+      
+      router.push('/admin/forms');
+    } catch (error) {
+      console.error('Error creating form:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo crear el formulario. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getFieldIcon = (type: string) => {
@@ -305,11 +353,11 @@ export default function CreateFormPage() {
           </Button>
           <Button 
             onClick={saveForm}
-            disabled={!formData.title || formData.fields.length === 0}
+            disabled={!formData.title || formData.fields.length === 0 || isSaving}
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
           >
             <Save className="h-4 w-4 mr-2" />
-            Guardar Formulario
+            {isSaving ? 'Guardando...' : 'Guardar Formulario'}
           </Button>
         </div>
       </div>
@@ -339,6 +387,16 @@ export default function CreateFormPage() {
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Describe el propósito del formulario"
                   rows={3}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="webhook_url">URL del Webhook (Opcional)</Label>
+                <Input
+                  id="webhook_url"
+                  type="url"
+                  value={formData.webhook_url}
+                  onChange={(e) => setFormData(prev => ({ ...prev, webhook_url: e.target.value }))}
+                  placeholder="https://ejemplo.com/webhook"
                 />
               </div>
             </CardContent>

@@ -28,6 +28,7 @@ export interface Form {
   updated_at?: string;
   settings?: any;
   is_active?: boolean;
+  webhook_url?: string;
   fields?: FormField[];
 }
 
@@ -124,7 +125,8 @@ export async function createForm(formData: Form) {
       status: formData.status || 'draft',
       created_by: user.id,
       settings: formData.settings || {},
-      is_active: formData.is_active !== false
+      is_active: formData.is_active !== false,
+      webhook_url: formData.webhook_url || null
     })
     .select()
     .single();
@@ -182,7 +184,8 @@ export async function updateForm(formId: string, formData: Partial<Form>) {
       description: formData.description,
       status: formData.status,
       settings: formData.settings,
-      is_active: formData.is_active
+      is_active: formData.is_active,
+      webhook_url: formData.webhook_url
     })
     .eq('id', formId)
     .eq('created_by', user.id)

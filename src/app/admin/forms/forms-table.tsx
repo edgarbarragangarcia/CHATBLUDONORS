@@ -15,6 +15,7 @@ interface Form {
   id: string;
   title: string;
   description?: string;
+  webhook_url?: string;
   status: 'draft' | 'published' | 'archived';
   created_at: string;
   updated_at: string;
@@ -133,6 +134,7 @@ export function FormsTable({ forms }: FormsTableProps) {
           <TableHead>Título</TableHead>
           <TableHead>Estado</TableHead>
           <TableHead className="text-center">Campos</TableHead>
+          <TableHead>Webhook URL</TableHead>
           <TableHead>Última Actualización</TableHead>
           <TableHead className="text-right">Acciones</TableHead>
         </TableRow>
@@ -155,6 +157,15 @@ export function FormsTable({ forms }: FormsTableProps) {
             </TableCell>
             <TableCell className="text-center">
               <Badge variant="outline">{form.form_fields?.length || 0}</Badge>
+            </TableCell>
+            <TableCell>
+              {form.webhook_url ? (
+                <div className="text-sm font-mono text-muted-foreground truncate max-w-[200px]" title={form.webhook_url}>
+                  {form.webhook_url}
+                </div>
+              ) : (
+                <span className="text-sm text-muted-foreground">-</span>
+              )}
             </TableCell>
             <TableCell>
               <div className="text-sm">
