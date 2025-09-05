@@ -5,8 +5,10 @@ import { useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import type { Message } from "@/contexts/messages-context"
+import { TypingIndicator } from "./typing-indicator"
+import { MessageContent } from "./message-content"
 
-export function MessageList({ messages, currentUserId }: { messages: Message[], currentUserId: string }) {
+export function MessageList({ messages, currentUserId, isTyping = false }: { messages: Message[], currentUserId: string, isTyping?: boolean }) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export function MessageList({ messages, currentUserId }: { messages: Message[], 
                     {isSystemMessage ? "Bot" : message.user_name}
                   </p>
                 )}
-                <p className="whitespace-pre-wrap">{message.content}</p>
+                <MessageContent content={message.content} />
               </div>
               {isCurrentUser && (
                  <Avatar className="h-9 w-9">
@@ -66,6 +68,7 @@ export function MessageList({ messages, currentUserId }: { messages: Message[], 
             </div>
           )
         })}
+        <TypingIndicator isVisible={isTyping} />
       </div>
     </div>
   )

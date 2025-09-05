@@ -29,7 +29,7 @@ export function ChatRoomList({ availableChats, selectedChatId, onSelectChat }: C
                         className={cn(
                             "w-full justify-start gap-3 text-foreground/80 hover:text-foreground",
                             selectedChatId === chat.id 
-                                ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground" 
+                                ? "bg-primary/60 backdrop-blur-sm text-primary-foreground hover:bg-primary/70 hover:text-primary-foreground" 
                                 : "hover:bg-accent"
                         )}
                         onClick={() => onSelectChat(chat.id)}

@@ -13,12 +13,13 @@ import { MessageForm } from "./message-form"
 import { SuggestedReplies } from "./suggested-replies"
 
 export default function ChatPage({ user, email, chatId }: { user: User, email?: string, chatId: string }) {
+  const { getWebhookUrl } = useWebhook()
   const { getMessages, addMessage } = useMessages()
   const messages = getMessages(chatId)
   const [suggestedReplies, setSuggestedReplies] = useState<string[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
   const [chatWebhookUrl, setChatWebhookUrl] = useState<string | null>(null)
-  const { getWebhookUrl } = useWebhook()
 
   const getProfileForUser = (userId: string) => {
     // Caso especial para mensajes del sistema/bot
@@ -175,6 +176,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     // Si hay webhook configurado, intentamos enviar el mensaje
     if (chatWebhookUrl) {
       try {
+        setIsTyping(true) // Mostrar indicador de escritura
         console.log('Enviando al webhook:', chatWebhookUrl)
         const webhookResponse = await sendToWebhook(content)
         
@@ -201,6 +203,8 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
         }
       } catch (webhookError) {
         console.warn('Error con el webhook, pero el mensaje se mantiene en memoria:', webhookError)
+      } finally {
+        setIsTyping(false) // Ocultar indicador de escritura
       }
     } else {
       console.log('No hay webhook configurado para este chat')
@@ -209,7 +213,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
 
   return (
     <main className="h-full flex flex-col bg-background rounded-lg">
-        <MessageList messages={messages} currentUserId={user.id} />
+        <MessageList messages={messages} currentUserId={user.id} isTyping={isTyping} />
         <div className="p-4 border-t bg-background">
             <SuggestedReplies 
                 suggestions={suggestedReplies} 
