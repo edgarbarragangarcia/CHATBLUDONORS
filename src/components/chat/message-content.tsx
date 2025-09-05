@@ -12,6 +12,7 @@ interface MessageContentProps {
 
 export function MessageContent({ content, className }: MessageContentProps) {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
+  const [imageLoading, setImageLoading] = useState<Set<string>>(new Set())
   
   const driveLinks = detectGoogleDriveLinks(content)
   
@@ -70,6 +71,23 @@ export function MessageContent({ content, className }: MessageContentProps) {
   
   const handleImageError = (imageUrl: string) => {
     setImageErrors(prev => new Set([...prev, imageUrl]))
+    setImageLoading(prev => {
+      const newSet = new Set(prev)
+      newSet.delete(imageUrl)
+      return newSet
+    })
+  }
+
+  const handleImageLoad = (imageUrl: string) => {
+    setImageLoading(prev => {
+      const newSet = new Set(prev)
+      newSet.delete(imageUrl)
+      return newSet
+    })
+  }
+
+  const handleImageLoadStart = (imageUrl: string) => {
+    setImageLoading(prev => new Set([...prev, imageUrl]))
   }
   
   return (
@@ -85,45 +103,46 @@ export function MessageContent({ content, className }: MessageContentProps) {
         
         if (part.type === 'image' && part.imageUrl && part.originalUrl) {
           const hasError = imageErrors.has(part.imageUrl)
+          const isLoading = imageLoading.has(part.imageUrl)
           
           return (
             <div key={index} className="space-y-2">
-              {hasError ? (
-                // Mostrar enlace si la imagen falló al cargar
-                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-dashed">
-                  <ImageIcon className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">Imagen no disponible:</span>
+              {/* Siempre mostrar el enlace como alternativa principal */}
+              <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-dashed">
+                <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground mb-1">Imagen de Google Drive</p>
                   <a 
                     href={part.originalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-primary hover:underline flex items-center gap-1"
                   >
-                    Ver en Google Drive
                     <ExternalLink className="h-3 w-3" />
+                    Ver imagen en Google Drive
                   </a>
                 </div>
-              ) : (
-                // Mostrar imagen
+              </div>
+              
+              {/* Intentar mostrar la imagen como fallback */}
+              {!hasError && (
                 <div className="relative group">
+                  {isLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-muted/20 rounded-lg">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                    </div>
+                  )}
                   <img
                     src={part.imageUrl}
                     alt="Imagen compartida"
                     className="max-w-full h-auto rounded-lg shadow-sm border border-border/50 transition-transform duration-200 group-hover:scale-[1.02]"
-                    style={{ maxHeight: '400px' }}
+                    style={{ maxHeight: '400px', display: hasError ? 'none' : 'block' }}
+                    onLoadStart={() => handleImageLoadStart(part.imageUrl!)}
+                    onLoad={() => handleImageLoad(part.imageUrl!)}
                     onError={() => handleImageError(part.imageUrl!)}
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-200 rounded-lg" />
-                  <a 
-                    href={part.originalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/50 hover:bg-black/70 text-white p-1.5 rounded-md"
-                    title="Ver en Google Drive"
-                  >
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
                 </div>
               )}
             </div>
