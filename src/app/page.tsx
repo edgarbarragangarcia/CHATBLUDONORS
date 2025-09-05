@@ -29,6 +29,41 @@ async function getPermittedChatsForUser(userId: string) {
     return availableChats;
 }
 
+// Function to get published forms that users can fill out
+async function getPublishedForms() {
+    const supabase = await createClient();
+    
+    const { data: forms, error } = await supabase
+        .from('forms')
+        .select(`
+            id,
+            title,
+            description,
+            created_at,
+            form_fields(
+                id,
+                field_type,
+                label,
+                placeholder,
+                help_text,
+                is_required,
+                field_order,
+                validation_rules,
+                options,
+                default_value
+            )
+        `)
+        .eq('status', 'published')
+        .order('created_at', { ascending: false });
+    
+    if (error) {
+        console.error('Error fetching published forms:', error.message);
+        return [];
+    }
+    
+    return forms || [];
+}
+
 export default async function Home() {
   const supabase = await createClient();
 
@@ -41,6 +76,7 @@ export default async function Home() {
   }
 
   const availableChats = await getPermittedChatsForUser(user.id);
+  const publishedForms = await getPublishedForms();
 
   // Check if user is admin
   const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
@@ -56,7 +92,7 @@ export default async function Home() {
     <div className="min-h-screen bg-background">
       <MainNavbar user={serializableUser as any} isAdmin={isAdmin} />
       <main className="flex-1">
-        <ChatLayout user={serializableUser as any} availableChats={availableChats as any[]} />
+        <ChatLayout user={serializableUser as any} availableChats={availableChats as any[]} publishedForms={publishedForms as any[]} />
       </main>
     </div>
   );
