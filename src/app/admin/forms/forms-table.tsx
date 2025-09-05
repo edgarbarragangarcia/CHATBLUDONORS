@@ -19,6 +19,8 @@ interface Form {
   status: 'draft' | 'published' | 'archived';
   created_at: string;
   updated_at: string;
+  created_by?: string;
+  creator_email?: string;
   form_fields?: any[];
 }
 
@@ -134,6 +136,7 @@ export function FormsTable({ forms }: FormsTableProps) {
           <TableHead>Título</TableHead>
           <TableHead>Estado</TableHead>
           <TableHead className="text-center">Campos</TableHead>
+          <TableHead>Creador</TableHead>
           <TableHead>Webhook URL</TableHead>
           <TableHead>Última Actualización</TableHead>
           <TableHead className="text-right">Acciones</TableHead>
@@ -157,6 +160,11 @@ export function FormsTable({ forms }: FormsTableProps) {
             </TableCell>
             <TableCell className="text-center">
               <Badge variant="outline">{form.form_fields?.length || 0}</Badge>
+            </TableCell>
+            <TableCell>
+              <div className="text-sm text-muted-foreground">
+                {form.creator_email || 'Usuario desconocido'}
+              </div>
             </TableCell>
             <TableCell>
               {form.webhook_url ? (

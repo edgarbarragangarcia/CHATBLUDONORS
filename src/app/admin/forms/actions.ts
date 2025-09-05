@@ -32,16 +32,22 @@ export interface Form {
   fields?: FormField[];
 }
 
-// Obtener todos los formularios del usuario actual
+const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
+
+// Obtener todos los formularios (todos para administradores, solo propios para usuarios regulares)
 export async function getForms() {
   const supabase = await createClient();
+  const adminSupabase = await createAdminClient();
   
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     throw new Error('Usuario no autenticado');
   }
 
-  const { data, error } = await supabase
+  // Verificar si el usuario es administrador
+  const isAdmin = user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email || '');
+
+  let query = supabase
     .from('forms')
     .select(`
       *,
@@ -57,16 +63,36 @@ export async function getForms() {
         options,
         default_value
       )
-    `)
-    .eq('created_by', user.id)
-    .order('created_at', { ascending: false });
+    `);
+
+  // Si no es administrador, filtrar solo por sus formularios
+  if (!isAdmin) {
+    query = query.eq('created_by', user.id);
+  }
+
+  const { data: forms, error } = await query.order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error fetching forms:', error.message);
     throw new Error('No se pudieron obtener los formularios');
   }
 
-  return data;
+  // Si es administrador, obtener información de los creadores
+  if (isAdmin && forms && forms.length > 0) {
+    const creatorIds = [...new Set(forms.map(form => form.created_by).filter(Boolean))];
+    
+    if (creatorIds.length > 0) {
+      const { data: users } = await adminSupabase.auth.admin.listUsers();
+      const userMap = new Map(users?.users.map(u => [u.id, u.email]) || []);
+      
+      return forms.map(form => ({
+        ...form,
+        creator_email: userMap.get(form.created_by) || 'Usuario desconocido'
+      }));
+    }
+  }
+
+  return forms;
 }
 
 // Obtener un formulario específico con sus campos
@@ -78,7 +104,10 @@ export async function getForm(formId: string) {
     throw new Error('Usuario no autenticado');
   }
 
-  const { data, error } = await supabase
+  // Verificar si el usuario es administrador
+  const isAdmin = user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email || '');
+
+  let query = supabase
     .from('forms')
     .select(`
       *,
@@ -95,9 +124,14 @@ export async function getForm(formId: string) {
         default_value
       )
     `)
-    .eq('id', formId)
-    .eq('created_by', user.id)
-    .single();
+    .eq('id', formId);
+
+  // Si no es administrador, filtrar solo por sus formularios
+  if (!isAdmin) {
+    query = query.eq('created_by', user.id);
+  }
+
+  const { data, error } = await query.single();
 
   if (error) {
     console.error('Error fetching form:', error.message);
@@ -176,8 +210,11 @@ export async function updateForm(formId: string, formData: Partial<Form>) {
     throw new Error('Usuario no autenticado');
   }
 
-  // Actualizar el formulario
-  const { data: form, error: formError } = await supabase
+  // Verificar si el usuario es administrador
+  const isAdmin = user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email || '');
+
+  // Construir la consulta de actualización
+  let updateQuery = supabase
     .from('forms')
     .update({
       title: formData.title,
@@ -187,8 +224,14 @@ export async function updateForm(formId: string, formData: Partial<Form>) {
       is_active: formData.is_active,
       webhook_url: formData.webhook_url
     })
-    .eq('id', formId)
-    .eq('created_by', user.id)
+    .eq('id', formId);
+
+  // Si no es administrador, filtrar solo por sus formularios
+  if (!isAdmin) {
+    updateQuery = updateQuery.eq('created_by', user.id);
+  }
+
+  const { data: form, error: formError } = await updateQuery
     .select()
     .single();
 
@@ -245,11 +288,21 @@ export async function deleteForm(formId: string) {
     throw new Error('Usuario no autenticado');
   }
 
-  const { error } = await supabase
+  // Verificar si el usuario es administrador
+  const isAdmin = user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email || '');
+
+  // Construir la consulta de eliminación
+  let deleteQuery = supabase
     .from('forms')
     .delete()
-    .eq('id', formId)
-    .eq('created_by', user.id);
+    .eq('id', formId);
+
+  // Si no es administrador, filtrar solo por sus formularios
+  if (!isAdmin) {
+    deleteQuery = deleteQuery.eq('created_by', user.id);
+  }
+
+  const { error } = await deleteQuery;
 
   if (error) {
     console.error('Error deleting form:', error.message);
@@ -302,11 +355,21 @@ export async function updateFormStatus(formId: string, status: 'draft' | 'publis
     throw new Error('Usuario no autenticado');
   }
 
-  const { data, error } = await supabase
+  // Verificar si el usuario es administrador
+  const isAdmin = user.app_metadata?.role === 'admin' || ADMIN_USERS.includes(user.email || '');
+
+  // Construir la consulta de actualización
+  let updateQuery = supabase
     .from('forms')
     .update({ status })
-    .eq('id', formId)
-    .eq('created_by', user.id)
+    .eq('id', formId);
+
+  // Si no es administrador, filtrar solo por sus formularios
+  if (!isAdmin) {
+    updateQuery = updateQuery.eq('created_by', user.id);
+  }
+
+  const { data, error } = await updateQuery
     .select()
     .single();
 
