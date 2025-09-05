@@ -108,10 +108,17 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
                 )}
 
                 {/* Mobile Chat Content */}
-                <div className="h-[calc(100%-5rem)] bg-background/50">
-                    {selectedChatId ? (
-                        <ChatPage user={user} email={user.email} chatId={selectedChatId} />
-                    ) : (
+                <div className="h-[calc(100%-5rem)] bg-background/50 relative" style={{
+                    backgroundImage: 'url(/lego-background.svg)',
+                    backgroundSize: '200px 200px',
+                    backgroundPosition: 'top left',
+                    backgroundRepeat: 'repeat'
+                }}>
+                    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+                    <div className="relative z-10 h-full">
+                        {selectedChatId ? (
+                            <ChatPage user={user} email={user.email} chatId={selectedChatId} />
+                        ) : (
                         <div className="flex h-full items-center justify-center p-6">
                             <div className="text-center space-y-4">
                                 <div className="flex justify-center">
@@ -130,7 +137,8 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
                                 </Button>
                             </div>
                         </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         );
@@ -150,21 +158,29 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
                 </ResizablePanel>
                 <ResizableHandle withHandle className="w-1 bg-border/50 hover:bg-border transition-modern" />
                 <ResizablePanel defaultSize={75}>
-                    <div className="h-full bg-background/50">
-                        {selectedChatId ? (
-                            <ChatPage user={user} email={user.email} chatId={selectedChatId} />
-                        ) : (
-                            <div className="flex h-full items-center justify-center">
-                                <div className="text-center space-y-4">
-                                    <div className="flex justify-center">
-                                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted/50">
-                                            <MessageCircle className="h-6 w-6 text-muted-foreground" />
+                    <div className="h-full bg-background/50 relative" style={{
+                        backgroundImage: 'url(/lego-background.svg)',
+                        backgroundSize: '200px 200px',
+                        backgroundPosition: 'top left',
+                        backgroundRepeat: 'repeat'
+                    }}>
+                        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+                        <div className="relative z-10 h-full">
+                            {selectedChatId ? (
+                                <ChatPage user={user} email={user.email} chatId={selectedChatId} />
+                            ) : (
+                                <div className="flex h-full items-center justify-center">
+                                    <div className="text-center space-y-4">
+                                        <div className="flex justify-center">
+                                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted/50">
+                                                <MessageCircle className="h-6 w-6 text-muted-foreground" />
+                                            </div>
                                         </div>
+                                        <p className="body-large text-muted-foreground">Selecciona un chat para comenzar</p>
                                     </div>
-                                    <p className="body-large text-muted-foreground">Selecciona un chat para comenzar</p>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </ResizablePanel>
             </ResizablePanelGroup>

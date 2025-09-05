@@ -1,0 +1,131 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .lego-block { filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2)); }
+      .lego-dot { fill: rgba(255,255,255,0.3); }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8fafc"/>
+  
+  <!-- Floating LEGO blocks -->
+  <!-- Blue blocks -->
+  <g class="lego-block" transform="translate(100,150) rotate(-15)">
+    <rect width="80" height="40" rx="4" fill="#3b82f6"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+  </g>
+  
+  <g class="lego-block" transform="translate(950,100) rotate(20)">
+    <rect width="120" height="40" rx="4" fill="#1e40af"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+    <circle cx="100" cy="20" r="8" class="lego-dot"/>
+  </g>
+  
+  <!-- Green blocks -->
+  <g class="lego-block" transform="translate(50,400) rotate(10)">
+    <rect width="40" height="40" rx="4" fill="#22c55e"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+  </g>
+  
+  <g class="lego-block" transform="translate(200,50) rotate(-25)">
+    <rect width="80" height="80" rx="4" fill="#16a34a"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+    <circle cx="20" cy="60" r="8" class="lego-dot"/>
+    <circle cx="60" cy="60" r="8" class="lego-dot"/>
+  </g>
+  
+  <!-- Yellow blocks -->
+  <g class="lego-block" transform="translate(800,600) rotate(-10)">
+    <rect width="120" height="40" rx="4" fill="#eab308"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+    <circle cx="100" cy="20" r="8" class="lego-dot"/>
+  </g>
+  
+  <g class="lego-block" transform="translate(1000,400) rotate(15)">
+    <rect width="40" height="80" rx="4" fill="#facc15"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="20" cy="60" r="8" class="lego-dot"/>
+  </g>
+  
+  <!-- Red/Pink blocks -->
+  <g class="lego-block" transform="translate(300,650) rotate(25)">
+    <rect width="80" height="40" rx="4" fill="#ef4444"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+  </g>
+  
+  <g class="lego-block" transform="translate(1050,250) rotate(-20)">
+    <rect width="40" height="40" rx="4" fill="#ec4899"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+  </g>
+  
+  <!-- Orange blocks -->
+  <g class="lego-block" transform="translate(150,700) rotate(-5)">
+    <rect width="80" height="80" rx="4" fill="#f97316"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+    <circle cx="20" cy="60" r="8" class="lego-dot"/>
+    <circle cx="60" cy="60" r="8" class="lego-dot"/>
+  </g>
+  
+  <!-- Purple blocks -->
+  <g class="lego-block" transform="translate(700,50) rotate(30)">
+    <rect width="120" height="80" rx="4" fill="#8b5cf6"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+    <circle cx="100" cy="20" r="8" class="lego-dot"/>
+    <circle cx="20" cy="60" r="8" class="lego-dot"/>
+    <circle cx="60" cy="60" r="8" class="lego-dot"/>
+    <circle cx="100" cy="60" r="8" class="lego-dot"/>
+  </g>
+  
+  <!-- Cyan blocks -->
+  <g class="lego-block" transform="translate(500,200) rotate(-12)">
+    <rect width="40" height="120" rx="4" fill="#06b6d4"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="20" cy="60" r="8" class="lego-dot"/>
+    <circle cx="20" cy="100" r="8" class="lego-dot"/>
+  </g>
+  
+  <!-- Central building structure -->
+  <g class="lego-block" transform="translate(450,300)">
+    <!-- Base layer -->
+    <rect width="160" height="80" rx="4" fill="#22c55e"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+    <circle cx="100" cy="20" r="8" class="lego-dot"/>
+    <circle cx="140" cy="20" r="8" class="lego-dot"/>
+    <circle cx="20" cy="60" r="8" class="lego-dot"/>
+    <circle cx="60" cy="60" r="8" class="lego-dot"/>
+    <circle cx="100" cy="60" r="8" class="lego-dot"/>
+    <circle cx="140" cy="60" r="8" class="lego-dot"/>
+    
+    <!-- Second layer -->
+    <rect x="20" y="-40" width="120" height="40" rx="4" fill="#3b82f6"/>
+    <circle cx="40" cy="-20" r="8" class="lego-dot"/>
+    <circle cx="80" cy="-20" r="8" class="lego-dot"/>
+    <circle cx="120" cy="-20" r="8" class="lego-dot"/>
+    
+    <!-- Top layer -->
+    <rect x="40" y="-80" width="80" height="40" rx="4" fill="#eab308"/>
+    <circle cx="60" cy="-60" r="8" class="lego-dot"/>
+    <circle cx="100" cy="-60" r="8" class="lego-dot"/>
+  </g>
+  
+  <!-- Additional scattered blocks -->
+  <g class="lego-block" transform="translate(350,500) rotate(18)">
+    <rect width="40" height="40" rx="4" fill="#06b6d4"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+  </g>
+  
+  <g class="lego-block" transform="translate(750,450) rotate(-8)">
+    <rect width="80" height="40" rx="4" fill="#8b5cf6"/>
+    <circle cx="20" cy="20" r="8" class="lego-dot"/>
+    <circle cx="60" cy="20" r="8" class="lego-dot"/>
+  </g>
+</svg>

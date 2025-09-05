@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Shield, ArrowLeft, Users, MessageCircle, Home, Settings, Menu, X } from 'lucide-react';
+import { Shield, ArrowLeft, Users, MessageCircle, Home, Settings, Menu, X, FileText } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useState } from 'react';
 
@@ -50,6 +50,14 @@ export default function AdminNavbar({ isAdmin }: { isAdmin: boolean }) {
                         <MessageCircle className="h-4 w-4" />
                         <span>Chats</span>
                         {pathname.startsWith('/admin/chats') && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-xl" />
+                        )}
+                    </Link>
+                    
+                    <Link href="/admin/forms" className={navLinkClass('/admin/forms')}>
+                        <FileText className="h-4 w-4" />
+                        <span>Formularios</span>
+                        {pathname.startsWith('/admin/forms') && (
                             <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-xl" />
                         )}
                     </Link>
@@ -115,6 +123,20 @@ export default function AdminNavbar({ isAdmin }: { isAdmin: boolean }) {
                         >
                             <MessageCircle className="h-5 w-5" />
                             <span>Chats</span>
+                        </Link>
+                        
+                        <Link 
+                            href="/admin/forms" 
+                            className={cn(
+                                "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 shadow-sm",
+                                pathname.startsWith('/admin/forms') 
+                                    ? "text-white bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-600 dark:to-pink-600 shadow-lg shadow-purple-200/50 dark:shadow-purple-800/50" 
+                                    : "text-purple-700 dark:text-purple-300 hover:text-purple-800 dark:hover:text-purple-200 hover:bg-gradient-to-r hover:from-purple-100/50 hover:to-pink-100/50 dark:hover:from-purple-800/30 dark:hover:to-pink-800/30 hover:shadow-md hover:shadow-purple-200/30 dark:hover:shadow-purple-800/30"
+                            )}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            <FileText className="h-5 w-5" />
+                            <span>Formularios</span>
                         </Link>
                         
                         {/* Mobile Theme Toggle */}

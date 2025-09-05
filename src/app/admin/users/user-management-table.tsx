@@ -150,7 +150,7 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
               await updateUserRole(userId, newRole);
               toast({
                   title: 'Rol actualizado',
-                  description: `El usuario ahora es ${newRole}.`,
+                  description: `El usuario ahora es ${newRole === 'admin' ? 'administrador' : 'usuario'}.`,
               });
           } catch (error) {
               toast({
@@ -174,8 +174,8 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
   return (
     <div className="flex-1 space-y-4 p-4 sm:p-6 lg:p-8 pt-4 sm:pt-6">
         <div className="mb-4">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">User Access Management</h2>
-            <p className="text-sm sm:text-base text-muted-foreground">Enable or disable access to chats for each user.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Gestión de Acceso de Usuarios</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">Habilitar o deshabilitar el acceso a chats para cada usuario.</p>
         </div>
         <Card>
             <CardContent className="p-0">
@@ -183,9 +183,9 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
                     <Table>
                         <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[200px] sm:w-[250px] min-w-[180px]">User</TableHead>
-                            <TableHead className="hidden sm:table-cell">Email</TableHead>
-                            <TableHead className="min-w-[100px]">Role</TableHead>
+                            <TableHead className="w-[200px] sm:w-[250px] min-w-[180px]">Usuario</TableHead>
+                            <TableHead className="hidden sm:table-cell">Correo</TableHead>
+                            <TableHead className="min-w-[100px]">Rol</TableHead>
                             {chats.map(chat => (
                                 <TableHead key={chat.id} className="text-center min-w-[80px] sm:min-w-[100px]">
                                     <span className="hidden sm:inline">{chat.name}</span>
@@ -217,11 +217,11 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
                                         disabled={isRolePending}
                                    >
                                         <SelectTrigger className="w-[90px] sm:w-[110px] h-8 sm:h-10">
-                                            <SelectValue placeholder="Select role" />
+                                            <SelectValue placeholder="Seleccionar rol" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="user">User</SelectItem>
-                                            <SelectItem value="admin">Admin</SelectItem>
+                                            <SelectItem value="user">Usuario</SelectItem>
+                                            <SelectItem value="admin">Administrador</SelectItem>
                                         </SelectContent>
                                    </Select>
                                 </TableCell>
@@ -230,7 +230,7 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
                                         <Switch
                                             checked={u.permissions[chat.id] ?? false}
                                             onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
-                                            aria-label={`Toggle access to ${chat.name} for ${u.name}`}
+                                            aria-label={`Alternar acceso a ${chat.name} para ${u.name}`}
                                             disabled={isPending}
                                             className="scale-75 sm:scale-100"
                                         />

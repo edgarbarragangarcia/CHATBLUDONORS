@@ -47,12 +47,12 @@ export default async function UsersPage() {
             <div className="flex-1 space-y-4 p-8 pt-6">
                 <Alert variant="destructive">
                     <Terminal className="h-4 w-4" />
-                    <AlertTitle>Configuration Error: Missing Service Role Key</AlertTitle>
+                    <AlertTitle>Error de Configuración: Falta la Clave de Rol de Servicio</AlertTitle>
                     <AlertDescription>
-                        <p className="font-semibold mt-2">The admin panel cannot function because the Supabase Service Role Key is missing.</p>
-                        <p className="mt-2">To fix this, you must add your Supabase Service Role Key as an environment variable named <code>SUPABASE_SERVICE_ROLE_KEY</code>.</p>
-                        <p className="mt-2">You can get this key from your Supabase project dashboard under <code>Project Settings &gt; API &gt; Project API keys</code>.</p>
-                        <p className="mt-2">Please add it to your environment variables and restart the application.</p>
+                        <p className="font-semibold mt-2">El panel de administración no puede funcionar porque falta la Clave de Rol de Servicio de Supabase.</p>
+                        <p className="mt-2">Para solucionarlo, debes agregar tu Clave de Rol de Servicio de Supabase como una variable de entorno llamada <code>SUPABASE_SERVICE_ROLE_KEY</code>.</p>
+                        <p className="mt-2">Puedes obtener esta clave desde el panel de tu proyecto Supabase en <code>Configuración del Proyecto &gt; API &gt; Claves de API del Proyecto</code>.</p>
+                        <p className="mt-2">Por favor agrégala a tus variables de entorno y reinicia la aplicación.</p>
                     </AlertDescription>
                 </Alert>
             </div>
@@ -64,12 +64,12 @@ export default async function UsersPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Error</CardTitle>
-                    <CardDescription>Could not fetch data for user management.</CardDescription>
+                    <CardDescription>No se pudieron obtener los datos para la gestión de usuarios.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <p className="text-destructive">
-                       An unexpected error occurred: {error.message || 'Unknown error'}. 
-                       Please check the server logs for more details.
+                       Ocurrió un error inesperado: {error.message || 'Error desconocido'}. 
+                       Por favor revisa los logs del servidor para más detalles.
                     </p>
                 </CardContent>
             </Card>
