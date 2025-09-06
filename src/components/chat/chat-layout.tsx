@@ -14,6 +14,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
 import { MessageCircle, Menu, X, FileText } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { FormViewer } from '@/components/forms/form-viewer';
 
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
@@ -209,6 +210,15 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                     <div className="relative z-10 h-full mobile-scroll-container">
                         {selectedChatId ? (
                             <ChatPage user={user} email={user.email} chatId={selectedChatId} />
+                        ) : selectedFormId ? (
+                             <FormViewer 
+                                  form={{
+                                      ...availableForms.find(f => f.id === selectedFormId)!,
+                                      description: availableForms.find(f => f.id === selectedFormId)!.description || '',
+                                      form_fields: availableForms.find(f => f.id === selectedFormId)!.form_fields || []
+                                  }} 
+                                  user={user} 
+                              />
                         ) : (
                         <div className="flex h-full items-center justify-center padding-responsive">
                             <div className="text-center space-responsive">
@@ -314,6 +324,15 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                         <div className="relative z-10 h-full">
                             {selectedChatId ? (
                                 <ChatPage user={user} email={user.email} chatId={selectedChatId} />
+                            ) : selectedFormId ? (
+                                 <FormViewer 
+                                      form={{
+                                          ...availableForms.find(f => f.id === selectedFormId)!,
+                                          description: availableForms.find(f => f.id === selectedFormId)!.description || '',
+                                          form_fields: availableForms.find(f => f.id === selectedFormId)!.form_fields || []
+                                      }} 
+                                      user={user} 
+                                  />
                             ) : (
                                 <div className="flex h-full items-center justify-center padding-responsive">
                                     <div className="text-center space-responsive">
