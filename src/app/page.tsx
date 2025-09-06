@@ -29,6 +29,52 @@ async function getPermittedChatsForUser(userId: string) {
     return availableChats;
 }
 
+// Function to get permitted forms for a user
+async function getPermittedFormsForUser(userId: string) {
+    const supabase = await createClient();
+    
+    // Get all forms the user has explicit permission for and are published
+    const { data: permissions, error: permissionsError } = await supabase
+        .from('user_form_permissions')
+        .select(`
+            form_id, 
+            forms!inner(
+                id,
+                title,
+                description,
+                status,
+                is_active,
+                created_at,
+                form_fields(
+                    id,
+                    field_type,
+                    label,
+                    placeholder,
+                    help_text,
+                    is_required,
+                    field_order,
+                    validation_rules,
+                    options,
+                    default_value
+                )
+            )
+        `)
+        .eq('user_id', userId)
+        .eq('has_access', true)
+        .eq('forms.status', 'published')
+        .eq('forms.is_active', true);
+    
+    if (permissionsError) {
+        console.error('Error fetching form permissions:', permissionsError.message);
+        return [];
+    }
+
+    // Extract forms from the permissions data
+    const availableForms = permissions?.map(p => p.forms).filter(Boolean) || [];
+    
+    return availableForms;
+}
+
 
 
 export default async function Home() {
@@ -42,7 +88,10 @@ export default async function Home() {
     return redirect('/login');
   }
 
-  const availableChats = await getPermittedChatsForUser(user.id);
+  const [availableChats, availableForms] = await Promise.all([
+    getPermittedChatsForUser(user.id),
+    getPermittedFormsForUser(user.id)
+  ]);
 
   // Check if user is admin
   const ADMIN_USERS = ['eabarragang@ingenes.com', 'ntorres@ingenes.com', 'administrador@ingenes.com'];
@@ -58,7 +107,7 @@ export default async function Home() {
     <div className="min-h-screen bg-background">
       <MainNavbar user={serializableUser as any} isAdmin={isAdmin} />
       <main className="flex-1">
-        <ChatLayout user={serializableUser as any} availableChats={availableChats as any[]} />
+        <ChatLayout user={serializableUser as any} availableChats={availableChats as any[]} availableForms={availableForms as any[]} />
       </main>
     </div>
   );

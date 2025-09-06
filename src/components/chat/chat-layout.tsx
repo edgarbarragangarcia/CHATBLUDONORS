@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/resizable';
 import { Card, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
-import { MessageCircle, Menu, X } from 'lucide-react';
+import { MessageCircle, Menu, X, FileText } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 
@@ -24,20 +24,42 @@ type ChatRoom = {
     description: string;
 };
 
-
+type Form = {
+    id: string;
+    title: string;
+    description?: string;
+    status: string;
+    is_active: boolean;
+    created_at: string;
+    form_fields?: any[];
+};
 
 interface ChatLayoutProps {
     user: User;
     availableChats: ChatRoom[];
+    availableForms: Form[];
 }
 
-export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
+export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutProps) {
     const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+    const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<'chats' | 'forms'>('chats');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const isMobile = useIsMobile();
 
     const handleSelectChat = (chatId: string) => {
         setSelectedChatId(chatId);
+        setSelectedFormId(null);
+        setActiveTab('chats');
+        if (isMobile) {
+            setIsSidebarOpen(false);
+        }
+    };
+
+    const handleSelectForm = (formId: string) => {
+        setSelectedFormId(formId);
+        setSelectedChatId(null);
+        setActiveTab('forms');
         if (isMobile) {
             setIsSidebarOpen(false);
         }
@@ -45,7 +67,7 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
 
 
 
-    if (availableChats.length === 0) {
+    if (availableChats.length === 0 && availableForms.length === 0) {
         return (
             <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center p-6">
                 <Card className="glass max-w-lg text-center shadow-modern-lg">
@@ -58,7 +80,7 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
                         <div className="space-y-2">
                             <CardTitle className="heading-3">No hay contenido disponible</CardTitle>
                             <CardDescription className="body-large">
-                                No tienes acceso a salas de chat.
+                                No tienes acceso a salas de chat ni formularios.
                             </CardDescription>
                         </div>
                     </CardHeader>
@@ -67,9 +89,15 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
         );
     }
     
-    // Automatically select the first available chat if none is selected
-    if (!selectedChatId && availableChats.length > 0) {
-        setSelectedChatId(availableChats[0].id);
+    // Automatically select the first available content if none is selected
+    if (!selectedChatId && !selectedFormId) {
+        if (availableChats.length > 0) {
+            setSelectedChatId(availableChats[0].id);
+            setActiveTab('chats');
+        } else if (availableForms.length > 0) {
+            setSelectedFormId(availableForms[0].id);
+            setActiveTab('forms');
+        }
     }
 
     if (isMobile) {
@@ -106,23 +134,65 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
                                     <X className="h-5 w-5" />
                                 </Button>
                             </div>
-                            <Tabs defaultValue="chats" className="mobile-content-height flex flex-col">
+                            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'chats' | 'forms')} className="mobile-content-height flex flex-col">
                                 <div className="padding-responsive pb-2">
                                     <TabsList className="w-full h-12 touch-target">
-                                        <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
-                                            <MessageCircle className="h-4 w-4" />
-                                            <span>Chats</span>
-                                        </TabsTrigger>
+                                        {availableChats.length > 0 && (
+                                            <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
+                                                <MessageCircle className="h-4 w-4" />
+                                                <span>Chats</span>
+                                            </TabsTrigger>
+                                        )}
+                                        {availableForms.length > 0 && (
+                                            <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
+                                                <FileText className="h-4 w-4" />
+                                                <span>Formularios</span>
+                                            </TabsTrigger>
+                                        )}
                                     </TabsList>
                                 </div>
-                                <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden mobile-scroll-container">
-                                    <ChatRoomList 
-                                        availableChats={availableChats}
-                                        selectedChatId={selectedChatId}
-                                        onSelectChat={handleSelectChat}
-                                    />
-                                </TabsContent>
-                                
+                                {availableChats.length > 0 && (
+                                    <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden mobile-scroll-container">
+                                        <ChatRoomList 
+                                            availableChats={availableChats}
+                                            selectedChatId={selectedChatId}
+                                            onSelectChat={handleSelectChat}
+                                        />
+                                    </TabsContent>
+                                )}
+                                {availableForms.length > 0 && (
+                                    <TabsContent value="forms" className="flex-1 px-4 pb-4 mt-0 overflow-hidden mobile-scroll-container">
+                                        <div className="space-y-2">
+                                            {availableForms.map((form) => (
+                                                <Card 
+                                                    key={form.id} 
+                                                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                                                        selectedFormId === form.id 
+                                                            ? 'ring-2 ring-primary bg-primary/5' 
+                                                            : 'hover:bg-muted/50'
+                                                    }`}
+                                                    onClick={() => handleSelectForm(form.id)}
+                                                >
+                                                    <CardHeader className="p-4">
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+                                                                <FileText className="h-4 w-4 text-primary" />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <CardTitle className="text-sm font-medium truncate">{form.title}</CardTitle>
+                                                                {form.description && (
+                                                                    <CardDescription className="text-xs mt-1 line-clamp-2">
+                                                                        {form.description}
+                                                                    </CardDescription>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </CardHeader>
+                                                </Card>
+                                            ))}
+                                        </div>
+                                    </TabsContent>
+                                )}
                             </Tabs>
                         </div>
                     </div>
@@ -170,23 +240,65 @@ export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
             <ResizablePanelGroup direction="horizontal" className="h-full">
                 <ResizablePanel defaultSize={25} minSize={20} maxSize={35} className="border-r border-border/50">
                     <div className="h-full glass">
-                        <Tabs defaultValue="chats" className="h-full flex flex-col">
+                        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'chats' | 'forms')} className="h-full flex flex-col">
                             <div className="padding-responsive pb-2">
                                 <TabsList className="w-full h-12">
-                                <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium">
-                                    <MessageCircle className="h-4 w-4" />
-                                    <span>Chats</span>
-                                </TabsTrigger>
-                            </TabsList>
+                                    {availableChats.length > 0 && (
+                                        <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium">
+                                            <MessageCircle className="h-4 w-4" />
+                                            <span>Chats</span>
+                                        </TabsTrigger>
+                                    )}
+                                    {availableForms.length > 0 && (
+                                        <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium">
+                                            <FileText className="h-4 w-4" />
+                                            <span>Formularios</span>
+                                        </TabsTrigger>
+                                    )}
+                                </TabsList>
                             </div>
-                            <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden scrollbar-thin">
-                                <ChatRoomList 
-                                    availableChats={availableChats}
-                                    selectedChatId={selectedChatId}
-                                    onSelectChat={handleSelectChat}
-                                />
-                            </TabsContent>
-                            
+                            {availableChats.length > 0 && (
+                                <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden scrollbar-thin">
+                                    <ChatRoomList 
+                                        availableChats={availableChats}
+                                        selectedChatId={selectedChatId}
+                                        onSelectChat={handleSelectChat}
+                                    />
+                                </TabsContent>
+                            )}
+                            {availableForms.length > 0 && (
+                                <TabsContent value="forms" className="flex-1 px-4 pb-4 mt-0 overflow-hidden scrollbar-thin">
+                                    <div className="space-y-2">
+                                        {availableForms.map((form) => (
+                                            <Card 
+                                                key={form.id} 
+                                                className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                                                    selectedFormId === form.id 
+                                                        ? 'ring-2 ring-primary bg-primary/5' 
+                                                        : 'hover:bg-muted/50'
+                                                }`}
+                                                onClick={() => handleSelectForm(form.id)}
+                                            >
+                                                <CardHeader className="p-4">
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+                                                            <FileText className="h-4 w-4 text-primary" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <CardTitle className="text-sm font-medium truncate">{form.title}</CardTitle>
+                                                            {form.description && (
+                                                                <CardDescription className="text-xs mt-1 line-clamp-2">
+                                                                    {form.description}
+                                                                </CardDescription>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </CardHeader>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                </TabsContent>
+                            )}
                         </Tabs>
                     </div>
                 </ResizablePanel>
