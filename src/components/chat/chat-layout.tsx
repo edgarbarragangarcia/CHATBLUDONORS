@@ -104,58 +104,59 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
 
     if (isMobile) {
         return (
-            <div className="h-[calc(100vh-4rem)] w-full relative">
+            <div className="mobile-nav-height w-full relative">
                 {/* Mobile Header */}
-                <div className="flex items-center justify-between p-4 border-b border-border/50 glass">
+                <div className="flex items-center justify-between padding-responsive border-b border-border/50 glass">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden"
+                        className="lg:hidden touch-target"
                     >
                         <Menu className="h-5 w-5" />
-                        <span className="ml-2">Salas</span>
+                        <span className="ml-2 text-responsive-sm">Salas</span>
                     </Button>
-                    <h1 className="heading-4">INGENIABOTS</h1>
+                    <h1 className="heading-4 text-responsive-lg">INGENIABOTS</h1>
                     <div className="w-16" /> {/* Spacer */}
                 </div>
 
                 {/* Mobile Sidebar Overlay */}
                 {isSidebarOpen && (
-                    <div className="fixed inset-0 z-50 lg:hidden">
+                    <div className="fixed inset-0 z-50 lg:hidden mobile-safe-area">
                         <div className="fixed inset-0 bg-black/50" onClick={() => setIsSidebarOpen(false)} />
-                        <div className="fixed left-0 top-0 h-full w-80 max-w-[85vw] glass border-r border-border/50">
-                            <div className="flex items-center justify-between p-4 border-b border-border/50">
-                                <h2 className="heading-4">Contenido</h2>
+                        <div className="fixed left-0 top-0 mobile-full-height w-80 max-w-[85vw] glass border-r border-border/50">
+                            <div className="flex items-center justify-between padding-responsive border-b border-border/50">
+                                <h2 className="heading-4 text-responsive-base">Contenido</h2>
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => setIsSidebarOpen(false)}
+                                    className="touch-target"
                                 >
                                     <X className="h-5 w-5" />
                                 </Button>
                             </div>
-                            <Tabs defaultValue="chats" className="h-[calc(100%-5rem)] flex flex-col">
-                                <div className="p-4 pb-2">
-                                    <TabsList className="grid w-full grid-cols-2 h-12">
-                                        <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-sm font-medium">
+                            <Tabs defaultValue="chats" className="mobile-content-height flex flex-col">
+                                <div className="padding-responsive pb-2">
+                                    <TabsList className="grid w-full grid-cols-2 h-12 touch-target">
+                                        <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
                                             <MessageCircle className="h-4 w-4" />
                                             <span>Chats</span>
                                         </TabsTrigger>
-                                        <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-sm font-medium">
+                                        <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
                                             <FileText className="h-4 w-4" />
                                             <span>Formularios</span>
                                         </TabsTrigger>
                                     </TabsList>
                                 </div>
-                                <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden">
+                                <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden mobile-scroll-container">
                                     <ChatRoomList 
                                         availableChats={availableChats}
                                         selectedChatId={selectedChatId}
                                         onSelectChat={handleSelectChat}
                                     />
                                 </TabsContent>
-                                <TabsContent value="forms" className="flex-1 px-4 pb-4 mt-0 overflow-hidden">
+                                <TabsContent value="forms" className="flex-1 px-4 pb-4 mt-0 overflow-hidden mobile-scroll-container">
                                     <PublishedFormsList 
                                         publishedForms={publishedForms}
                                         selectedFormId={selectedFormId}
@@ -168,14 +169,14 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                 )}
 
                 {/* Mobile Chat Content */}
-                <div className="h-[calc(100%-5rem)] bg-background/50 relative" style={{
+                <div className="mobile-content-height bg-background/50 relative" style={{
                     backgroundImage: 'url(/lego-background.svg)',
                     backgroundSize: '200px 200px',
                     backgroundPosition: 'top left',
                     backgroundRepeat: 'repeat'
                 }}>
                     <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-                    <div className="relative z-10 h-full">
+                    <div className="relative z-10 h-full mobile-scroll-container">
                         {selectedChatId ? (
                             <ChatPage user={user} email={user.email} chatId={selectedChatId} />
                         ) : selectedFormId ? (
@@ -184,18 +185,18 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                                 user={user} 
                             />
                         ) : (
-                        <div className="flex h-full items-center justify-center p-6">
-                            <div className="text-center space-y-4">
+                        <div className="flex h-full items-center justify-center padding-responsive">
+                            <div className="text-center space-responsive">
                                 <div className="flex justify-center">
                                     <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted/50">
                                         <MessageCircle className="h-6 w-6 text-muted-foreground" />
                                     </div>
                                 </div>
-                                <p className="body-large text-muted-foreground">Selecciona un chat o formulario para comenzar</p>
+                                <p className="text-responsive-base text-muted-foreground">Selecciona un chat o formulario para comenzar</p>
                                 <Button
                                     variant="outline"
                                     onClick={() => setIsSidebarOpen(true)}
-                                    className="mt-4"
+                                    className="mt-4 touch-target"
                                 >
                                     <Menu className="h-4 w-4 mr-2" />
                                     Ver Contenido
@@ -210,31 +211,31 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
     }
 
     return (
-        <div className="h-[calc(100vh-4rem)] w-full">
+        <div className="mobile-nav-height w-full">
             <ResizablePanelGroup direction="horizontal" className="h-full">
                 <ResizablePanel defaultSize={25} minSize={20} maxSize={35} className="border-r border-border/50">
                     <div className="h-full glass">
                         <Tabs defaultValue="chats" className="h-full flex flex-col">
-                            <div className="p-4 pb-2">
+                            <div className="padding-responsive pb-2">
                                 <TabsList className="grid w-full grid-cols-2 h-12">
-                                    <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-sm font-medium">
+                                    <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium">
                                         <MessageCircle className="h-4 w-4" />
                                         <span>Chats</span>
                                     </TabsTrigger>
-                                    <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-sm font-medium">
+                                    <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium">
                                         <FileText className="h-4 w-4" />
                                         <span>Formularios</span>
                                     </TabsTrigger>
                                 </TabsList>
                             </div>
-                            <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden">
+                            <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden scrollbar-thin">
                                 <ChatRoomList 
                                     availableChats={availableChats}
                                     selectedChatId={selectedChatId}
                                     onSelectChat={handleSelectChat}
                                 />
                             </TabsContent>
-                            <TabsContent value="forms" className="flex-1 px-4 pb-4 mt-0 overflow-hidden">
+                            <TabsContent value="forms" className="flex-1 px-4 pb-4 mt-0 overflow-hidden scrollbar-thin">
                                 <PublishedFormsList 
                                     publishedForms={publishedForms}
                                     selectedFormId={selectedFormId}
@@ -262,14 +263,14 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                                     user={user} 
                                 />
                             ) : (
-                                <div className="flex h-full items-center justify-center">
-                                    <div className="text-center space-y-4">
+                                <div className="flex h-full items-center justify-center padding-responsive">
+                                    <div className="text-center space-responsive">
                                         <div className="flex justify-center">
                                             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted/50">
                                                 <MessageCircle className="h-6 w-6 text-muted-foreground" />
                                             </div>
                                         </div>
-                                        <p className="body-large text-muted-foreground">Selecciona un chat o formulario para comenzar</p>
+                                        <p className="text-responsive-base text-muted-foreground">Selecciona un chat o formulario para comenzar</p>
                                     </div>
                                 </div>
                             )}

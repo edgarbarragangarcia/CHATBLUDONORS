@@ -203,8 +203,8 @@ export function FormViewer({ form, user }: FormViewerProps) {
             case 'email':
             case 'number':
                 return (
-                    <div key={field.id} className="space-y-2">
-                        <Label htmlFor={field.id} className="text-sm font-medium">
+                    <div key={field.id} className="space-y-2 sm:space-y-3">
+                        <Label htmlFor={field.id} className="text-responsive-sm font-medium">
                             {field.label}
                             {field.is_required && <span className="text-red-500 ml-1">*</span>}
                         </Label>
@@ -214,21 +214,21 @@ export function FormViewer({ form, user }: FormViewerProps) {
                             placeholder={field.placeholder}
                             value={value}
                             onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                            className={hasError ? 'border-red-500' : ''}
+                            className={`touch-target ${hasError ? 'border-red-500' : ''}`}
                         />
                         {field.help_text && (
-                            <p className="text-xs text-muted-foreground">{field.help_text}</p>
+                            <p className="text-responsive-xs text-muted-foreground">{field.help_text}</p>
                         )}
                         {hasError && (
-                            <p className="text-xs text-red-500">{errors[field.id]}</p>
+                            <p className="text-responsive-xs text-red-500">{errors[field.id]}</p>
                         )}
                     </div>
                 );
                 
             case 'textarea':
                 return (
-                    <div key={field.id} className="space-y-2">
-                        <Label htmlFor={field.id} className="text-sm font-medium">
+                    <div key={field.id} className="space-y-2 sm:space-y-3">
+                        <Label htmlFor={field.id} className="text-responsive-sm font-medium">
                             {field.label}
                             {field.is_required && <span className="text-red-500 ml-1">*</span>}
                         </Label>
@@ -237,14 +237,14 @@ export function FormViewer({ form, user }: FormViewerProps) {
                             placeholder={field.placeholder}
                             value={value}
                             onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                            className={hasError ? 'border-red-500' : ''}
-                            rows={4}
+                            className={`touch-target ${hasError ? 'border-red-500' : ''}`}
+                            rows={3}
                         />
                         {field.help_text && (
-                            <p className="text-xs text-muted-foreground">{field.help_text}</p>
+                            <p className="text-responsive-xs text-muted-foreground">{field.help_text}</p>
                         )}
                         {hasError && (
-                            <p className="text-xs text-red-500">{errors[field.id]}</p>
+                            <p className="text-responsive-xs text-red-500">{errors[field.id]}</p>
                         )}
                     </div>
                 );
@@ -252,28 +252,28 @@ export function FormViewer({ form, user }: FormViewerProps) {
             case 'select':
                 const options = field.options || [];
                 return (
-                    <div key={field.id} className="space-y-2">
-                        <Label htmlFor={field.id} className="text-sm font-medium">
+                    <div key={field.id} className="space-y-2 sm:space-y-3">
+                        <Label htmlFor={field.id} className="text-responsive-sm font-medium">
                             {field.label}
                             {field.is_required && <span className="text-red-500 ml-1">*</span>}
                         </Label>
                         <Select value={value} onValueChange={(val) => handleFieldChange(field.id, val)}>
-                            <SelectTrigger className={hasError ? 'border-red-500' : ''}>
+                            <SelectTrigger className={`touch-target ${hasError ? 'border-red-500' : ''}`}>
                                 <SelectValue placeholder={field.placeholder || 'Selecciona una opción'} />
                             </SelectTrigger>
                             <SelectContent>
                                 {options.map((option: string, index: number) => (
-                                    <SelectItem key={index} value={option}>
+                                    <SelectItem key={index} value={option} className="touch-target">
                                         {option}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {field.help_text && (
-                            <p className="text-xs text-muted-foreground">{field.help_text}</p>
+                            <p className="text-responsive-xs text-muted-foreground">{field.help_text}</p>
                         )}
                         {hasError && (
-                            <p className="text-xs text-red-500">{errors[field.id]}</p>
+                            <p className="text-responsive-xs text-red-500">{errors[field.id]}</p>
                         )}
                     </div>
                 );
@@ -281,53 +281,53 @@ export function FormViewer({ form, user }: FormViewerProps) {
             case 'radio':
                 const radioOptions = field.options || [];
                 return (
-                    <div key={field.id} className="space-y-2">
-                        <Label className="text-sm font-medium">
+                    <div key={field.id} className="space-y-2 sm:space-y-3">
+                        <Label className="text-responsive-sm font-medium">
                             {field.label}
                             {field.is_required && <span className="text-red-500 ml-1">*</span>}
                         </Label>
                         <RadioGroup
                             value={value}
                             onValueChange={(val) => handleFieldChange(field.id, val)}
-                            className="space-y-2"
+                            className="space-y-2 sm:space-y-3"
                         >
                             {radioOptions.map((option: string, index: number) => (
-                                <div key={index} className="flex items-center space-x-2">
+                                <div key={index} className="flex items-center space-x-2 sm:space-x-3 touch-target">
                                     <RadioGroupItem value={option} id={`${field.id}-${index}`} />
-                                    <Label htmlFor={`${field.id}-${index}`} className="text-sm">
+                                    <Label htmlFor={`${field.id}-${index}`} className="text-responsive-sm cursor-pointer">
                                         {option}
                                     </Label>
                                 </div>
                             ))}
                         </RadioGroup>
                         {field.help_text && (
-                            <p className="text-xs text-muted-foreground">{field.help_text}</p>
+                            <p className="text-responsive-xs text-muted-foreground">{field.help_text}</p>
                         )}
                         {hasError && (
-                            <p className="text-xs text-red-500">{errors[field.id]}</p>
+                            <p className="text-responsive-xs text-red-500">{errors[field.id]}</p>
                         )}
                     </div>
                 );
                 
             case 'checkbox':
                 return (
-                    <div key={field.id} className="space-y-2">
-                        <div className="flex items-center space-x-2">
+                    <div key={field.id} className="space-y-2 sm:space-y-3">
+                        <div className="flex items-center space-x-2 sm:space-x-3 touch-target">
                             <Checkbox
                                 id={field.id}
                                 checked={!!value}
                                 onCheckedChange={(checked) => handleFieldChange(field.id, checked)}
                             />
-                            <Label htmlFor={field.id} className="text-sm font-medium">
+                            <Label htmlFor={field.id} className="text-responsive-sm font-medium cursor-pointer">
                                 {field.label}
                                 {field.is_required && <span className="text-red-500 ml-1">*</span>}
                             </Label>
                         </div>
                         {field.help_text && (
-                            <p className="text-xs text-muted-foreground ml-6">{field.help_text}</p>
+                            <p className="text-responsive-xs text-muted-foreground ml-6 sm:ml-7">{field.help_text}</p>
                         )}
                         {hasError && (
-                            <p className="text-xs text-red-500 ml-6">{errors[field.id]}</p>
+                            <p className="text-responsive-xs text-red-500 ml-6 sm:ml-7">{errors[field.id]}</p>
                         )}
                     </div>
                 );
@@ -338,18 +338,18 @@ export function FormViewer({ form, user }: FormViewerProps) {
     };
 
     return (
-        <div className="h-full flex flex-col">
-            <div className="flex-1 overflow-y-auto p-6">
+        <div className="h-full flex flex-col mobile-safe-area">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-6">
                 <Card className="max-w-2xl mx-auto">
-                    <CardHeader className="space-y-4">
-                        <div className="flex items-center space-x-3">
-                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10">
-                                <FileText className="h-6 w-6 text-primary" />
+                    <CardHeader className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+                        <div className="flex items-center space-x-2 sm:space-x-3">
+                            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10">
+                                <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                             </div>
-                            <div>
-                                <CardTitle className="text-xl">{form.title}</CardTitle>
+                            <div className="flex-1 min-w-0">
+                                <CardTitle className="text-lg sm:text-xl truncate">{form.title}</CardTitle>
                                 {form.description && (
-                                    <CardDescription className="mt-2">
+                                    <CardDescription className="mt-1 sm:mt-2 text-sm line-clamp-2">
                                         {form.description}
                                     </CardDescription>
                                 )}
@@ -357,25 +357,25 @@ export function FormViewer({ form, user }: FormViewerProps) {
                         </div>
                     </CardHeader>
                     
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                    <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+                        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-6">
                             {sortedFields.map(renderField)}
                             
-                            <div className="flex justify-end pt-6 border-t">
+                            <div className="flex justify-end pt-4 sm:pt-6 border-t">
                                 <Button 
                                     type="submit" 
                                     disabled={isSubmitting}
-                                    className="min-w-32"
+                                    className="min-w-24 sm:min-w-32 text-responsive-sm touch-target w-full sm:w-auto"
                                 >
                                     {isSubmitting ? (
-                                        <div className="flex items-center space-x-2">
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                            <span>Enviando...</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            <span className="text-responsive-sm">Enviando...</span>
                                         </div>
                                     ) : (
-                                        <div className="flex items-center space-x-2">
-                                            <Send className="h-4 w-4" />
-                                            <span>Enviar</span>
+                                        <div className="flex items-center gap-2">
+                                            <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+                                            <span className="text-responsive-sm">Enviar</span>
                                         </div>
                                     )}
                                 </Button>

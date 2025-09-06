@@ -119,10 +119,10 @@ export function FormsTable({ forms }: FormsTableProps) {
         <p className="text-muted-foreground mb-4">
           Comienza creando tu primer formulario
         </p>
-        <Button asChild>
+        <Button asChild className="touch-target w-full sm:w-auto">
           <Link href="/admin/forms/create">
             <Plus className="h-4 w-4 mr-2" />
-            Crear Formulario
+            <span className="sm:inline">Crear Formulario</span>
           </Link>
         </Button>
       </div>
@@ -130,16 +130,17 @@ export function FormsTable({ forms }: FormsTableProps) {
   }
 
   return (
+    <div className="overflow-x-auto">
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Título</TableHead>
-          <TableHead>Estado</TableHead>
-          <TableHead className="text-center">Campos</TableHead>
-          <TableHead>Creador</TableHead>
-          <TableHead>Webhook URL</TableHead>
-          <TableHead>Última Actualización</TableHead>
-          <TableHead className="text-right">Acciones</TableHead>
+          <TableHead className="min-w-[200px]">Título</TableHead>
+          <TableHead className="min-w-[100px]">Estado</TableHead>
+          <TableHead className="text-center min-w-[80px]">Campos</TableHead>
+          <TableHead className="hidden md:table-cell min-w-[150px]">Creador</TableHead>
+          <TableHead className="hidden lg:table-cell min-w-[200px]">Webhook URL</TableHead>
+          <TableHead className="hidden sm:table-cell min-w-[120px]">Última Actualización</TableHead>
+          <TableHead className="text-right min-w-[80px]">Acciones</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -161,12 +162,12 @@ export function FormsTable({ forms }: FormsTableProps) {
             <TableCell className="text-center">
               <Badge variant="outline">{form.form_fields?.length || 0}</Badge>
             </TableCell>
-            <TableCell>
+            <TableCell className="hidden md:table-cell">
               <div className="text-sm text-muted-foreground">
                 {form.creator_email || 'Usuario desconocido'}
               </div>
             </TableCell>
-            <TableCell>
+            <TableCell className="hidden lg:table-cell">
               {form.webhook_url ? (
                 <div className="text-sm font-mono text-muted-foreground truncate max-w-[200px]" title={form.webhook_url}>
                   {form.webhook_url}
@@ -175,7 +176,7 @@ export function FormsTable({ forms }: FormsTableProps) {
                 <span className="text-sm text-muted-foreground">-</span>
               )}
             </TableCell>
-            <TableCell>
+            <TableCell className="hidden sm:table-cell">
               <div className="text-sm">
                 {new Date(form.updated_at).toLocaleDateString('es-ES')}
               </div>
@@ -185,7 +186,7 @@ export function FormsTable({ forms }: FormsTableProps) {
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
-                    className="h-8 w-8 p-0"
+                    className="h-8 w-8 p-0 touch-target"
                     disabled={isLoading === form.id}
                   >
                     <MoreHorizontal className="h-4 w-4" />
@@ -244,5 +245,6 @@ export function FormsTable({ forms }: FormsTableProps) {
         ))}
       </TableBody>
     </Table>
+    </div>
   );
 }
