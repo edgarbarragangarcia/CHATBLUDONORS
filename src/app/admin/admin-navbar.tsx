@@ -24,7 +24,7 @@ export default function AdminNavbar({ isAdmin }: { isAdmin: boolean }) {
         <header className="sticky top-0 z-50 bg-gradient-to-r from-purple-100/80 via-pink-50/80 to-blue-100/80 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-blue-900/20 border-b border-purple-200/30 dark:border-purple-700/30 backdrop-blur-xl shadow-lg shadow-purple-100/20 dark:shadow-purple-900/20 mobile-safe-area">
             <div className="flex h-14 sm:h-16 items-center justify-between container-responsive">
                 {/* Logo and Brand */}
-                <Link href="/admin" className="flex items-center gap-2 sm:gap-3 group touch-target">
+                <Link href="/admin" className="flex items-center gap-2 sm:gap-3 group touch-target md:hidden">
                     <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-800 dark:to-pink-800 group-hover:from-purple-300 group-hover:to-pink-300 dark:group-hover:from-purple-700 dark:group-hover:to-pink-700 transition-all duration-300 shadow-md shadow-purple-200/30 dark:shadow-purple-800/30">
                         <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-purple-700 dark:text-purple-200" />
                     </div>
@@ -36,9 +36,8 @@ export default function AdminNavbar({ isAdmin }: { isAdmin: boolean }) {
 
                 {/* Navigation */}
                 <nav className="hidden md:flex items-center gap-1">
-                    <Link href="/admin" className="px-2 sm:px-3 py-2 text-responsive-sm font-medium text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-purple-100 hover:bg-purple-100/50 dark:hover:bg-purple-800/30 rounded-lg transition-all duration-200 touch-target">
-                        Dashboard
-                    </Link>
+                   
+                    
                     {isAdmin && (
                         <Link href="/admin/users" className="px-2 sm:px-3 py-2 text-responsive-sm font-medium text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-purple-100 hover:bg-purple-100/50 dark:hover:bg-purple-800/30 rounded-lg transition-all duration-200 touch-target">
                             Usuarios
@@ -91,20 +90,7 @@ export default function AdminNavbar({ isAdmin }: { isAdmin: boolean }) {
             {isMobileMenuOpen && (
                 <div className="md:hidden bg-gradient-to-r from-purple-50/90 via-pink-25/90 to-blue-50/90 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-blue-900/30 border-t border-purple-200/30 dark:border-purple-700/30 backdrop-blur-xl">
                     <nav className="flex flex-col gap-2 p-4 space-y-1">
-                        {/* Dashboard Link */}
-                        <Link 
-                            href="/admin" 
-                            className={cn(
-                                "flex items-center gap-3 rounded-xl px-4 py-3 text-responsive-sm font-medium transition-all duration-300 shadow-sm touch-target",
-                                pathname === '/admin' 
-                                    ? "text-white bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-600 dark:to-pink-600 shadow-lg shadow-purple-200/50 dark:shadow-purple-800/50" 
-                                    : "text-purple-700 dark:text-purple-300 hover:text-purple-800 dark:hover:text-purple-200 hover:bg-gradient-to-r hover:from-purple-100/50 hover:to-pink-100/50 dark:hover:from-purple-800/30 dark:hover:to-pink-800/30 hover:shadow-md hover:shadow-purple-200/30 dark:hover:shadow-purple-800/30"
-                            )}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            <Settings className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                            <span>Dashboard</span>
-                        </Link>
+
                         
                         {/* Users Link - Only for Admins */}
                         {isAdmin && (

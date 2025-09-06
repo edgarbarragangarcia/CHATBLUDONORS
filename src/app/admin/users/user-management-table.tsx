@@ -21,7 +21,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { updateUserPermission, updateUserRole } from './actions';
+import { updateUserPermission, updateUserRole, updateUserFormPermission } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -36,9 +36,22 @@ type Chat = {
     is_public: boolean;
 }
 
+type Form = {
+    id: string;
+    title: string;
+    status: string;
+    is_active: boolean;
+}
+
 type UserPermission = {
     user_id: string;
     chat_id: string;
+    has_access: boolean;
+}
+
+type UserFormPermission = {
+    user_id: string;
+    form_id: string;
     has_access: boolean;
 }
 
@@ -49,17 +62,21 @@ type UserWithPermissions = {
   avatar: any;
   role: 'admin' | 'user';
   permissions: { [chatId: string]: boolean };
+  formPermissions: { [formId: string]: boolean };
 }
 
 interface UserManagementTableProps {
     initialUsers: User[];
     initialChats: Chat[];
     initialPermissions: UserPermission[];
+    initialForms: Form[];
+    initialFormPermissions: UserFormPermission[];
 }
 
-export function UserManagementTable({ initialUsers, initialChats, initialPermissions }: UserManagementTableProps) {
+export function UserManagementTable({ initialUsers, initialChats, initialPermissions, initialForms, initialFormPermissions }: UserManagementTableProps) {
   const [users, setUsers] = useState<UserWithPermissions[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
+  const [forms, setForms] = useState<Form[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isRolePending, startRoleTransition] = useTransition();
   const { toast } = useToast();
@@ -70,10 +87,20 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
         permissionsMap.set(`${p.user_id}-${p.chat_id}`, p.has_access);
     });
 
+    const formPermissionsMap = new Map<string, boolean>();
+    initialFormPermissions.forEach(p => {
+        formPermissionsMap.set(`${p.user_id}-${p.form_id}`, p.has_access);
+    });
+
     const mappedUsers = initialUsers.map((u) => {
         const userPermissions: { [chatId: string]: boolean } = {};
         initialChats.forEach(chat => {
             userPermissions[chat.id] = permissionsMap.get(`${u.id}-${chat.id}`) ?? false;
+        });
+
+        const userFormPermissions: { [formId: string]: boolean } = {};
+        initialForms.forEach(form => {
+            userFormPermissions[form.id] = formPermissionsMap.get(`${u.id}-${form.id}`) ?? false;
         });
 
         const role = u.app_metadata?.role === 'admin' || ADMIN_USERS.includes(u.email ?? '') ? 'admin' : 'user';
@@ -85,11 +112,13 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
             avatar: u.user_metadata?.avatar_url,
             role: role as 'admin' | 'user',
             permissions: userPermissions,
+            formPermissions: userFormPermissions,
         };
     });
     setUsers(mappedUsers);
     setChats(initialChats);
-  }, [initialUsers, initialChats, initialPermissions]);
+    setForms(initialForms);
+  }, [initialUsers, initialChats, initialPermissions, initialForms, initialFormPermissions]);
 
   const handlePermissionChange = (userId: string, chatId: string, newPermission: boolean) => {
       // Optimistic UI update
@@ -124,6 +153,47 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
                   prevUsers.map(user => {
                       if (user.id === userId) {
                           return { ...user, permissions: { ...user.permissions, [chatId]: !newPermission } };
+                      }
+                      return user;
+                  })
+              );
+          }
+      });
+  }
+
+  const handleFormPermissionChange = (userId: string, formId: string, newPermission: boolean) => {
+      // Optimistic UI update
+      setUsers(prevUsers => 
+          prevUsers.map(user => {
+              if (user.id === userId) {
+                  return {
+                      ...user,
+                      formPermissions: { ...user.formPermissions, [formId]: newPermission }
+                  };
+              }
+              return user;
+          })
+      );
+
+      // Call server action
+      startTransition(async () => {
+          try {
+              await updateUserFormPermission(userId, formId, newPermission);
+              toast({
+                  title: 'Permiso actualizado',
+                  description: `El acceso para el formulario ha sido ${newPermission ? 'concedido' : 'revocado'}.`,
+              });
+          } catch (error) {
+              toast({
+                  title: 'Error al actualizar',
+                  description: 'No se pudo guardar el cambio. Por favor, inténtalo de nuevo.',
+                  variant: 'destructive',
+              });
+              // Revert UI change on error
+              setUsers(prevUsers => 
+                  prevUsers.map(user => {
+                      if (user.id === userId) {
+                          return { ...user, formPermissions: { ...user.formPermissions, [formId]: !newPermission } };
                       }
                       return user;
                   })
@@ -175,7 +245,7 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
     <div className="flex-1 space-y-4 p-4 sm:p-6 lg:p-8 pt-4 sm:pt-6">
         <div className="mb-4">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Gestión de Acceso de Usuarios</h2>
-            <p className="text-sm sm:text-base text-muted-foreground">Habilitar o deshabilitar el acceso a chats para cada usuario.</p>
+            <p className="text-sm sm:text-base text-muted-foreground">Habilitar o deshabilitar el acceso a chats y formularios para cada usuario.</p>
         </div>
         <Card>
             <CardContent className="p-0">
@@ -190,6 +260,12 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
                                 <TableHead key={chat.id} className="text-center min-w-[80px] sm:min-w-[100px]">
                                     <span className="hidden sm:inline">{chat.name}</span>
                                     <span className="sm:hidden">{chat.name.substring(0, 8)}...</span>
+                                </TableHead>
+                            ))}
+                            {forms.map(form => (
+                                <TableHead key={form.id} className="text-center min-w-[80px] sm:min-w-[100px]">
+                                    <span className="hidden sm:inline">{form.title}</span>
+                                    <span className="sm:hidden">{form.title.substring(0, 8)}...</span>
                                 </TableHead>
                             ))}
                         </TableRow>
@@ -231,6 +307,17 @@ export function UserManagementTable({ initialUsers, initialChats, initialPermiss
                                             checked={u.permissions[chat.id] ?? false}
                                             onCheckedChange={(isChecked) => handlePermissionChange(u.id, chat.id, isChecked)}
                                             aria-label={`Alternar acceso a ${chat.name} para ${u.name}`}
+                                            disabled={isPending}
+                                            className="scale-75 sm:scale-100"
+                                        />
+                                     </TableCell>
+                                ))}
+                                {forms.map(form => (
+                                     <TableCell key={form.id} className="text-center">
+                                        <Switch
+                                            checked={u.formPermissions[form.id] ?? false}
+                                            onCheckedChange={(isChecked) => handleFormPermissionChange(u.id, form.id, isChecked)}
+                                            aria-label={`Alternar acceso a ${form.title} para ${u.name}`}
                                             disabled={isPending}
                                             className="scale-75 sm:scale-100"
                                         />

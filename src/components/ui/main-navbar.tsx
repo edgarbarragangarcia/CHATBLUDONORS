@@ -170,7 +170,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
               <Link 
                 href="/admin" 
                 className={cn(
-                  "hidden sm:flex items-center gap-3 rounded-xl px-4 py-3 text-responsive-sm font-medium transition-modern touch-target",
+                  "flex sm:hidden items-center gap-3 rounded-xl px-4 py-3 text-responsive-sm font-medium transition-modern touch-target",
                   pathname.startsWith('/admin') 
                     ? "text-primary-foreground bg-primary shadow-modern" 
                     : "text-muted-foreground hover:text-foreground hover:bg-accent/50"

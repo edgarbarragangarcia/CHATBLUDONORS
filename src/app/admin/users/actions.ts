@@ -37,6 +37,28 @@ export async function getAllUserChatPermissions() {
     return data;
 }
 
+// This function fetches all available forms from the 'forms' table using the admin client
+export async function getForms() {
+    const supabase = await createAdminClient();
+    const { data, error } = await supabase.from('forms').select('id, title, status, is_active').eq('is_active', true);
+    if (error) {
+        console.error('Error fetching forms:', error.message);
+        throw new Error('Could not fetch forms from Supabase.');
+    }
+    return data;
+}
+
+// This function fetches all permissions from the 'user_form_permissions' table using the admin client
+export async function getAllUserFormPermissions() {
+    const supabase = await createAdminClient();
+    const { data, error } = await supabase.from('user_form_permissions').select('*');
+     if (error) {
+        console.error('Error fetching form permissions:', error.message);
+        throw new Error('Could not fetch form permissions from Supabase.');
+    }
+    return data;
+}
+
 // This function updates or inserts a permission in the 'user_chat_permissions' table using the admin client
 export async function updateUserPermission(userId: string, chatId: string, hasAccess: boolean) {
     const supabase = await createAdminClient();
@@ -57,6 +79,23 @@ export async function updateUserPermission(userId: string, chatId: string, hasAc
     revalidatePath('/');
 }
 
+// This function updates or inserts a permission in the 'user_form_permissions' table using the admin client
+export async function updateUserFormPermission(userId: string, formId: string, hasAccess: boolean) {
+    const supabase = await createAdminClient();
+    const { error } = await supabase
+        .from('user_form_permissions')
+        .upsert(
+            { user_id: userId, form_id: formId, has_access: hasAccess },
+            { onConflict: 'user_id, form_id' }
+        );
+    
+    if (error) {
+        console.error('Error updating form permission:', error.message);
+        throw new Error('Could not update form permission.');
+    }
+    
+    revalidatePath('/admin/users');
+}
 
 // This function updates a user's role in Supabase Auth metadata
 export async function updateUserRole(userId: string, newRole: 'admin' | 'user') {

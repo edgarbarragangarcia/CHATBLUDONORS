@@ -1,7 +1,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { getUsers, getChats, getAllUserChatPermissions } from './actions';
+import { getUsers, getChats, getAllUserChatPermissions, getForms, getAllUserFormPermissions } from './actions';
 import { UserManagementTable } from './user-management-table';
 import {
   Card,
@@ -28,10 +28,12 @@ export default async function UsersPage() {
   }
   
   try {
-    const [usersData, chatsData, permissionsData] = await Promise.all([
+    const [usersData, chatsData, permissionsData, formsData, formPermissionsData] = await Promise.all([
       getUsers(),
       getChats(),
       getAllUserChatPermissions(),
+      getForms(),
+      getAllUserFormPermissions(),
     ]);
 
     return (
@@ -39,6 +41,8 @@ export default async function UsersPage() {
             initialUsers={usersData}
             initialChats={chatsData}
             initialPermissions={permissionsData}
+            initialForms={formsData}
+            initialFormPermissions={formPermissionsData}
         />
     );
   } catch(error: any) {
