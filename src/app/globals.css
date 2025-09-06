@@ -189,6 +189,15 @@ body {
     background-color: hsl(var(--card));
   }
   
+  /* Hide relative time displays */
+  .message-timestamp,
+  .time-ago,
+  .relative-time,
+  [title*="hace"],
+  [data-time] {
+    display: none !important;
+  }
+  
   /* Typography Utilities */
   .text-gradient {
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8));

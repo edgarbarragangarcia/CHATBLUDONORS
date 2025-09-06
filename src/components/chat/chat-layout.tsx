@@ -12,10 +12,10 @@ import {
 } from '@/components/ui/resizable';
 import { Card, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
-import { MessageCircle, Menu, X, FileText } from 'lucide-react';
+import { MessageCircle, Menu, X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { PublishedFormsList } from '../forms/published-forms-list';
-import { FormViewer } from '../forms/form-viewer';
+
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
 type ChatRoom = {
@@ -24,54 +24,28 @@ type ChatRoom = {
     description: string;
 };
 
-type PublishedForm = {
-    id: string;
-    title: string;
-    description: string;
-    created_at: string;
-    form_fields: {
-        id: string;
-        field_type: string;
-        label: string;
-        placeholder?: string;
-        help_text?: string;
-        is_required: boolean;
-        field_order: number;
-        validation_rules?: any;
-        options?: any;
-        default_value?: any;
-    }[];
-};
+
 
 interface ChatLayoutProps {
     user: User;
     availableChats: ChatRoom[];
-    publishedForms: PublishedForm[];
 }
 
-export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutProps) {
+export function ChatLayout({ user, availableChats }: ChatLayoutProps) {
     const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-    const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const isMobile = useIsMobile();
 
     const handleSelectChat = (chatId: string) => {
         setSelectedChatId(chatId);
-        setSelectedFormId(null); // Clear form selection when selecting chat
         if (isMobile) {
             setIsSidebarOpen(false);
         }
     };
 
-    const handleSelectForm = (formId: string) => {
-        setSelectedFormId(formId);
-        setSelectedChatId(null); // Clear chat selection when selecting form
-        if (isMobile) {
-            setIsSidebarOpen(false);
-        }
-    };
 
-    if (availableChats.length === 0 && publishedForms.length === 0) {
+
+    if (availableChats.length === 0) {
         return (
             <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center p-6">
                 <Card className="glass max-w-lg text-center shadow-modern-lg">
@@ -84,7 +58,7 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                         <div className="space-y-2">
                             <CardTitle className="heading-3">No hay contenido disponible</CardTitle>
                             <CardDescription className="body-large">
-                                No tienes acceso a salas de chat ni hay formularios disponibles para completar.
+                                No tienes acceso a salas de chat.
                             </CardDescription>
                         </div>
                     </CardHeader>
@@ -93,13 +67,9 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
         );
     }
     
-    // Automatically select the first available item if none is selected
-    if (!selectedChatId && !selectedFormId) {
-        if (availableChats.length > 0) {
-            setSelectedChatId(availableChats[0].id);
-        } else if (publishedForms.length > 0) {
-            setSelectedFormId(publishedForms[0].id);
-        }
+    // Automatically select the first available chat if none is selected
+    if (!selectedChatId && availableChats.length > 0) {
+        setSelectedChatId(availableChats[0].id);
     }
 
     if (isMobile) {
@@ -138,14 +108,10 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                             </div>
                             <Tabs defaultValue="chats" className="mobile-content-height flex flex-col">
                                 <div className="padding-responsive pb-2">
-                                    <TabsList className="grid w-full grid-cols-2 h-12 touch-target">
+                                    <TabsList className="w-full h-12 touch-target">
                                         <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
                                             <MessageCircle className="h-4 w-4" />
                                             <span>Chats</span>
-                                        </TabsTrigger>
-                                        <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
-                                            <FileText className="h-4 w-4" />
-                                            <span>Formularios</span>
                                         </TabsTrigger>
                                     </TabsList>
                                 </div>
@@ -156,13 +122,7 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                                         onSelectChat={handleSelectChat}
                                     />
                                 </TabsContent>
-                                <TabsContent value="forms" className="flex-1 px-4 pb-4 mt-0 overflow-hidden mobile-scroll-container">
-                                    <PublishedFormsList 
-                                        publishedForms={publishedForms}
-                                        selectedFormId={selectedFormId}
-                                        onSelectForm={handleSelectForm}
-                                    />
-                                </TabsContent>
+                                
                             </Tabs>
                         </div>
                     </div>
@@ -179,11 +139,6 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                     <div className="relative z-10 h-full mobile-scroll-container">
                         {selectedChatId ? (
                             <ChatPage user={user} email={user.email} chatId={selectedChatId} />
-                        ) : selectedFormId ? (
-                            <FormViewer 
-                                form={publishedForms.find(f => f.id === selectedFormId)!} 
-                                user={user} 
-                            />
                         ) : (
                         <div className="flex h-full items-center justify-center padding-responsive">
                             <div className="text-center space-responsive">
@@ -192,7 +147,7 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                                         <MessageCircle className="h-6 w-6 text-muted-foreground" />
                                     </div>
                                 </div>
-                                <p className="text-responsive-base text-muted-foreground">Selecciona un chat o formulario para comenzar</p>
+                                <p className="text-responsive-base text-muted-foreground">Selecciona un chat para comenzar</p>
                                 <Button
                                     variant="outline"
                                     onClick={() => setIsSidebarOpen(true)}
@@ -217,16 +172,12 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                     <div className="h-full glass">
                         <Tabs defaultValue="chats" className="h-full flex flex-col">
                             <div className="padding-responsive pb-2">
-                                <TabsList className="grid w-full grid-cols-2 h-12">
-                                    <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium">
-                                        <MessageCircle className="h-4 w-4" />
-                                        <span>Chats</span>
-                                    </TabsTrigger>
-                                    <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium">
-                                        <FileText className="h-4 w-4" />
-                                        <span>Formularios</span>
-                                    </TabsTrigger>
-                                </TabsList>
+                                <TabsList className="w-full h-12">
+                                <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium">
+                                    <MessageCircle className="h-4 w-4" />
+                                    <span>Chats</span>
+                                </TabsTrigger>
+                            </TabsList>
                             </div>
                             <TabsContent value="chats" className="flex-1 px-4 pb-4 mt-0 overflow-hidden scrollbar-thin">
                                 <ChatRoomList 
@@ -235,13 +186,7 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                                     onSelectChat={handleSelectChat}
                                 />
                             </TabsContent>
-                            <TabsContent value="forms" className="flex-1 px-4 pb-4 mt-0 overflow-hidden scrollbar-thin">
-                                <PublishedFormsList 
-                                    publishedForms={publishedForms}
-                                    selectedFormId={selectedFormId}
-                                    onSelectForm={handleSelectForm}
-                                />
-                            </TabsContent>
+                            
                         </Tabs>
                     </div>
                 </ResizablePanel>
@@ -257,11 +202,6 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                         <div className="relative z-10 h-full">
                             {selectedChatId ? (
                                 <ChatPage user={user} email={user.email} chatId={selectedChatId} />
-                            ) : selectedFormId ? (
-                                <FormViewer 
-                                    form={publishedForms.find(f => f.id === selectedFormId)!} 
-                                    user={user} 
-                                />
                             ) : (
                                 <div className="flex h-full items-center justify-center padding-responsive">
                                     <div className="text-center space-responsive">
@@ -270,7 +210,7 @@ export function ChatLayout({ user, availableChats, publishedForms }: ChatLayoutP
                                                 <MessageCircle className="h-6 w-6 text-muted-foreground" />
                                             </div>
                                         </div>
-                                        <p className="text-responsive-base text-muted-foreground">Selecciona un chat o formulario para comenzar</p>
+                                        <p className="text-responsive-base text-muted-foreground">Selecciona un chat para comenzar</p>
                                     </div>
                                 </div>
                             )}

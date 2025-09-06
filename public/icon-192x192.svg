@@ -1,0 +1,20 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="192" height="192" rx="24" fill="#2563eb"/>
+  <g transform="translate(32, 32)">
+    <!-- Chat bubble -->
+    <path d="M20 2H108C119.046 2 128 10.954 128 22V86C128 97.046 119.046 106 108 106H36L8 126V22C8 10.954 16.954 2 28 2H20Z" fill="white" opacity="0.9"/>
+    
+    <!-- Heart icon -->
+    <path d="M68 45C68 35.059 75.163 27 84 27C92.837 27 100 35.059 100 45C100 54.941 84 70 84 70S68 54.941 68 45Z" fill="#ef4444"/>
+    <path d="M52 45C52 35.059 59.163 27 68 27C76.837 27 84 35.059 84 45C84 54.941 68 70 68 70S52 54.941 52 45Z" fill="#ef4444"/>
+    
+    <!-- Plus sign for medical -->
+    <rect x="74" y="80" width="20" height="4" fill="#2563eb"/>
+    <rect x="82" y="72" width="4" height="20" fill="#2563eb"/>
+    
+    <!-- Text lines -->
+    <rect x="20" y="35" width="32" height="3" rx="1.5" fill="#2563eb" opacity="0.6"/>
+    <rect x="20" y="45" width="24" height="3" rx="1.5" fill="#2563eb" opacity="0.6"/>
+    <rect x="20" y="55" width="28" height="3" rx="1.5" fill="#2563eb" opacity="0.6"/>
+  </g>
+</svg>
