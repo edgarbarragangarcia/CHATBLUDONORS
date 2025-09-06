@@ -39,6 +39,7 @@ async function getPublishedForms() {
             id,
             title,
             description,
+            webhook_url,
             created_at,
             form_fields(
                 id,

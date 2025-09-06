@@ -31,6 +31,7 @@ type PublishedForm = {
     id: string;
     title: string;
     description: string;
+    webhook_url?: string;
     created_at: string;
     form_fields: FormField[];
 };
@@ -105,17 +106,87 @@ export function FormViewer({ form, user }: FormViewerProps) {
         try {
             const supabase = createClient();
             
-            const { error } = await supabase
+            // Guardar respuesta en la base de datos
+            const { data: responseData, error: responseError } = await supabase
                 .from('form_responses')
                 .insert({
                     form_id: form.id,
                     user_email: user.email,
-                    response_data: formData,
                     submitted_at: new Date().toISOString()
-                });
+                })
+                .select('id')
+                .single();
             
-            if (error) {
-                throw error;
+            if (responseError) {
+                throw responseError;
+            }
+            
+            // Guardar valores individuales de cada campo
+            const responseValues = Object.entries(formData).map(([fieldId, value]) => ({
+                response_id: responseData.id,
+                field_id: fieldId,
+                value: typeof value === 'string' ? value : JSON.stringify(value),
+                value_json: typeof value === 'object' ? value : null
+            }));
+            
+            if (responseValues.length > 0) {
+                const { error: valuesError } = await supabase
+                    .from('form_response_values')
+                    .insert(responseValues);
+                
+                if (valuesError) {
+                    throw valuesError;
+                }
+            }
+            
+            // Enviar datos al webhook si está configurado
+            if (form.webhook_url) {
+                try {
+                    const webhookPayload = {
+                        form_id: form.id,
+                        form_title: form.title,
+                        user_email: user.email,
+                        response_data: formData,
+                        submitted_at: new Date().toISOString()
+                    };
+                    
+                    console.log('Enviando datos al webhook:', webhookPayload);
+                    
+                    // Intentar primero con CORS normal
+                    try {
+                        const webhookResponse = await fetch(form.webhook_url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(webhookPayload)
+                        });
+                        
+                        if (webhookResponse.ok) {
+                            console.log('Webhook enviado exitosamente con CORS');
+                        } else {
+                            throw new Error(`HTTP ${webhookResponse.status}`);
+                        }
+                    } catch (corsError) {
+                        console.log('Error con CORS, intentando sin CORS:', corsError);
+                        
+                        // Si falla con CORS, intentar sin CORS
+                        await fetch(form.webhook_url, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(webhookPayload)
+                        });
+                        
+                        console.log('Webhook enviado sin CORS (no se puede verificar respuesta)');
+                    }
+                    
+                } catch (webhookError) {
+                    console.error('Error enviando webhook:', webhookError);
+                    // No mostramos error al usuario ya que el formulario se guardó correctamente
+                }
             }
             
             toast({

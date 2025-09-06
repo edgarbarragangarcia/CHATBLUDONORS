@@ -92,24 +92,24 @@ export function PublishedFormsList({ publishedForms, selectedFormId, onSelectFor
                             }`}
                             onClick={() => onSelectForm(form.id)}
                         >
-                            <CardHeader className="p-3">
+                            <CardHeader className="p-1">
                                 <div className="flex items-start justify-between">
-                                    <div className="flex items-center space-x-3 min-w-0 flex-1">
-                                        <div className={`flex items-center justify-center w-8 h-8 rounded-lg ${
+                                    <div className="flex items-center space-x-2 min-w-0 flex-1">
+                                        <div className={`flex items-center justify-center w-4 h-4 rounded-md ${
                                             isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
                                         }`}>
-                                            <FileText className="h-4 w-4" />
+                                            <FileText className="h-2.5 w-2.5" />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <CardTitle className="text-xs font-medium truncate">
+                                            <CardTitle className="text-[1px] font-light truncate">
                                                 {form.title}
                                             </CardTitle>
                                             {form.description && (
-                                                <CardDescription className="text-xs mt-1 line-clamp-2">
+                                                <CardDescription className="text-xs mt-0.5 line-clamp-1">
                                                     {form.description}
                                                 </CardDescription>
                                             )}
-                                            <div className="flex items-center space-x-4 mt-2 text-xs text-muted-foreground">
+                                            <div className="flex items-center space-x-2 mt-0.5 text-xs text-muted-foreground">
                                                 <span>{fieldsCount} campos</span>
                                                 <div className="flex items-center space-x-1">
                                                     <Calendar className="h-3 w-3" />
