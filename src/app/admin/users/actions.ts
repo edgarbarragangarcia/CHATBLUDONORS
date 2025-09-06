@@ -28,13 +28,20 @@ export async function getChats() {
 
 // This function fetches all permissions from the 'user_chat_permissions' table using the admin client
 export async function getAllUserChatPermissions() {
-    const supabase = await createAdminClient();
-    const { data, error } = await supabase.from('user_chat_permissions').select('*');
-     if (error) {
-        console.error('Error fetching permissions:', error.message);
-        throw new Error('Could not fetch permissions from Supabase.');
+    try {
+        const supabase = await createAdminClient();
+        const { data, error } = await supabase.from('user_chat_permissions').select('*');
+        if (error) {
+            console.error('Error fetching permissions:', error.message);
+            // Return empty array instead of throwing to prevent page crash
+            return [];
+        }
+        return data || [];
+    } catch (error) {
+        console.error('Error creating admin client or fetching permissions:', error);
+        // Return empty array to allow page to load without permissions
+        return [];
     }
-    return data;
 }
 
 // This function fetches all available forms from the 'forms' table using the admin client
@@ -50,13 +57,20 @@ export async function getForms() {
 
 // This function fetches all permissions from the 'user_form_permissions' table using the admin client
 export async function getAllUserFormPermissions() {
-    const supabase = await createAdminClient();
-    const { data, error } = await supabase.from('user_form_permissions').select('*');
-     if (error) {
-        console.error('Error fetching form permissions:', error.message);
-        throw new Error('Could not fetch form permissions from Supabase.');
+    try {
+        const supabase = await createAdminClient();
+        const { data, error } = await supabase.from('user_form_permissions').select('*');
+        if (error) {
+            console.error('Error fetching form permissions:', error.message);
+            // Return empty array instead of throwing to prevent page crash
+            return [];
+        }
+        return data || [];
+    } catch (error) {
+        console.error('Error creating admin client or fetching form permissions:', error);
+        // Return empty array to allow page to load without form permissions
+        return [];
     }
-    return data;
 }
 
 // This function updates or inserts a permission in the 'user_chat_permissions' table using the admin client

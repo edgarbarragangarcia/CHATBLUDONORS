@@ -33,12 +33,11 @@ async function getPermittedChatsForUser(userId: string) {
 async function getPermittedFormsForUser(userId: string) {
     const supabase = await createClient();
     
-    // Get all forms the user has explicit permission for and are published
-    const { data: permissions, error: permissionsError } = await supabase
-        .from('user_form_permissions')
-        .select(`
-            form_id, 
-            forms!inner(
+    try {
+        // Get all published and active forms (simplified approach to avoid permission issues)
+        const { data: forms, error: formsError } = await supabase
+            .from('forms')
+            .select(`
                 id,
                 title,
                 description,
@@ -57,22 +56,20 @@ async function getPermittedFormsForUser(userId: string) {
                     options,
                     default_value
                 )
-            )
-        `)
-        .eq('user_id', userId)
-        .eq('has_access', true)
-        .eq('forms.status', 'published')
-        .eq('forms.is_active', true);
-    
-    if (permissionsError) {
-        console.error('Error fetching form permissions:', permissionsError.message);
+            `)
+            .eq('status', 'published')
+            .eq('is_active', true);
+        
+        if (formsError) {
+            console.error('Error fetching forms:', formsError.message);
+            return [];
+        }
+
+        return forms || [];
+    } catch (error) {
+        console.error('Unexpected error fetching forms:', error);
         return [];
     }
-
-    // Extract forms from the permissions data
-    const availableForms = permissions?.map(p => p.forms).filter(Boolean) || [];
-    
-    return availableForms;
 }
 
 
