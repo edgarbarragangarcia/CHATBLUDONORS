@@ -143,6 +143,7 @@ export function FormViewer({ form, user }: FormViewerProps) {
             if (form.webhook_url) {
                 try {
                     const webhookPayload = {
+                        webhook_url: form.webhook_url,
                         form_id: form.id,
                         form_title: form.title,
                         user_email: user.email,
@@ -150,41 +151,27 @@ export function FormViewer({ form, user }: FormViewerProps) {
                         submitted_at: new Date().toISOString()
                     };
                     
-                    console.log('Enviando datos al webhook:', webhookPayload);
+                    console.log('Enviando datos al webhook via proxy:', webhookPayload);
                     
-                    // Intentar primero con CORS normal
-                    try {
-                        const webhookResponse = await fetch(form.webhook_url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(webhookPayload)
-                        });
-                        
-                        if (webhookResponse.ok) {
-                            console.log('Webhook enviado exitosamente con CORS');
-                        } else {
-                            throw new Error(`HTTP ${webhookResponse.status}`);
-                        }
-                    } catch (corsError) {
-                        console.log('Error con CORS, intentando sin CORS:', corsError);
-                        
-                        // Si falla con CORS, intentar sin CORS
-                        await fetch(form.webhook_url, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(webhookPayload)
-                        });
-                        
-                        console.log('Webhook enviado sin CORS (no se puede verificar respuesta)');
+                    // Usar la ruta API proxy para evitar problemas de CORS
+                    const webhookResponse = await fetch('/api/webhook', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(webhookPayload)
+                    });
+                    
+                    const result = await webhookResponse.json();
+                    
+                    if (webhookResponse.ok && result.success) {
+                        console.log('Webhook enviado exitosamente via proxy:', result);
+                    } else {
+                        console.warn('Error en webhook via proxy:', result);
                     }
                     
                 } catch (webhookError) {
-                    console.error('Error enviando webhook:', webhookError);
+                    console.error('Error enviando webhook via proxy:', webhookError);
                     // No mostramos error al usuario ya que el formulario se guardó correctamente
                 }
             }
