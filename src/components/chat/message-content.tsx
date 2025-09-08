@@ -16,12 +16,27 @@ export function MessageContent({ content, className }: MessageContentProps) {
   
   const driveLinks = detectGoogleDriveLinks(content)
   
+  // Función para procesar texto con formato de negrilla y eliminar símbolos de markdown
+  const processTextFormatting = (text: string) => {
+    // Convertir **texto** a <strong>texto</strong>
+    let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Eliminar símbolos de markdown como [texto](url) y dejar solo el texto
+    formattedText = formattedText.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    // Eliminar corchetes vacíos []
+    formattedText = formattedText.replace(/\[\]/g, '')
+    // Eliminar paréntesis vacíos ()
+    formattedText = formattedText.replace(/\(\)/g, '')
+    return formattedText
+  }
+  
   if (driveLinks.length === 0) {
     // Si no hay enlaces de Google Drive, mostrar el contenido normal
+    const formattedContent = processTextFormatting(content)
     return (
-      <p className={cn("whitespace-pre-wrap", className)}>
-        {content}
-      </p>
+      <p 
+        className={cn("whitespace-pre-wrap", className)}
+        dangerouslySetInnerHTML={{ __html: formattedContent }}
+      />
     )
   }
   
@@ -94,10 +109,13 @@ export function MessageContent({ content, className }: MessageContentProps) {
     <div className={cn("space-y-3", className)}>
       {parts.map((part, index) => {
         if (part.type === 'text') {
+          const formattedContent = processTextFormatting(part.content)
           return (
-            <p key={index} className="whitespace-pre-wrap">
-              {part.content}
-            </p>
+            <p 
+              key={index} 
+              className="whitespace-pre-wrap"
+              dangerouslySetInnerHTML={{ __html: formattedContent }}
+            />
           )
         }
         

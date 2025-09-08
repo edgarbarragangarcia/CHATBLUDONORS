@@ -25,7 +25,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     // Caso especial para mensajes del sistema/bot
     if (userId === 'system' || userId === '00000000-0000-0000-0000-000000000000') {
       return {
-        name: 'Bot',
+        name: 'Anakin',
         avatar: null,
       }
     }
