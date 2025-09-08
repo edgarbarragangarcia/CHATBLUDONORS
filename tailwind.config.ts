@@ -22,7 +22,7 @@ export default {
         'lg': ['1.125rem', { lineHeight: '1.75rem', letterSpacing: '-0.025em' }],
         'xl': ['1.25rem', { lineHeight: '1.75rem', letterSpacing: '-0.025em' }],
         '2xl': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.025em' }],
-        '3xl': ['1.875rem', { lineHeight: '2.25rem', letterSpacing: '-0.025em' }],
+        '3xl': ['0.9rem', { lineHeight: '2.25rem', letterSpacing: '-0.025em' }],
         '4xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.025em' }],
         '5xl': ['3rem', { lineHeight: '1', letterSpacing: '-0.025em' }],
         '6xl': ['3.75rem', { lineHeight: '1', letterSpacing: '-0.025em' }],
@@ -80,6 +80,14 @@ export default {
           'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
+        },
+        // Colores corporativos
+        corporate: {
+          'navy': '#1a3d6d',
+          'gray-light': '#b5bed1',
+          'green': '#7fbc42',
+          'black-70': '#6d6e71',
+          'black-30': '#bcbec0',
         },
       },
       borderRadius: {

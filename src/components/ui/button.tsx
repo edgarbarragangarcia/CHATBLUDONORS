@@ -9,15 +9,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-modern active:scale-[0.98]",
+        default: "bg-gradient-to-r from-corporate-navy to-corporate-navy/90 text-white hover:from-corporate-navy/90 hover:to-corporate-navy/80 hover:shadow-lg hover:shadow-corporate-navy/30 active:scale-[0.98] font-semibold",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-modern active:scale-[0.98]",
         outline:
-          "border border-border/50 bg-background/50 backdrop-blur-sm hover:bg-accent/50 hover:text-accent-foreground hover:border-border hover:shadow-modern active:scale-[0.98]",
+          "border-2 border-corporate-navy/30 bg-background/50 backdrop-blur-sm text-corporate-navy hover:bg-corporate-navy hover:text-white hover:border-corporate-navy hover:shadow-lg hover:shadow-corporate-navy/20 active:scale-[0.98] font-medium",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:shadow-modern active:scale-[0.98]",
-        ghost: "hover:bg-accent/50 hover:text-accent-foreground active:scale-[0.98]",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-corporate-gray-light/20 text-corporate-navy hover:bg-corporate-gray-light/30 hover:shadow-modern active:scale-[0.98] font-medium",
+        ghost: "text-corporate-navy hover:bg-corporate-navy/10 hover:text-corporate-navy active:scale-[0.98]",
+        link: "text-corporate-navy underline-offset-4 hover:underline font-medium",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -59,16 +59,16 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
   const userAvatar = user?.user_metadata?.avatar_url;
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-r from-purple-100/80 via-pink-50/80 to-blue-100/80 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-blue-900/20 border-b border-purple-200/30 dark:border-purple-700/30 backdrop-blur-xl shadow-lg shadow-purple-100/20 dark:shadow-purple-900/20 mobile-safe-area">
+    <header className="sticky top-0 z-50 bg-gradient-to-r from-corporate-navy/20 via-corporate-navy/15 to-corporate-navy/25 dark:from-corporate-navy/20 dark:via-corporate-black-70/20 dark:to-corporate-black-30/20 border-b border-corporate-navy/40 dark:border-corporate-black-70/30 backdrop-blur-xl shadow-xl shadow-corporate-navy/30 dark:shadow-corporate-black-70/40 mobile-safe-area">
       <div className="flex h-14 sm:h-16 items-center justify-between container-responsive">
         {/* Logo and Brand - Left Section */}
         <Link href="/" className="flex items-center gap-2 sm:gap-3 group touch-target">
-          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-800 dark:to-pink-800 group-hover:from-purple-300 group-hover:to-pink-300 dark:group-hover:from-purple-700 dark:group-hover:to-pink-700 transition-all duration-300 shadow-sm">
-            <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 text-purple-700 dark:text-purple-200" />
+          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-corporate-gray-light to-corporate-navy/20 dark:from-corporate-navy dark:to-corporate-black-70 group-hover:from-corporate-green/30 group-hover:to-corporate-navy/30 dark:group-hover:from-corporate-navy/80 dark:group-hover:to-corporate-black-30 transition-all duration-300 shadow-sm">
+            <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 text-corporate-navy dark:text-corporate-gray-light" />
           </div>
           <div className="hidden sm:block">
-            <h1 className="text-responsive-lg bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 bg-clip-text text-transparent font-bold">INGENIABOTS</h1>
-              <p className="text-responsive-xs text-purple-600/70 dark:text-purple-300/70">Interfaz Integradora de Agentes</p>
+            <h1 className="text-responsive-lg bg-gradient-to-r from-corporate-navy via-corporate-green to-corporate-navy dark:from-corporate-gray-light dark:via-corporate-green dark:to-corporate-gray-light bg-clip-text text-transparent font-bold">INGENIABOTS</h1>
+              <p className="text-responsive-xs text-corporate-navy/70 dark:text-corporate-gray-light/70">Interfaz Integradora de Agentes</p>
           </div>
         </Link>
 
@@ -85,7 +85,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
           <div className="hidden md:block">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative flex items-center gap-2 rounded-xl hover:bg-gradient-to-r hover:from-purple-100/50 hover:to-pink-100/50 dark:hover:from-purple-800/30 dark:hover:to-pink-800/30 p-1.5 sm:p-2 transition-all duration-300 touch-target">
+                <Button variant="ghost" className="relative flex items-center gap-2 rounded-xl hover:bg-gradient-to-r hover:from-corporate-gray-light/50 hover:to-corporate-navy/10 dark:hover:from-corporate-navy/30 dark:hover:to-corporate-black-70/30 p-1.5 sm:p-2 transition-all duration-300 touch-target">
                   {userAvatar ? (
                     <img 
                       src={userAvatar} 
@@ -93,8 +93,8 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
                       className="w-8 h-8 rounded-full object-cover ring-2 ring-border/20"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-700 dark:to-pink-700 flex items-center justify-center ring-2 ring-purple-300/30 dark:ring-purple-600/30">
-                      <User className="h-4 w-4 text-purple-700 dark:text-purple-200" />
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-corporate-gray-light to-corporate-navy/20 dark:from-corporate-navy dark:to-corporate-black-70 flex items-center justify-center ring-2 ring-corporate-navy/30 dark:ring-corporate-gray-light/30">
+                      <User className="h-4 w-4 text-corporate-navy dark:text-corporate-gray-light" />
                     </div>
                   )}
                   <div className="text-right hidden lg:block">
@@ -105,7 +105,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
                   </div>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 sm:w-64 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-purple-200/50 dark:border-purple-700/50 shadow-xl shadow-purple-100/20 dark:shadow-purple-900/20" align="end" forceMount>
+              <DropdownMenuContent className="w-48 sm:w-64 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-corporate-gray-light/50 dark:border-corporate-black-70/50 shadow-xl shadow-corporate-navy/20 dark:shadow-corporate-black-70/20" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal padding-responsive">
                   <div className="flex items-center gap-2 sm:gap-3 py-2">
                     {userAvatar ? (
@@ -115,8 +115,8 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-border/20"
                       />
                     ) : (
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-700 dark:to-pink-700 flex items-center justify-center ring-2 ring-purple-300/30 dark:ring-purple-600/30">
-                        <User className="h-4 w-4 sm:h-5 sm:w-5 text-purple-700 dark:text-purple-200" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-corporate-gray-light to-corporate-navy/20 dark:from-corporate-navy dark:to-corporate-black-70 flex items-center justify-center ring-2 ring-corporate-navy/30 dark:ring-corporate-gray-light/30">
+                        <User className="h-4 w-4 sm:h-5 sm:w-5 text-corporate-navy dark:text-corporate-gray-light" />
                       </div>
                     )}
                     <div className="flex flex-col space-y-1 overflow-hidden">
@@ -125,16 +125,16 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
                     </div>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-purple-200/50 dark:bg-purple-700/50" />
+                <DropdownMenuSeparator className="bg-corporate-gray-light/50 dark:bg-corporate-navy/50" />
                 {isAdmin && (
                   <>
                     <DropdownMenuGroup>
-                      <DropdownMenuItem onClick={goToAdmin} className="cursor-pointer py-2 text-responsive-sm hover:bg-purple-100/50 dark:hover:bg-purple-800/30 focus:bg-purple-100/50 dark:focus:bg-purple-800/30 touch-target">
+                      <DropdownMenuItem onClick={goToAdmin} className="cursor-pointer py-2 text-responsive-sm hover:bg-corporate-gray-light/20 dark:hover:bg-corporate-navy/30 focus:bg-corporate-gray-light/20 dark:focus:bg-corporate-navy/30 touch-target">
                         <Shield className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                         <span>Panel de Administrador</span>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
-                    <DropdownMenuSeparator className="bg-purple-200/50 dark:bg-purple-700/50" />
+                    <DropdownMenuSeparator className="bg-corporate-gray-light/50 dark:bg-corporate-navy/50" />
                   </>
                 )}
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 hover:!text-red-500 focus:!text-red-500 py-2 text-responsive-sm hover:bg-red-100/50 dark:hover:bg-red-800/30 focus:bg-red-100/50 dark:focus:bg-red-800/30 touch-target">
@@ -149,7 +149,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden rounded-xl p-2 sm:p-2.5 hover:bg-gradient-to-r hover:from-purple-100/50 hover:to-pink-100/50 dark:hover:from-purple-800/30 dark:hover:to-pink-800/30 transition-all duration-300 touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="md:hidden rounded-xl p-2 sm:p-2.5 hover:bg-gradient-to-r hover:from-corporate-gray-light/20 hover:to-corporate-navy/20 dark:hover:from-corporate-navy/30 dark:hover:to-corporate-green/30 transition-all duration-300 touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
           >
@@ -164,7 +164,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-gradient-to-r from-purple-50/90 via-pink-25/90 to-blue-50/90 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-blue-900/30 border-t border-purple-200/30 dark:border-purple-700/30 backdrop-blur-xl">
+        <div className="md:hidden bg-gradient-to-r from-corporate-gray-light/20 via-white/90 to-corporate-navy/10 dark:from-corporate-navy/30 dark:via-corporate-black-70/30 dark:to-corporate-black-30/30 border-t border-corporate-gray-light/30 dark:border-corporate-navy/30 backdrop-blur-xl">
           <nav className="flex flex-col gap-1 p-2 space-y-0">
             {isAdmin && (
               <Link 
@@ -187,7 +187,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
               <div className="px-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-gradient-to-r hover:from-purple-100/50 hover:to-pink-100/50 dark:hover:from-purple-800/30 dark:hover:to-pink-800/30 justify-start transition-all duration-300 touch-target">
+                    <Button variant="ghost" className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-gradient-to-r hover:from-corporate-gray-light/20 hover:to-corporate-navy/20 dark:hover:from-corporate-navy/30 dark:hover:to-corporate-green/30 justify-start transition-all duration-300 touch-target">
                       {userAvatar ? (
                         <img 
                           src={userAvatar} 
@@ -195,8 +195,8 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
                           className="w-10 h-10 rounded-full object-cover ring-2 ring-border/20"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-700 dark:to-pink-700 flex items-center justify-center ring-2 ring-purple-300/30 dark:ring-purple-600/30">
-                          <User className="h-5 w-5 text-purple-700 dark:text-purple-200" />
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-corporate-gray-light to-corporate-navy/30 dark:from-corporate-navy dark:to-corporate-green flex items-center justify-center ring-2 ring-corporate-gray-light/30 dark:ring-corporate-navy/30">
+                  <User className="h-5 w-5 text-corporate-navy dark:text-corporate-gray-light" />
                         </div>
                       )}
                       <div className="flex-1 text-left">

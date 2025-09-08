@@ -50,7 +50,7 @@ export function CreateChatDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-auto">
+        <Button className="w-full sm:w-auto bg-gradient-to-r from-corporate-navy to-corporate-navy/90 hover:from-corporate-navy/90 hover:to-corporate-navy text-white shadow-lg shadow-corporate-navy/30 font-semibold">
           <PlusCircle className="mr-2 h-4 w-4" />
           <span className="hidden sm:inline">Crear Chat</span>
           <span className="sm:hidden">Crear</span>
@@ -107,7 +107,7 @@ export function CreateChatDialog() {
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="bg-gradient-to-r from-corporate-navy to-corporate-navy/90 hover:from-corporate-navy/90 hover:to-corporate-navy text-white shadow-lg shadow-corporate-navy/30 font-semibold">
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Crear Chat
             </Button>

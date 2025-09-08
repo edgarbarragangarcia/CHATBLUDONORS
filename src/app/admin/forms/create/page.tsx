@@ -235,7 +235,7 @@ export default function CreateFormPage() {
           <div className="space-y-2">
             {field.options?.map((option, index) => (
               <div key={index} className="flex items-center space-x-2">
-                <input type="radio" disabled className="text-purple-600" />
+                <input type="radio" disabled className="text-corporate-navy" />
                 <label className="text-sm">{option}</label>
               </div>
             ))}
@@ -246,7 +246,7 @@ export default function CreateFormPage() {
           <div className="space-y-2">
             {field.options?.map((option, index) => (
               <div key={index} className="flex items-center space-x-2">
-                <input type="checkbox" disabled className="text-purple-600" />
+                <input type="checkbox" disabled className="text-corporate-navy" />
                 <label className="text-sm">{option}</label>
               </div>
             ))}
@@ -313,7 +313,7 @@ export default function CreateFormPage() {
                 {renderFieldPreview(field)}
               </div>
             ))}
-            <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500">
+            <Button className="w-full bg-gradient-to-r from-corporate-navy to-corporate-navy/80">
               Enviar Formulario
             </Button>
           </CardContent>
@@ -335,7 +335,7 @@ export default function CreateFormPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 bg-clip-text text-transparent">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-corporate-navy via-corporate-navy/80 to-corporate-green dark:from-corporate-navy dark:via-corporate-gray-light dark:to-corporate-green bg-clip-text text-transparent">
               Crear Formulario
             </h1>
             <p className="text-responsive-xs text-muted-foreground mt-1 hidden sm:block">
@@ -357,7 +357,7 @@ export default function CreateFormPage() {
           <Button 
             onClick={saveForm}
             disabled={!formData.title || formData.fields.length === 0 || isSaving}
-            className="flex-1 sm:flex-none bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 touch-target"
+            className="flex-1 sm:flex-none bg-gradient-to-r from-corporate-navy to-corporate-navy/80 hover:from-corporate-navy/90 hover:to-corporate-navy touch-target"
           >
             <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">{isSaving ? 'Guardando...' : 'Guardar Formulario'}</span>
@@ -429,7 +429,7 @@ export default function CreateFormPage() {
                       className="justify-start h-auto p-3 hover:bg-purple-50 dark:hover:bg-purple-950 touch-target"
                       onClick={() => addField(fieldType.type as FormField['type'])}
                     >
-                      <Icon className="h-3 w-3 sm:h-4 sm:w-4 mr-2 text-purple-600" />
+                      <Icon className="h-3 w-3 sm:h-4 sm:w-4 mr-2 text-corporate-navy" />
                       <span className="text-responsive-sm">{fieldType.label}</span>
                     </Button>
                   );
@@ -494,7 +494,7 @@ export default function CreateFormPage() {
                                       >
                                         <GripVertical className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                                       </div>
-                                      <Icon className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600 flex-shrink-0" />
+                                      <Icon className="h-3 w-3 sm:h-4 sm:w-4 text-corporate-navy flex-shrink-0" />
                                       <div className="min-w-0 flex-1">
                                         <div className="font-medium text-responsive-sm truncate">{field.label}</div>
                                         <div className="text-responsive-xs text-muted-foreground capitalize">

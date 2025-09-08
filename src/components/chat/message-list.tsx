@@ -37,7 +37,7 @@ export function MessageList({ messages, currentUserId, isTyping = false }: { mes
               {!isCurrentUser && (
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={message.user_avatar || undefined} alt={isSystemMessage ? "Bot" : message.user_name || "User"} />
-                  <AvatarFallback className={isSystemMessage ? "bg-blue-500 text-white" : ""}>
+                  <AvatarFallback className={isSystemMessage ? "bg-corporate-navy text-white" : ""}>
                     {isSystemMessage ? systemInitial : userInitial}
                   </AvatarFallback>
                 </Avatar>
@@ -46,9 +46,9 @@ export function MessageList({ messages, currentUserId, isTyping = false }: { mes
                 className={cn(
                   "max-w-[70%] rounded-xl p-4 text-sm shadow-modern transition-modern",
                   isCurrentUser
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-gradient-to-r from-corporate-navy to-corporate-navy/90 text-white shadow-lg shadow-corporate-navy/30 font-medium"
                     : isSystemMessage
-                    ? "bg-blue-50 dark:bg-blue-950 text-blue-900 dark:text-blue-100 border border-blue-200 dark:border-blue-800"
+                    ? "bg-corporate-gray-light/20 dark:bg-corporate-navy/20 text-corporate-navy dark:text-corporate-gray-light border border-corporate-gray-light/50 dark:border-corporate-navy/50"
                     : "bg-card/50 backdrop-blur-sm text-card-foreground border border-border/50"
                 )}
               >

@@ -166,30 +166,21 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                         <div className="space-y-2">
                                             {availableForms.map((form) => (
                                                 <Card 
-                                                    key={form.id} 
-                                                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                                                        selectedFormId === form.id 
-                                                            ? 'ring-2 ring-primary bg-primary/5' 
-                                                            : 'hover:bg-muted/50'
-                                                    }`}
-                                                    onClick={() => handleSelectForm(form.id)}
-                                                >
-                                                    <CardHeader className="p-4">
-                                                        <div className="flex items-start gap-3">
-                                                            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
-                                                                <FileText className="h-4 w-4 text-primary" />
-                                                            </div>
-                                                            <div className="flex-1 min-w-0">
-                                                                <CardTitle className="text-sm font-medium truncate">{form.title}</CardTitle>
-                                                                {form.description && (
-                                                                    <CardDescription className="text-xs mt-1 line-clamp-2">
-                                                                        {form.description}
-                                                                    </CardDescription>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </CardHeader>
-                                                </Card>
+                                    key={form.id} 
+                                    className={`cursor-pointer transition-all duration-300 py-2 px-3 relative overflow-hidden group ${
+                                        selectedFormId === form.id 
+                                            ? 'bg-gradient-to-r from-corporate-navy/20 to-corporate-green/20 shadow-lg'
+                : 'hover:bg-gradient-to-r hover:from-corporate-gray-light/10 hover:to-corporate-navy/10 hover:shadow-md'
+                                    }`}
+                                    onClick={() => handleSelectForm(form.id)}
+                                >
+                                    {/* Efecto de brillo en hover */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-x-[-100%] group-hover:translate-x-[100%] transform"></div>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <FileText className="h-4 w-4 text-primary" />
+                                        <CardTitle className="text-sm font-medium text-center truncate">{form.title}</CardTitle>
+                                    </div>
+                                </Card>
                                             ))}
                                         </div>
                                     </TabsContent>
@@ -282,28 +273,19 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                         {availableForms.map((form) => (
                                             <Card 
                                                 key={form.id} 
-                                                className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                                                className={`cursor-pointer transition-all duration-300 py-2 px-3 relative overflow-hidden group ${
                                                     selectedFormId === form.id 
-                                                        ? 'ring-2 ring-primary bg-primary/5' 
-                                                        : 'hover:bg-muted/50'
+                                                        ? 'bg-gradient-to-r from-corporate-navy/20 to-corporate-green/20 shadow-lg'
+                : 'hover:bg-gradient-to-r hover:from-corporate-gray-light/10 hover:to-corporate-navy/10 hover:shadow-md'
                                                 }`}
                                                 onClick={() => handleSelectForm(form.id)}
                                             >
-                                                <CardHeader className="p-4">
-                                                    <div className="flex items-start gap-3">
-                                                        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
-                                                            <FileText className="h-4 w-4 text-primary" />
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <CardTitle className="text-sm font-medium truncate">{form.title}</CardTitle>
-                                                            {form.description && (
-                                                                <CardDescription className="text-xs mt-1 line-clamp-2">
-                                                                    {form.description}
-                                                                </CardDescription>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </CardHeader>
+                                                {/* Efecto de brillo en hover */}
+                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-x-[-100%] group-hover:translate-x-[100%] transform"></div>
+                                                <div className="flex items-center justify-center gap-2">
+                                    <FileText className="h-4 w-4 text-primary" />
+                                    <CardTitle className="text-sm font-medium text-center truncate">{form.title}</CardTitle>
+                                </div>
                                             </Card>
                                         ))}
                                     </div>

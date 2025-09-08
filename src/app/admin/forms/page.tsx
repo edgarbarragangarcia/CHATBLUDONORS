@@ -51,7 +51,7 @@ export default async function FormsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-corporate-navy via-corporate-navy/80 to-corporate-green dark:from-corporate-navy dark:via-corporate-gray-light dark:to-corporate-green bg-clip-text text-transparent">
             Gestión de Formularios
           </h1>
           <p className="text-muted-foreground mt-2">
@@ -60,7 +60,7 @@ export default async function FormsPage() {
         </div>
         <Button 
           asChild
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          className="bg-gradient-to-r from-corporate-navy to-corporate-navy/80 hover:from-corporate-navy/90 hover:to-corporate-navy text-white shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <Link href="/admin/forms/create">
             <Plus className="h-4 w-4 mr-2" />
@@ -71,26 +71,26 @@ export default async function FormsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-purple-200 dark:border-purple-800">
+        <Card className="border-corporate-navy/30 dark:border-corporate-navy/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Formularios</CardTitle>
-            <FileText className="h-4 w-4 text-purple-600" />
+            <FileText className="h-4 w-4 text-corporate-navy" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">{stats.totalForms}</div>
+            <div className="text-2xl font-bold text-corporate-navy">{stats.totalForms}</div>
             <p className="text-xs text-muted-foreground">
               {stats.publishedForms} publicados
             </p>
           </CardContent>
         </Card>
         
-        <Card className="border-pink-200 dark:border-pink-800">
+        <Card className="border-corporate-green/30 dark:border-corporate-green/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Respuestas</CardTitle>
-            <Users className="h-4 w-4 text-pink-600" />
+            <Users className="h-4 w-4 text-corporate-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-pink-600">
+            <div className="text-2xl font-bold text-corporate-green">
               {stats.totalResponses}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -99,13 +99,13 @@ export default async function FormsPage() {
           </CardContent>
         </Card>
         
-        <Card className="border-blue-200 dark:border-blue-800">
+        <Card className="border-corporate-gray-light/30 dark:border-corporate-gray-light/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Promedio Campos</CardTitle>
-            <Calendar className="h-4 w-4 text-blue-600" />
+            <Calendar className="h-4 w-4 text-corporate-gray-light" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-corporate-gray-light">
               {averageFields}
             </div>
             <p className="text-xs text-muted-foreground">

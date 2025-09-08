@@ -92,7 +92,7 @@ export default function ViewFormPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-corporate-navy mx-auto"></div>
           <p className="mt-4 text-muted-foreground">Cargando formulario...</p>
         </div>
       </div>
@@ -128,7 +128,7 @@ export default function ViewFormPage() {
           </Button>
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-corporate-navy via-corporate-navy/80 to-corporate-green dark:from-corporate-navy dark:via-corporate-gray-light dark:to-corporate-green bg-clip-text text-transparent">
                 {form.title}
               </h1>
               <Badge className={getStatusColor(form.status)}>

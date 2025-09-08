@@ -30,36 +30,36 @@ const getChatIcon = (chatName: string) => {
 const getChatGradient = (chatName: string, isSelected: boolean) => {
     if (chatName.toLowerCase().includes('bluedonors')) {
         return isSelected 
-            ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25" 
-            : "hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 dark:hover:from-blue-900/20 dark:hover:to-cyan-900/20";
+            ? "bg-gradient-to-r from-corporate-navy to-corporate-navy/80 text-white shadow-xl shadow-corporate-navy/40 border-corporate-navy/50" 
+            : "hover:bg-gradient-to-r hover:from-corporate-navy/20 hover:to-corporate-navy/10 hover:text-corporate-navy hover:shadow-lg hover:shadow-corporate-navy/20 dark:hover:from-corporate-navy/30 dark:hover:to-corporate-navy/20";
     }
     if (chatName.toLowerCase().includes('projectia')) {
         return isSelected 
-            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25" 
-            : "hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20";
+            ? "bg-gradient-to-r from-corporate-navy to-corporate-green text-white shadow-xl shadow-corporate-navy/40 border-corporate-navy/50" 
+            : "hover:bg-gradient-to-r hover:from-corporate-navy/15 hover:to-corporate-green/15 hover:text-corporate-navy hover:shadow-lg hover:shadow-corporate-navy/15 dark:hover:from-corporate-navy/25 dark:hover:to-corporate-green/25";
     }
     return isSelected 
-        ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25" 
-        : "hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 dark:hover:from-emerald-900/20 dark:hover:to-teal-900/20";
+        ? "bg-gradient-to-r from-corporate-navy to-corporate-navy/90 text-white shadow-xl shadow-corporate-navy/40 border-corporate-navy/50" 
+        : "hover:bg-gradient-to-r hover:from-corporate-navy/20 hover:to-corporate-navy/10 hover:text-corporate-navy hover:shadow-lg hover:shadow-corporate-navy/20 dark:hover:from-corporate-navy/30 dark:hover:to-corporate-navy/20";
 };
 
 export function ChatRoomList({ availableChats, selectedChatId, onSelectChat }: ChatRoomListProps) {
     return (
         <div className="h-full bg-gradient-to-b from-background/95 via-background/90 to-background/95 backdrop-blur-xl border-r border-border/50 flex flex-col relative overflow-hidden">
             {/* Decorative background elements with floating animation */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none" />
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl pointer-events-none animate-bounce" 
+            <div className="absolute inset-0 bg-gradient-to-br from-corporate-navy/5 via-transparent to-corporate-gray-light/5 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-corporate-navy/10 to-transparent rounded-full blur-3xl pointer-events-none animate-bounce" 
                  style={{ animationDelay: '0s', animationDuration: '4s' }} />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-secondary/10 to-transparent rounded-full blur-2xl pointer-events-none animate-bounce" 
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-corporate-green/10 to-transparent rounded-full blur-2xl pointer-events-none animate-bounce" 
                  style={{ animationDelay: '2s', animationDuration: '3s' }} />
-            <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-full blur-md pointer-events-none animate-pulse" 
+            <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-gradient-to-r from-corporate-black-70/10 to-corporate-black-30/10 rounded-full blur-md pointer-events-none animate-pulse" 
                  style={{ animationDelay: '1s', animationDuration: '2s' }} />
             
             {/* Header */}
             <div className="relative z-10 p-4 border-b border-border/30">
                 <div className="flex items-center gap-3 mb-2">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-sm">
-                        <Sparkles className="h-4 w-4 text-primary" />
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-corporate-navy/20 to-corporate-gray-light/20 backdrop-blur-sm">
+                        <Sparkles className="h-4 w-4 text-corporate-green" />
                     </div>
                     <h2 className="text-lg font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                         Salas de Chat

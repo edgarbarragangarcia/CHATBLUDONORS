@@ -29,7 +29,7 @@ export function MessageForm({ onSendMessage }: { onSendMessage: (content: string
           }
         }}
       />
-      <Button type="submit" size="icon" disabled={!content.trim()} className="h-11 w-11 sm:h-12 sm:w-12 shrink-0">
+      <Button type="submit" size="icon" disabled={!content.trim()} className="h-11 w-11 sm:h-12 sm:w-12 shrink-0 bg-gradient-to-r from-corporate-navy to-corporate-navy/90 hover:from-corporate-navy/90 hover:to-corporate-navy text-white shadow-lg shadow-corporate-navy/30 disabled:opacity-50 disabled:shadow-none">
         <SendHorizonal className="h-4 w-4 sm:h-5 sm:w-5" />
         <span className="sr-only">Send</span>
       </Button>

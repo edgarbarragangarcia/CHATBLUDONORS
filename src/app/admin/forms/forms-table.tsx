@@ -31,7 +31,7 @@ interface FormsTableProps {
 const getStatusBadge = (status: string) => {
   switch (status) {
     case 'published':
-      return <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Publicado</Badge>;
+      return <Badge className="bg-corporate-green/20 text-corporate-green dark:bg-corporate-green/20 dark:text-corporate-green">Publicado</Badge>;
     case 'draft':
       return <Badge variant="secondary">Borrador</Badge>;
     case 'archived':

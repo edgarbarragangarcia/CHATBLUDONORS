@@ -64,10 +64,10 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen w-full relative overflow-hidden">
       {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 dark:from-slate-900 dark:via-blue-950/30 dark:to-indigo-950/50">
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-corporate-gray-light/30 to-corporate-navy/20 dark:from-slate-900 dark:via-corporate-navy/30 dark:to-corporate-black-70/50">
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-corporate-navy/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-corporate-green/40 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-corporate-gray-light/50 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
       
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6">
@@ -78,36 +78,36 @@ export default function LoginPage() {
               <div className="text-center mb-8 space-y-6">
                 <div className="flex justify-center">
                   <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                    <div className="absolute -inset-1 bg-gradient-to-r from-corporate-navy to-corporate-green rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
                     <div className="relative flex items-center justify-center w-20 h-20 bg-white dark:bg-slate-900 rounded-full shadow-2xl transform transition duration-500 hover:scale-110">
-                      <Bot className="h-10 w-10 text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text" />
+                      <Bot className="h-10 w-10 text-transparent bg-gradient-to-r from-corporate-navy to-corporate-green bg-clip-text" />
                       <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-yellow-400 animate-pulse" />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent animate-gradient-x">
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-corporate-navy via-corporate-green to-corporate-navy bg-clip-text text-transparent animate-gradient-x">
                     INGENIABOTS
                   </h1>
                   <p className="text-lg text-slate-600 dark:text-slate-300 font-medium tracking-wide">
                     Interfaz Integradora de Agentes
                   </p>
                   <div className="flex justify-center space-x-1">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2 h-2 bg-corporate-navy rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-corporate-green rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-corporate-gray-light rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
                 </div>
               </div>
 
               {/* Modern Glass Card */}
               <div className="relative">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur opacity-30"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-corporate-navy to-corporate-green rounded-3xl blur opacity-30"></div>
                 <div className="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/20 dark:border-slate-700/20">
                   <Tabs defaultValue="login" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 bg-slate-100/50 dark:bg-slate-800/50 rounded-2xl p-1 backdrop-blur-sm">
-                      <TabsTrigger value="login" className="rounded-xl transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:scale-105">Iniciar Sesión</TabsTrigger>
-                      <TabsTrigger value="register" className="rounded-xl transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:scale-105">Registrarse</TabsTrigger>
+                      <TabsTrigger value="login" className="rounded-xl transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-corporate-navy data-[state=active]:to-corporate-navy/90 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-corporate-navy/30 data-[state=active]:scale-105 data-[state=active]:font-semibold">Iniciar Sesión</TabsTrigger>
+                      <TabsTrigger value="register" className="rounded-xl transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-corporate-navy data-[state=active]:to-corporate-navy/90 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-corporate-navy/30 data-[state=active]:scale-105 data-[state=active]:font-semibold">Registrarse</TabsTrigger>
                     </TabsList>
                     <TabsContent value="login" className="mt-6">
                       <form onSubmit={handleEmailPasswordLogin} className="space-y-4">
@@ -129,7 +129,7 @@ export default function LoginPage() {
                                 disabled={isLoading}
                                 className="h-12 rounded-2xl border-0 bg-slate-50/50 dark:bg-slate-800/50 backdrop-blur-sm pl-4 pr-4 text-base transition-all duration-300 focus:bg-white dark:focus:bg-slate-800 focus:shadow-xl focus:scale-[1.02] group-hover:shadow-lg"
                               />
-                              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-600/20 to-pink-600/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-corporate-navy/20 to-corporate-green/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                             </div>
                           </div>
                           
@@ -150,14 +150,14 @@ export default function LoginPage() {
                                 disabled={isLoading}
                                 className="h-12 rounded-2xl border-0 bg-slate-50/50 dark:bg-slate-800/50 backdrop-blur-sm pl-4 pr-4 text-base transition-all duration-300 focus:bg-white dark:focus:bg-slate-800 focus:shadow-xl focus:scale-[1.02] group-hover:shadow-lg"
                               />
-                              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-600/20 to-pink-600/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-corporate-navy/20 to-corporate-green/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                             </div>
                           </div>
                           
                           {/* Submit Button */}
                           <Button 
                             type="submit" 
-                            className="w-full h-12 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold text-base shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
+                            className="w-full h-12 rounded-2xl bg-gradient-to-r from-corporate-navy to-corporate-navy/80 hover:from-corporate-navy/90 hover:to-corporate-navy/70 text-white font-semibold text-base shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
                             disabled={isLoading}
                           >
                             <div className="flex items-center justify-center gap-2">
@@ -192,7 +192,7 @@ export default function LoginPage() {
                       {/* Google Button */}
                       <Button 
                         variant="outline" 
-                        className="w-full h-12 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-800 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] group" 
+                        className="w-full h-12 rounded-2xl border-2 border-corporate-navy/30 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-corporate-navy hover:text-white hover:border-corporate-navy transition-all duration-300 hover:shadow-xl hover:shadow-corporate-navy/20 hover:scale-[1.02] group" 
                         onClick={handleGoogleLogin}
                       >
                         <div className="flex items-center justify-center gap-3">
@@ -235,32 +235,32 @@ export default function LoginPage() {
           <div className="hidden lg:flex flex-col items-center justify-center">
             <div className="relative w-full max-w-lg">
               {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded-2xl opacity-20 animate-float"></div>
-              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full opacity-20 animate-float-delayed"></div>
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-gradient-to-br from-corporate-navy to-corporate-green rounded-2xl opacity-20 animate-float"></div>
+              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-gradient-to-br from-corporate-gray-light to-corporate-navy rounded-full opacity-20 animate-float-delayed"></div>
               
               {/* Main Content Card */}
               <div className="relative bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/30 dark:border-slate-700/30 transform hover:scale-105 transition-all duration-500">
                 {/* Animated Illustration */}
                 <div className="relative mb-8 flex justify-center">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur-2xl opacity-30 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-corporate-navy to-corporate-green rounded-3xl blur-2xl opacity-30 animate-pulse"></div>
                     <div className="relative bg-gradient-to-br from-slate-100 to-white dark:from-slate-800 dark:to-slate-900 rounded-3xl p-8 shadow-xl">
                       <div className="grid grid-cols-3 gap-4">
                         <div className="flex flex-col space-y-2">
-                          <div className="w-8 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"></div>
-                          <div className="w-6 h-2 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                          <div className="w-10 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                          <div className="w-8 h-2 bg-gradient-to-r from-corporate-navy to-corporate-green rounded-full animate-pulse"></div>
+                          <div className="w-6 h-2 bg-gradient-to-r from-corporate-gray-light to-corporate-navy rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                          <div className="w-10 h-2 bg-gradient-to-r from-corporate-green to-corporate-navy rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
                         </div>
                         <div className="flex items-center justify-center">
                           <div className="relative">
-                            <Bot className="h-12 w-12 text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text" />
+                            <Bot className="h-12 w-12 text-transparent bg-gradient-to-r from-corporate-navy to-corporate-green bg-clip-text" />
                             <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-ping"></div>
                           </div>
                         </div>
                         <div className="flex flex-col space-y-2 items-end">
-                          <div className="w-8 h-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></div>
-                          <div className="w-6 h-2 bg-gradient-to-r from-red-400 to-pink-400 rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
-                          <div className="w-10 h-2 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                          <div className="w-8 h-2 bg-gradient-to-r from-corporate-green to-corporate-navy rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></div>
+                          <div className="w-6 h-2 bg-gradient-to-r from-corporate-navy to-corporate-gray-light rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                          <div className="w-10 h-2 bg-gradient-to-r from-corporate-gray-light to-corporate-navy rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
                         </div>
                       </div>
                     </div>
@@ -278,22 +278,22 @@ export default function LoginPage() {
                   
                   {/* Feature Pills */}
                   <div className="flex flex-wrap justify-center gap-3 pt-4">
-                    <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium">
+                    <div className="px-4 py-2 bg-corporate-navy/10 dark:bg-corporate-navy/30 text-corporate-navy dark:text-corporate-gray-light rounded-full text-sm font-medium">
                       IA Avanzada
                     </div>
-                    <div className="px-4 py-2 bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 rounded-full text-sm font-medium">
+                    <div className="px-4 py-2 bg-corporate-green/10 dark:bg-corporate-green/30 text-corporate-green dark:text-corporate-green rounded-full text-sm font-medium">
                       Tiempo Real
                     </div>
-                    <div className="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
+                    <div className="px-4 py-2 bg-corporate-gray-light/20 dark:bg-corporate-gray-light/30 text-corporate-navy dark:text-corporate-gray-light rounded-full text-sm font-medium">
                       Seguro
                     </div>
                   </div>
                   
                   {/* Animated Dots */}
                   <div className="flex justify-center space-x-2 pt-6">
-                    <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-bounce"></div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-pink-500 to-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-3 h-3 bg-gradient-to-r from-corporate-navy to-corporate-green rounded-full animate-bounce"></div>
+                    <div className="w-3 h-3 bg-gradient-to-r from-corporate-green to-corporate-navy rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-3 h-3 bg-gradient-to-r from-corporate-gray-light to-corporate-navy rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
                 </div>
               </div>
