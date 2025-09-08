@@ -16,17 +16,10 @@ export function MessageContent({ content, className }: MessageContentProps) {
   
   const driveLinks = detectGoogleDriveLinks(content)
   
-  // Función para procesar texto con formato de negrilla y eliminar símbolos de markdown
+  // Función para procesar texto con formato de negrilla
   const processTextFormatting = (text: string) => {
     // Convertir **texto** a <strong>texto</strong>
-    let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    // Eliminar símbolos de markdown como [texto](url) y dejar solo el texto
-    formattedText = formattedText.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    // Eliminar corchetes vacíos []
-    formattedText = formattedText.replace(/\[\]/g, '')
-    // Eliminar paréntesis vacíos ()
-    formattedText = formattedText.replace(/\(\)/g, '')
-    return formattedText
+    return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
   }
   
   if (driveLinks.length === 0) {
@@ -125,25 +118,8 @@ export function MessageContent({ content, className }: MessageContentProps) {
           
           return (
             <div key={index} className="space-y-2">
-              {/* Siempre mostrar el enlace como alternativa principal */}
-              <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-dashed">
-                <ImageIcon className="h-4 w-4 text-muted-foreground" />
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground mb-1">Imagen de Google Drive</p>
-                  <a 
-                    href={part.originalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline flex items-center gap-1"
-                  >
-                    <ExternalLink className="h-3 w-3" />
-                    Ver imagen en Google Drive
-                  </a>
-                </div>
-              </div>
-              
-              {/* Intentar mostrar la imagen como fallback */}
-              {!hasError && (
+              {/* Mostrar la imagen como contenido principal */}
+              {!hasError ? (
                 <div className="relative group">
                   {isLoading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-muted/20 rounded-lg">
@@ -154,13 +130,30 @@ export function MessageContent({ content, className }: MessageContentProps) {
                     src={part.imageUrl}
                     alt="Imagen compartida"
                     className="max-w-full h-auto rounded-lg shadow-sm border border-border/50 transition-transform duration-200 group-hover:scale-[1.02]"
-                    style={{ maxHeight: '400px', display: hasError ? 'none' : 'block' }}
+                    style={{ maxHeight: '400px' }}
                     onLoadStart={() => handleImageLoadStart(part.imageUrl!)}
                     onLoad={() => handleImageLoad(part.imageUrl!)}
                     onError={() => handleImageError(part.imageUrl!)}
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-200 rounded-lg" />
+                </div>
+              ) : (
+                /* Mostrar enlace solo cuando la imagen falla */
+                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-dashed">
+                  <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                  <div className="flex-1">
+                    <p className="text-sm text-muted-foreground mb-1">No se pudo cargar la imagen</p>
+                    <a 
+                      href={part.originalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline flex items-center gap-1"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      Ver imagen en Google Drive
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
