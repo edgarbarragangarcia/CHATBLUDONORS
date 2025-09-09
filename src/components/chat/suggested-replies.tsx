@@ -20,7 +20,7 @@ export function SuggestedReplies({ suggestions, onSelect, isLoading }: Suggested
   }
 
   if (suggestions.length === 0) {
-    return <div className="hidden sm:block h-8 sm:h-9 mb-3"></div>;
+    return null;
   }
 
   return (
