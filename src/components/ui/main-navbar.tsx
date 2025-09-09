@@ -60,11 +60,11 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-corporate-navy/20 via-corporate-navy/15 to-corporate-navy/25 dark:from-corporate-navy/20 dark:via-corporate-black-70/20 dark:to-corporate-black-30/20 border-b border-corporate-navy/40 dark:border-corporate-black-70/30 backdrop-blur-xl shadow-xl shadow-corporate-navy/30 dark:shadow-corporate-black-70/40 mobile-safe-area">
-      <div className="flex h-14 sm:h-16 items-center justify-between container-responsive">
+      <div className="flex h-14 sm:h-16 items-center justify-between pl-6 pr-0.5">
         {/* Logo and Brand - Left Section */}
         <Link href="/" className="flex items-center gap-2 sm:gap-3 group touch-target">
-          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-corporate-gray-light to-corporate-navy/20 dark:from-corporate-navy dark:to-corporate-black-70 group-hover:from-corporate-green/30 group-hover:to-corporate-navy/30 dark:group-hover:from-corporate-navy/80 dark:group-hover:to-corporate-black-30 transition-all duration-300 shadow-sm">
-            <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 text-corporate-navy dark:text-corporate-gray-light" />
+          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-white group-hover:bg-white/90 dark:group-hover:bg-white/90 transition-all duration-300 shadow-sm">
+            <img src="/logoIngenes.png" alt="Ingenes Logo" className="h-6 w-6 sm:h-8 sm:w-8 object-contain" />
           </div>
           <div className="hidden sm:block">
             <h1 className="text-responsive-lg bg-gradient-to-r from-corporate-navy via-corporate-green to-corporate-navy dark:from-corporate-gray-light dark:via-corporate-green dark:to-corporate-gray-light bg-clip-text text-transparent font-bold">INGENIABOTS</h1>
@@ -85,7 +85,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
           <div className="hidden md:block">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative flex items-center gap-2 rounded-xl hover:bg-gradient-to-r hover:from-corporate-gray-light/50 hover:to-corporate-navy/10 dark:hover:from-corporate-navy/30 dark:hover:to-corporate-black-70/30 p-1.5 sm:p-2 transition-all duration-300 touch-target">
+                <Button variant="ghost" className="relative flex items-center gap-2 rounded-xl hover:bg-gradient-to-r hover:from-corporate-gray-light/50 hover:to-corporate-navy/10 dark:hover:from-corporate-navy/30 dark:hover:to-corporate-black-70/30 pl-3 pr-8 py-1.5 sm:py-2 transition-all duration-300 touch-target">
                   {userAvatar ? (
                     <img 
                       src={userAvatar} 

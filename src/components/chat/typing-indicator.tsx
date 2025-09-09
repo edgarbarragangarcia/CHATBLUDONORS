@@ -15,7 +15,7 @@ export function TypingIndicator({ isVisible }: TypingIndicatorProps) {
       <Avatar className="h-9 w-9">
         <AvatarImage src={undefined} alt="Anakin" />
         <AvatarFallback className="bg-corporate-navy text-white">
-          🤖
+          <img src="/logoIngenes.png" alt="Ingenes" className="w-4/5 h-4/5 object-contain bg-white rounded-full p-1" />
         </AvatarFallback>
       </Avatar>
       <div className="max-w-[70%] rounded-xl p-4 text-sm shadow-modern transition-modern bg-corporate-gray-light/20 dark:bg-corporate-navy/20 text-corporate-navy dark:text-corporate-gray-light border border-corporate-gray-light/50 dark:border-corporate-navy/50">

@@ -191,13 +191,14 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                 )}
 
                 {/* Mobile Chat Content */}
-                <div className="mobile-content-height bg-background/50 relative" style={{
-                    backgroundImage: 'url(/lego-background.svg)',
-                    backgroundSize: '200px 200px',
-                    backgroundPosition: 'top left',
-                    backgroundRepeat: 'repeat'
-                }}>
-                    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+                <div className="mobile-content-height bg-background/50 relative">
+                    <div className="absolute inset-0 opacity-20" style={{
+                        backgroundImage: 'url(/logoIngenes.png)',
+                        backgroundSize: '250px 250px',
+                        backgroundPosition: 'center center',
+                        backgroundRepeat: 'no-repeat'
+                    }} />
+                    <div className="absolute inset-0 bg-background/60" />
                     <div className="relative z-10 h-full mobile-scroll-container">
                         {selectedChatId ? (
                             <ChatPage user={user} email={user.email} chatId={selectedChatId} />
@@ -296,13 +297,14 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                 </ResizablePanel>
                 <ResizableHandle withHandle className="w-1 bg-border/50 hover:bg-border transition-modern" />
                 <ResizablePanel defaultSize={75}>
-                    <div className="h-full bg-background/50 relative" style={{
-                        backgroundImage: 'url(/lego-background.svg)',
-                        backgroundSize: '200px 200px',
-                        backgroundPosition: 'top left',
-                        backgroundRepeat: 'repeat'
-                    }}>
-                        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+                    <div className="h-full bg-background/50 relative">
+                        <div className="absolute inset-0 opacity-20" style={{
+                            backgroundImage: 'url(/logoIngenes.png)',
+                            backgroundSize: '250px 250px',
+                            backgroundPosition: 'center center',
+                            backgroundRepeat: 'no-repeat'
+                        }} />
+                        <div className="absolute inset-0 bg-background/60" />
                         <div className="relative z-10 h-full">
                             {selectedChatId ? (
                                 <ChatPage user={user} email={user.email} chatId={selectedChatId} />
