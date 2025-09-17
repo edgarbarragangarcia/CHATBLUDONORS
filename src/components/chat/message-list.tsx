@@ -38,7 +38,7 @@ export function MessageList({ messages, currentUserId, isTyping = false }: { mes
       <div className="absolute inset-0 opacity-15 pointer-events-none" style={{
         backgroundImage: 'url(/logoIngenes.png)',
         backgroundSize: '400px 400px',
-        backgroundPosition: 'center center',
+        backgroundPosition: 'right center',
         backgroundRepeat: 'no-repeat'
       }} />
       <div className="flex flex-col gap-4 relative z-10">

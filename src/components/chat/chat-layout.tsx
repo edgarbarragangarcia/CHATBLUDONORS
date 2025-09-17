@@ -195,7 +195,7 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                     <div className="absolute inset-0 opacity-20" style={{
                         backgroundImage: 'url(/logoIngenes.png)',
                         backgroundSize: '250px 250px',
-                        backgroundPosition: 'center center',
+                        backgroundPosition: 'right center',
                         backgroundRepeat: 'no-repeat'
                     }} />
                     <div className="absolute inset-0 bg-background/60" />
@@ -301,7 +301,7 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                         <div className="absolute inset-0 opacity-20" style={{
                             backgroundImage: 'url(/logoIngenes.png)',
                             backgroundSize: '250px 250px',
-                            backgroundPosition: 'center center',
+                            backgroundPosition: 'right center',
                             backgroundRepeat: 'no-repeat'
                         }} />
                         <div className="absolute inset-0 bg-background/60" />
