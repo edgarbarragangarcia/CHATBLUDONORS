@@ -115,8 +115,8 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
           message: content, 
           userId: user.id 
         }),
-        // Timeout de 20 segundos (el proxy interno tiene su propio timeout)
-        signal: AbortSignal.timeout(20000)
+        // Timeout de 60 segundos para permitir procesamiento completo
+      signal: AbortSignal.timeout(60000)
       })
       
       if (response.ok) {
@@ -141,7 +141,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          console.warn('Timeout en el envío del webhook (20s)')
+          console.warn('Timeout en el envío del webhook (60s)')
         } else {
           console.warn('Error enviando al webhook:', error.message)
         }

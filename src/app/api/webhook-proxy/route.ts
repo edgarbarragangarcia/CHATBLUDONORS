@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
         chat_id: chatId,
         timestamp: new Date().toISOString()
       }),
-      // Timeout de 15 segundos
-      signal: AbortSignal.timeout(15000)
+      // Timeout de 45 segundos para permitir procesamiento completo del webhook externo
+      signal: AbortSignal.timeout(60000)
     })
 
     if (!webhookResponse.ok) {
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
         return NextResponse.json(
-          { success: false, error: 'Timeout del webhook (15s)' },
+          { success: false, error: 'Timeout del webhook (45s)' },
           { status: 200 }
         )
       }
