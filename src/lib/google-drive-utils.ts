@@ -34,8 +34,8 @@ export function detectGoogleDriveLinks(text: string): Array<{
 }> {
   // Regex para detectar enlaces de Google Drive dentro de markdown [texto](url)
   const markdownDriveRegex = /\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view[^)]*)\)/g;
-  // Regex para detectar enlaces directos de Google Drive
-  const directDriveRegex = /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view[^\s)]*/g;
+  // Regex para detectar enlaces directos de Google Drive (incluyendo al final de oración)
+  const directDriveRegex = /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view[^\s]*/g;
   
   const links: Array<{
     originalUrl: string;
