@@ -376,6 +376,26 @@ body {
     padding-right: env(safe-area-inset-right);
   }
 
+  /* Zoom effect without background color change */
+  .zoom-hover {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .zoom-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px -5px hsl(var(--foreground) / 0.1), 0 8px 10px -6px hsl(var(--foreground) / 0.05);
+  }
+  
+  /* Subtle zoom effect (less dramatic) */
+  .zoom-hover-subtle {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  }
+  
+  .zoom-hover-subtle:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px -2px hsl(var(--foreground) / 0.08);
+  }
+
   .mobile-full-height {
     height: 100vh;
     height: 100dvh; /* Dynamic viewport height for mobile */

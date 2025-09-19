@@ -5,8 +5,7 @@ import { useState } from 'react';
 import { type User } from '@supabase/supabase-js';
 import { ChatRoomList } from './chat-room-list';
 import ChatPage from './chat-page';
-import {
-  ResizablePanelGroup,
+import { ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
 } from '@/components/ui/resizable';
@@ -15,6 +14,7 @@ import { Button } from '../ui/button';
 import { MessageCircle, Menu, X, FileText } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { FormViewer } from '@/components/forms/form-viewer';
+import { WatermarkBackground } from './watermark-background';
 
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
@@ -110,12 +110,12 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                         variant="ghost"
                         size="sm"
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden touch-target"
+                        className="lg:hidden touch-target bg-gradient-to-r from-corporate-navy/10 to-corporate-green/10 dark:from-corporate-navy/20 dark:to-corporate-green/20 border border-corporate-navy/20 dark:border-corporate-green/30 rounded-xl hover:shadow-lg transition-all duration-300"
                     >
                         <Menu className="h-5 w-5" />
                         <span className="ml-2 text-responsive-sm">Salas</span>
                     </Button>
-                    <h1 className="heading-4 text-responsive-lg">INGENIABOTS</h1>
+
                     <div className="w-16" /> {/* Spacer */}
                 </div>
 
@@ -130,7 +130,7 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => setIsSidebarOpen(false)}
-                                    className="touch-target"
+                                    className="touch-target bg-gradient-to-r from-corporate-navy/10 to-corporate-green/10 dark:from-corporate-navy/20 dark:to-corporate-green/20 border border-corporate-navy/20 dark:border-corporate-green/30 rounded-xl hover:shadow-lg transition-all duration-300"
                                 >
                                     <X className="h-5 w-5" />
                                 </Button>
@@ -167,10 +167,10 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                             {availableForms.map((form) => (
                                                 <Card 
                                     key={form.id} 
-                                    className={`cursor-pointer transition-all duration-300 py-2 px-3 relative overflow-hidden group ${
+                                    className={`cursor-pointer zoom-hover py-2 px-3 relative overflow-hidden group ${
                                         selectedFormId === form.id 
                                             ? 'bg-gradient-to-r from-corporate-navy/20 to-corporate-green/20 shadow-lg'
-                : 'hover:bg-gradient-to-r hover:from-corporate-gray-light/10 hover:to-corporate-navy/10 hover:shadow-md'
+                                            : ''
                                     }`}
                                     onClick={() => handleSelectForm(form.id)}
                                 >
@@ -192,13 +192,8 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
 
                 {/* Mobile Chat Content */}
                 <div className="mobile-content-height bg-background/50 relative">
-                    <div className="absolute inset-0 opacity-20" style={{
-                        backgroundImage: 'url(/logoIngenes.png)',
-                        backgroundSize: '250px 250px',
-                        backgroundPosition: 'right center',
-                        backgroundRepeat: 'no-repeat'
-                    }} />
-                    <div className="absolute inset-0 bg-background/60" />
+                      <WatermarkBackground size="small" opacity={0.2} />
+                      <div className="absolute inset-0 bg-background/60" />
                     <div className="relative z-10 h-full mobile-scroll-container">
                         {selectedChatId ? (
                             <ChatPage user={user} email={user.email} chatId={selectedChatId} />
@@ -223,7 +218,7 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                 <Button
                                     variant="outline"
                                     onClick={() => setIsSidebarOpen(true)}
-                                    className="mt-4 touch-target"
+                                    className="mt-4 touch-target bg-gradient-to-r from-corporate-navy/10 to-corporate-green/10 dark:from-corporate-navy/20 dark:to-corporate-green/20 border border-corporate-navy/20 dark:border-corporate-green/30 rounded-xl hover:shadow-lg transition-all duration-300"
                                 >
                                     <Menu className="h-4 w-4 mr-2" />
                                     Ver Contenido
@@ -274,10 +269,10 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                         {availableForms.map((form) => (
                                             <Card 
                                                 key={form.id} 
-                                                className={`cursor-pointer transition-all duration-300 py-2 px-3 relative overflow-hidden group ${
+                                                className={`cursor-pointer zoom-hover py-2 px-3 relative overflow-hidden group ${
                                                     selectedFormId === form.id 
                                                         ? 'bg-gradient-to-r from-corporate-navy/20 to-corporate-green/20 shadow-lg'
-                : 'hover:bg-gradient-to-r hover:from-corporate-gray-light/10 hover:to-corporate-navy/10 hover:shadow-md'
+                                                        : ''
                                                 }`}
                                                 onClick={() => handleSelectForm(form.id)}
                                             >
@@ -298,13 +293,8 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                 <ResizableHandle withHandle className="w-1 bg-border/50 hover:bg-border transition-modern" />
                 <ResizablePanel defaultSize={75}>
                     <div className="h-full bg-background/50 relative">
-                        <div className="absolute inset-0 opacity-20" style={{
-                            backgroundImage: 'url(/logoIngenes.png)',
-                            backgroundSize: '250px 250px',
-                            backgroundPosition: 'right center',
-                            backgroundRepeat: 'no-repeat'
-                        }} />
-                        <div className="absolute inset-0 bg-background/60" />
+                          <WatermarkBackground size="small" opacity={0.2} />
+                          <div className="absolute inset-0 bg-background/60" />
                         <div className="relative z-10 h-full">
                             {selectedChatId ? (
                                 <ChatPage user={user} email={user.email} chatId={selectedChatId} />

@@ -9,6 +9,7 @@ import { Heart } from "lucide-react"
 import type { Message } from "@/contexts/messages-context"
 import { TypingIndicator } from "./typing-indicator"
 import { MessageContent } from "./message-content"
+import { WatermarkBackground } from "./watermark-background"
 
 export function MessageList({ messages, currentUserId, isTyping = false }: { messages: Message[], currentUserId: string, isTyping?: boolean }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -34,13 +35,8 @@ export function MessageList({ messages, currentUserId, isTyping = false }: { mes
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-6 relative">
-      {/* Watermark background */}
-      <div className="absolute inset-0 opacity-15 pointer-events-none" style={{
-        backgroundImage: 'url(/logoIngenes.png)',
-        backgroundSize: '400px 400px',
-        backgroundPosition: 'right center',
-        backgroundRepeat: 'no-repeat'
-      }} />
+      {/* Watermark background - Client-side only to avoid hydration issues */}
+      <WatermarkBackground size="large" opacity={0.15} />
       <div className="flex flex-col gap-4 relative z-10">
         {messages.map((message) => {
           const isCurrentUser = message.user_id === currentUserId

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Shield, ArrowLeft, Users, MessageCircle, Home, Settings, Menu, X, FileText } from 'lucide-react';
+import { Shield, ArrowLeft, Users, MessageCircle, Home, Menu, X, FileText } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useState } from 'react';
 

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { MessageCircle, Settings, User, LogOut, Menu, X, Shield } from 'lucide-react';
+import { MessageCircle, User, LogOut, Menu, X, Shield } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -166,21 +166,7 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-gradient-to-r from-corporate-gray-light/20 via-white/90 to-corporate-navy/10 dark:from-corporate-navy/30 dark:via-corporate-black-70/30 dark:to-corporate-black-30/30 border-t border-corporate-gray-light/30 dark:border-corporate-navy/30 backdrop-blur-xl">
           <nav className="flex flex-col gap-1 p-2 space-y-0">
-            {isAdmin && (
-              <Link 
-                href="/admin" 
-                className={cn(
-                  "flex sm:hidden items-center gap-3 rounded-xl px-4 py-3 text-responsive-sm font-medium transition-modern touch-target",
-                  pathname.startsWith('/admin') 
-                    ? "text-primary-foreground bg-primary shadow-modern" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                )}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <Settings className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                <span>Administración</span>
-              </Link>
-            )}
+
             
             {/* Mobile User Menu & Actions */}
             <div className="mt-4 pt-2 border-t border-border/50 space-y-2 flex flex-col items-end md:items-stretch">
@@ -208,26 +194,18 @@ export default function MainNavbar({ user, isAdmin }: MainNavbarProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>
-                    {isAdmin && (
-                      <>
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem onClick={() => { goToAdmin(); setIsMobileMenuOpen(false); }} className="cursor-pointer py-1.5 text-sm">
-                            <Shield className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <span>Panel de Administrador</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer py-1.5 text-sm">
-                            <div className="flex items-center justify-between w-full">
-                              <span className="flex items-center">
-                                <span className="mr-2 h-4 w-4 text-muted-foreground">🎨</span>
-                                <span>Tema</span>
-                              </span>
-                              <ThemeToggle />
-                            </div>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                      </>
-                    )}
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem className="cursor-pointer py-1.5 text-sm">
+                        <div className="flex items-center justify-between w-full">
+                          <span className="flex items-center">
+                            <span className="mr-2 h-4 w-4 text-muted-foreground">🎨</span>
+                            <span>Tema</span>
+                          </span>
+                          <ThemeToggle />
+                        </div>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="cursor-pointer text-red-500 hover:!text-red-500 focus:!text-red-500 py-1.5 text-sm">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Cerrar Sesión</span>
