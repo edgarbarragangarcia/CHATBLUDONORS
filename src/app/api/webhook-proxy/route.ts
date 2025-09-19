@@ -91,13 +91,11 @@ export async function POST(request: NextRequest) {
         finalResponse = jsonResponse[0]
       }
       
-      // Extraer el contenido del mensaje
-      const messageContent = finalResponse.output || finalResponse.response || finalResponse.message || finalResponse
-      
+      // Devolver toda la respuesta completa en lugar de solo el mensaje
       return NextResponse.json(
         { 
           success: true, 
-          response: messageContent 
+          response: finalResponse 
         },
         { status: 200 }
       )

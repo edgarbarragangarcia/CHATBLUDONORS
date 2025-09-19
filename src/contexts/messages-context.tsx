@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react'
 export type Message = {
   id: string
   created_at: string
-  content: string
+  content: string | object
   user_id: string
   user_avatar: string | null
   user_name: string | null

@@ -140,13 +140,13 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                     <TabsList className="w-full h-12 touch-target">
                                         {availableChats.length > 0 && (
                                             <TabsTrigger value="chats" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
-                                                <MessageCircle className="h-4 w-4" />
+                                                <MessageCircle className="h-4 w-4 animate-pulse" />
                                                 <span>Chats</span>
                                             </TabsTrigger>
                                         )}
                                         {availableForms.length > 0 && (
                                             <TabsTrigger value="forms" className="flex items-center justify-center space-x-2 text-responsive-sm font-medium touch-target">
-                                                <FileText className="h-4 w-4" />
+                                                <FileText className="h-4 w-4 animate-pulse" />
                                                 <span>Formularios</span>
                                             </TabsTrigger>
                                         )}
@@ -177,7 +177,7 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                     {/* Efecto de brillo en hover */}
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-x-[-100%] group-hover:translate-x-[100%] transform"></div>
                                     <div className="flex items-center justify-center gap-2">
-                                        <FileText className="h-4 w-4 text-primary" />
+                                        <FileText className="h-4 w-4 text-primary animate-pulse" />
                                         <CardTitle className="text-sm font-medium text-center truncate">{form.title}</CardTitle>
                                     </div>
                                 </Card>
@@ -220,7 +220,7 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                     onClick={() => setIsSidebarOpen(true)}
                                     className="mt-4 touch-target bg-gradient-to-r from-corporate-navy/10 to-corporate-green/10 dark:from-corporate-navy/20 dark:to-corporate-green/20 border border-corporate-navy/20 dark:border-corporate-green/30 rounded-xl hover:shadow-lg transition-all duration-300"
                                 >
-                                    <Menu className="h-4 w-4 mr-2" />
+                                    <Menu className="h-4 w-4 mr-2 animate-pulse" />
                                     Ver Contenido
                                 </Button>
                             </div>
@@ -311,8 +311,8 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
                                 <div className="flex h-full items-center justify-center padding-responsive">
                                     <div className="text-center space-responsive">
                                         <div className="flex justify-center">
-                                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted/50">
-                                                <MessageCircle className="h-6 w-6 text-muted-foreground" />
+                                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted/50 animate-pulse">
+                                                <MessageCircle className="h-6 w-6 text-muted-foreground animate-bounce" />
                                             </div>
                                         </div>
                                         <p className="text-responsive-base text-muted-foreground">Selecciona un chat para comenzar</p>

@@ -96,7 +96,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   // }, [messages])
 
   // Función para enviar mensaje al webhook usando proxy interno (sin CORS)
-  const sendToWebhook = async (content: string): Promise<string | null> => {
+  const sendToWebhook = async (content: string): Promise<any | null> => {
     if (!chatWebhookUrl) {
       console.log('No hay webhook configurado para este chat')
       return null
@@ -183,15 +183,30 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
         if (webhookResponse) {
           console.log('Respuesta del webhook recibida:', webhookResponse)
           
+          // Si el response es un objeto con información completa (incluyendo avatar)
+          let messageContent = ''
+          let botAvatar = null
+          
+          if (webhookResponse !== null && typeof webhookResponse === 'object') {
+            // Extraer el contenido del mensaje
+            messageContent = webhookResponse.output || webhookResponse.response || webhookResponse.message || JSON.stringify(webhookResponse)
+            // Si hay avatar en la respuesta, usarlo
+            botAvatar = webhookResponse.avatar_url || webhookResponse.profile_avatar || webhookResponse.user_avatar || null
+          } else if (webhookResponse !== null) {
+            messageContent = String(webhookResponse)
+          } else {
+            messageContent = 'No hubo respuesta del webhook'
+          }
+          
           // Crear mensaje del bot directamente en memoria
           const botProfile = getProfileForUser('00000000-0000-0000-0000-000000000000')
           const botMessage: Message = {
             id: `bot-${Date.now()}-${Math.random()}`, // ID único temporal
             created_at: new Date().toISOString(),
-            content: webhookResponse !== null && typeof webhookResponse === 'object' && 'output' in webhookResponse ? (webhookResponse as any).output : String(webhookResponse),
+            content: messageContent,
             user_id: '00000000-0000-0000-0000-000000000000',
             user_name: botProfile.name,
-            user_avatar: botProfile.avatar,
+            user_avatar: botAvatar, // Usar el avatar de la respuesta si existe
             chat_id: chatId,
           }
           

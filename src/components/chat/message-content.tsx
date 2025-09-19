@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { ExternalLink, ImageIcon } from "lucide-react"
 
 interface MessageContentProps {
-  content: string
+  content: string | object
   className?: string
 }
 
@@ -14,7 +14,10 @@ export function MessageContent({ content, className }: MessageContentProps) {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const [imageLoading, setImageLoading] = useState<Set<string>>(new Set())
   
-  const driveLinks = detectGoogleDriveLinks(content)
+  // Convertir objeto a string si es necesario
+  const contentString = typeof content === 'object' ? JSON.stringify(content, null, 2) : content
+  
+  const driveLinks = detectGoogleDriveLinks(contentString)
   
   // Función para procesar texto con formato de negrilla
   const processTextFormatting = (text: string) => {
@@ -24,7 +27,18 @@ export function MessageContent({ content, className }: MessageContentProps) {
   
   if (driveLinks.length === 0) {
     // Si no hay enlaces de Google Drive, mostrar el contenido normal
-    const formattedContent = processTextFormatting(content)
+    // Si es un objeto JSON, mostrarlo formateado
+    if (typeof content === 'object') {
+      return (
+        <div className={cn("whitespace-pre-wrap bg-muted/30 p-3 rounded-lg border", className)}>
+          <pre className="text-sm overflow-x-auto">
+            <code>{JSON.stringify(content, null, 2)}</code>
+          </pre>
+        </div>
+      )
+    }
+    
+    const formattedContent = processTextFormatting(contentString)
     return (
       <p 
         className={cn("whitespace-pre-wrap", className)}
@@ -46,7 +60,7 @@ export function MessageContent({ content, className }: MessageContentProps) {
   driveLinks.forEach((link) => {
     // Agregar texto antes del enlace
     if (link.startIndex > lastIndex) {
-      const textBefore = content.slice(lastIndex, link.startIndex)
+      const textBefore = contentString.slice(lastIndex, link.startIndex)
       if (textBefore.trim()) {
         parts.push({
           type: 'text',
@@ -67,8 +81,8 @@ export function MessageContent({ content, className }: MessageContentProps) {
   })
   
   // Agregar texto después del último enlace
-  if (lastIndex < content.length) {
-    const textAfter = content.slice(lastIndex)
+  if (lastIndex < contentString.length) {
+    const textAfter = contentString.slice(lastIndex)
     if (textAfter.trim()) {
       parts.push({
         type: 'text',
