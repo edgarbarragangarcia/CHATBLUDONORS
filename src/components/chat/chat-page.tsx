@@ -152,6 +152,76 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     }
   }
 
+  // Función para limpiar y corregir URLs malformadas en la respuesta del webhook
+  const cleanWebhookResponse = (response: any): any => {
+    if (typeof response === 'string') {
+      // Limpiar URLs malformadas que incluyen markdown incorrecto con base URL
+      let cleaned = response.replace(
+        /https:\/\/chatbludonors\.vercel\.app\/\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[^)]+)\)/g,
+        '[$1]($2)'
+      );
+      
+      // Limpiar casos donde la URL base está mal incluida sin corchetes
+      cleaned = cleaned.replace(
+        /https:\/\/chatbludonors\.vercel\.app\/([^\s]+)/g,
+        (match, path) => {
+          // Si el path contiene un enlace de Google Drive, extraer solo ese
+          const driveMatch = path.match(/\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[^)]+)\)/);
+          if (driveMatch) {
+            return `[${driveMatch[1]}](${driveMatch[2]})`;
+          }
+          return match;
+        }
+      );
+      
+      return cleaned;
+    }
+    
+    if (typeof response === 'object' && response !== null) {
+      const cleaned = { ...response };
+      
+      // Función auxiliar para limpiar campos de texto
+      const cleanTextField = (text: string): string => {
+        let cleanedText = text.replace(
+          /https:\/\/chatbludonors\.vercel\.app\/\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[^)]+)\)/g,
+          '[$1]($2)'
+        );
+        
+        cleanedText = cleanedText.replace(
+          /https:\/\/chatbludonors\.vercel\.app\/([^\s]+)/g,
+          (match, path) => {
+            const driveMatch = path.match(/\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[^)]+)\)/);
+            if (driveMatch) {
+              return `[${driveMatch[1]}](${driveMatch[2]})`;
+            }
+            return match;
+          }
+        );
+        
+        return cleanedText;
+      };
+      
+      // Limpiar el campo output si existe
+      if (cleaned.output && typeof cleaned.output === 'string') {
+        cleaned.output = cleanTextField(cleaned.output);
+      }
+      
+      // Limpiar el campo response si existe
+      if (cleaned.response && typeof cleaned.response === 'string') {
+        cleaned.response = cleanTextField(cleaned.response);
+      }
+      
+      // Limpiar el campo message si existe
+      if (cleaned.message && typeof cleaned.message === 'string') {
+        cleaned.message = cleanTextField(cleaned.message);
+      }
+      
+      return cleaned;
+    }
+    
+    return response;
+  };
+
   const handleSendMessage = async (content: string) => {
     if (content.trim() === "" || !chatId) return
 
@@ -183,17 +253,21 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
         if (webhookResponse) {
           console.log('Respuesta del webhook recibida:', webhookResponse)
           
+          // Limpiar la respuesta del webhook para corregir URLs malformadas
+          const cleanedResponse = cleanWebhookResponse(webhookResponse);
+          console.log('Respuesta del webhook limpiada:', cleanedResponse)
+          
           // Si el response es un objeto con información completa (incluyendo avatar)
           let messageContent = ''
           let botAvatar = null
           
-          if (webhookResponse !== null && typeof webhookResponse === 'object') {
+          if (cleanedResponse !== null && typeof cleanedResponse === 'object') {
             // Extraer el contenido del mensaje
-            messageContent = webhookResponse.output || webhookResponse.response || webhookResponse.message || JSON.stringify(webhookResponse)
+            messageContent = cleanedResponse.output || cleanedResponse.response || cleanedResponse.message || JSON.stringify(cleanedResponse)
             // Si hay avatar en la respuesta, usarlo
-            botAvatar = webhookResponse.avatar_url || webhookResponse.profile_avatar || webhookResponse.user_avatar || null
-          } else if (webhookResponse !== null) {
-            messageContent = String(webhookResponse)
+            botAvatar = cleanedResponse.avatar_url || cleanedResponse.profile_avatar || cleanedResponse.user_avatar || null
+          } else if (cleanedResponse !== null) {
+            messageContent = String(cleanedResponse)
           } else {
             messageContent = 'No hubo respuesta del webhook'
           }
