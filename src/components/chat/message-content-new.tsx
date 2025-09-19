@@ -57,6 +57,7 @@ export function MessageContent({ content, className }: MessageContentProps) {
   }> = []
   
   let lastIndex = 0
+  let perfilButtonRendered = false // Para asegurar que solo se renderice un botón de perfil
   
   driveLinks.forEach((link) => {
     // Agregar texto antes del enlace
@@ -71,9 +72,15 @@ export function MessageContent({ content, className }: MessageContentProps) {
     }
     
     // Determinar si es una imagen o un enlace basándonos en el contexto
-    const isImageLink = link.originalUrl.includes('1AJkWdvRKDg13Y49WaEyL6gL8Xyruz8H8') || // ID específico de la foto
-                       contentString.toLowerCase().includes('foto') ||
+    const isImageLink = contentString.toLowerCase().includes('foto') && 
+                       (link.originalUrl.includes('1AlbDDEqzWZ6Bci_mkQ7ch3l2HNhFTThv') || // ID de la foto actual
+                        link.originalUrl.includes('1AJkWdvRKDg13Y49WaEyL6gL8Xyruz8H8')) || // ID anterior de foto
                        contentString.toLowerCase().includes('imagen')
+    
+    // Detectar si es un perfil ampliado basándonos en el contexto
+    const isPerfilAmpliado = contentString.toLowerCase().includes('perfil ampliado') ||
+                            link.originalUrl.includes('1oqz_5xVT50NbNsl3ddfkI-2BuTYqBt3a') || // ID actual de perfil
+                            link.originalUrl.includes('1orUrJlosERwf9mw9ThSTmLScTReX22qn') // ID anterior de perfil
     
     if (isImageLink) {
       // Agregar como imagen
@@ -83,14 +90,15 @@ export function MessageContent({ content, className }: MessageContentProps) {
         imageUrl: link.imageUrl,
         originalUrl: link.originalUrl
       })
-    } else {
-      // Agregar como enlace/botón
+    } else if (isPerfilAmpliado && !perfilButtonRendered) {
+      // Solo renderizar un botón de perfil ampliado
       parts.push({
         type: 'link',
         content: link.originalUrl,
         originalUrl: link.originalUrl,
         linkText: 'Ver perfil ampliado'
       })
+      perfilButtonRendered = true
     }
     
     lastIndex = link.endIndex
@@ -174,20 +182,13 @@ export function MessageContent({ content, className }: MessageContentProps) {
         }
         
         if (part.type === 'link' && part.originalUrl) {
+          // Extraer la URL limpia del enlace de Google Drive
+          const cleanUrl = part.originalUrl.match(/https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view[^\s\])]*/)?.[0] || part.originalUrl;
+          
           return (
-            <div key={index} className="mt-2">
-              <a
-                href={part.originalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-corporate-navy hover:bg-corporate-navy/90 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
-              >
-                {part.linkText || 'Ver enlace'}
-                <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-            </div>
+            <div key={index} className="my-2" dangerouslySetInnerHTML={{
+              __html: `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-corporate-navy hover:bg-corporate-navy/90 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">Ver perfil ampliado<svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>`
+            }} />
           )
         }
         
