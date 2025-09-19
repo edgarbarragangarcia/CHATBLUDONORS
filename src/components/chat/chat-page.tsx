@@ -3,21 +3,17 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { type User } from "@supabase/supabase-js"
-import { generateSuggestedReplies } from "@/ai/flows/suggested-replies"
 import { useWebhook } from "@/contexts/webhook-context"
 import { useMessages, type Message } from "@/contexts/messages-context"
 
 import { Card } from "@/components/ui/card"
 import { MessageList } from "./message-list"
 import { MessageForm } from "./message-form"
-import { SuggestedReplies } from "./suggested-replies"
 
 export default function ChatPage({ user, email, chatId }: { user: User, email?: string, chatId: string }) {
   const { getWebhookUrl } = useWebhook()
   const { getMessages, addMessage } = useMessages()
   const messages = getMessages(chatId)
-  const [suggestedReplies, setSuggestedReplies] = useState<string[]>([])
-  const [isGenerating, setIsGenerating] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [chatWebhookUrl, setChatWebhookUrl] = useState<string | null>(null)
 
@@ -61,39 +57,10 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     }
   }, [getWebhookUrl, chatId])
 
-  const fetchSuggestions = async (currentMessages: Message[]) => {
-    if (currentMessages.length === 0) return
-    setIsGenerating(true)
-    setSuggestedReplies([])
-    try {
-      const chatHistory = currentMessages
-        .slice(-5)
-        .map((m) => `${m.user_name}: ${m.content}`)
-        .join("\n")
-      const lastMessage = currentMessages[currentMessages.length-1];
-      const userQuery = `${lastMessage.user_name}: ${lastMessage.content}`
-
-      const replies = await generateSuggestedReplies({ chatHistory, userQuery })
-      setSuggestedReplies(replies)
-    } catch (error) {
-      console.error("Error generating suggestions:", error)
-      setSuggestedReplies([])
-    } finally {
-        setIsGenerating(false)
-    }
-  }
-
   useEffect(() => {
     fetchChatWebhook() // Cargar el webhook URL del chat
     console.log('Chat inicializado en modo memoria para:', chatId)
   }, [fetchChatWebhook, chatId])
-
-  // Generar sugerencias cuando los mensajes cambien (temporalmente deshabilitado)
-  // useEffect(() => {
-  //   if (messages.length > 0) {
-  //     fetchSuggestions(messages)
-  //   }
-  // }, [messages])
 
   // Función para enviar mensaje al webhook usando proxy interno (sin CORS)
   const sendToWebhook = async (content: string): Promise<any | null> => {
@@ -304,11 +271,6 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     <main className="h-full flex flex-col bg-background rounded-lg">
         <MessageList messages={messages} currentUserId={user.id} isTyping={isTyping} />
         <div className="p-4 border-t bg-background">
-            <SuggestedReplies 
-                suggestions={suggestedReplies} 
-                onSelect={(reply) => handleSendMessage(reply)}
-                isLoading={isGenerating}
-            />
             <MessageForm onSendMessage={handleSendMessage} />
         </div>
     </main>
