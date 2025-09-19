@@ -57,6 +57,7 @@ export function MessageContent({ content, className }: MessageContentProps) {
   }> = []
   
   let lastIndex = 0
+  const processedImageUrls = new Set<string>() // Para evitar duplicados
   
   driveLinks.forEach((link) => {
     // Agregar texto antes del enlace
@@ -71,19 +72,26 @@ export function MessageContent({ content, className }: MessageContentProps) {
     }
     
     // Determinar si es una imagen o un enlace basándonos en el contexto
-    const isImageLink = link.originalUrl.includes('1AJkWdvRKDg13Y49WaEyL6gL8Xyruz8H8') || // ID específico de la foto
-                       contentString.toLowerCase().includes('foto') ||
-                       contentString.toLowerCase().includes('imagen')
+    // Primero verificar si el texto del enlace indica que es una foto
+    const linkTextMatch = contentString.slice(Math.max(0, link.startIndex - 50), link.startIndex)
+    const hasPhotoKeyword = linkTextMatch.toLowerCase().includes('foto') || 
+                           linkTextMatch.toLowerCase().includes('imagen') ||
+                           link.originalUrl.toLowerCase().includes('ver foto') ||
+                           link.originalUrl.toLowerCase().includes('[ver foto]')
     
-    if (isImageLink) {
-      // Agregar como imagen
+    const isImageLink = link.originalUrl.includes('1AJkWdvRKDg13Y49WaEyL6gL8Xyruz8H8') || // ID específico de la foto
+                       hasPhotoKeyword
+    
+    if (isImageLink && link.imageUrl && !processedImageUrls.has(link.imageUrl)) {
+      // Agregar como imagen solo si no la hemos procesado antes
+      processedImageUrls.add(link.imageUrl)
       parts.push({
         type: 'image',
         content: link.originalUrl,
         imageUrl: link.imageUrl,
         originalUrl: link.originalUrl
       })
-    } else {
+    } else if (!isImageLink) {
       // Agregar como enlace/botón
       parts.push({
         type: 'link',

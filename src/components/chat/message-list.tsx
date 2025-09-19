@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Heart } from "lucide-react"
 import type { Message } from "@/contexts/messages-context"
 import { TypingIndicator } from "./typing-indicator"
-import { MessageContent } from "./message-content-new"
+import { MessageContent } from "./message-content"
 import { WatermarkBackground } from "./watermark-background"
 
 export function MessageList({ messages, currentUserId, isTyping = false }: { messages: Message[], currentUserId: string, isTyping?: boolean }) {
