@@ -72,15 +72,21 @@ export function MessageContent({ content, className }: MessageContentProps) {
     }
     
     // Determinar si es una imagen o un enlace basándonos en el contexto
-    const isImageLink = contentString.toLowerCase().includes('foto') && 
-                       (link.originalUrl.includes('1AlbDDEqzWZ6Bci_mkQ7ch3l2HNhFTThv') || // ID de la foto actual
-                        link.originalUrl.includes('1AJkWdvRKDg13Y49WaEyL6gL8Xyruz8H8')) || // ID anterior de foto
-                       contentString.toLowerCase().includes('imagen')
+    const textoAntesEnlace = contentString.slice(Math.max(0, link.startIndex - 100), link.startIndex).toLowerCase()
+    const textoDespuesEnlace = contentString.slice(link.endIndex, Math.min(contentString.length, link.endIndex + 50)).toLowerCase()
     
-    // Detectar si es un perfil ampliado basándonos en el contexto
-    const isPerfilAmpliado = contentString.toLowerCase().includes('perfil ampliado') ||
-                            link.originalUrl.includes('1oqz_5xVT50NbNsl3ddfkI-2BuTYqBt3a') || // ID actual de perfil
-                            link.originalUrl.includes('1orUrJlosERwf9mw9ThSTmLScTReX22qn') // ID anterior de perfil
+    // Detectar si es una foto basándonos en el contexto cercano al enlace
+    const isImageLink = (textoAntesEnlace.includes('foto') && (textoAntesEnlace.includes('ver') || textoAntesEnlace.includes('aquí'))) ||
+                       (textoAntesEnlace.includes('imagen') && (textoAntesEnlace.includes('ver') || textoAntesEnlace.includes('aquí'))) ||
+                       textoDespuesEnlace.includes('foto') ||
+                       textoDespuesEnlace.includes('imagen') ||
+                       link.originalUrl.includes('1zKEkQWyiSH9gIQH2qkCSlicvGHjQbhje') // ID específico de la foto del ejemplo
+    
+    // Detectar si es un perfil ampliado basándonos en el contexto cercano al enlace
+    const isPerfilAmpliado = (textoAntesEnlace.includes('perfil') && textoAntesEnlace.includes('ampliado')) ||
+                            (textoAntesEnlace.includes('perfil') && textoAntesEnlace.includes('aquí')) ||
+                            textoDespuesEnlace.includes('perfil ampliado') ||
+                            link.originalUrl.includes('1R7B-dtpNLl-z2q_vxWeR_TkAIhPw8qOH') // ID específico del ejemplo
     
     if (isImageLink) {
       // Agregar como imagen
@@ -99,6 +105,12 @@ export function MessageContent({ content, className }: MessageContentProps) {
         linkText: 'Ver perfil ampliado'
       })
       perfilButtonRendered = true
+    } else {
+      // Para otros enlaces, agregarlos como texto con el enlace original
+      parts.push({
+        type: 'text',
+        content: link.originalUrl
+      })
     }
     
     lastIndex = link.endIndex
