@@ -58,8 +58,19 @@ export function MessageContent({ content, className }: MessageContentProps) {
   
   let lastIndex = 0
   const processedImageUrls = new Set<string>() // Para evitar duplicados
+  const processedDriveFileIds = new Set<string>() // Para evitar duplicados de archivos de Drive
   
   driveLinks.forEach((link) => {
+    // Extraer el ID del archivo de Google Drive
+    const driveFileIdMatch = link.originalUrl.match(/\/file\/d\/([a-zA-Z0-9-_]+)/)
+    const driveFileId = driveFileIdMatch ? driveFileIdMatch[1] : null
+    
+    // Si ya procesamos este archivo de Drive, saltarlo
+    if (driveFileId && processedDriveFileIds.has(driveFileId)) {
+      lastIndex = link.endIndex
+      return
+    }
+    
     // Agregar texto antes del enlace
     if (link.startIndex > lastIndex) {
       const textBefore = contentString.slice(lastIndex, link.startIndex)
@@ -85,6 +96,7 @@ export function MessageContent({ content, className }: MessageContentProps) {
     if (isImageLink && link.imageUrl && !processedImageUrls.has(link.imageUrl)) {
       // Agregar como imagen solo si no la hemos procesado antes
       processedImageUrls.add(link.imageUrl)
+      if (driveFileId) processedDriveFileIds.add(driveFileId)
       parts.push({
         type: 'image',
         content: link.originalUrl,
@@ -93,6 +105,7 @@ export function MessageContent({ content, className }: MessageContentProps) {
       })
     } else if (!isImageLink) {
       // Agregar como enlace/botón
+      if (driveFileId) processedDriveFileIds.add(driveFileId)
       parts.push({
         type: 'link',
         content: link.originalUrl,
