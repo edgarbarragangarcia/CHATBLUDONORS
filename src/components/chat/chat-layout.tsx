@@ -108,16 +108,26 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
         return (
             <div className="mobile-nav-height w-full relative">
                 {/* Mobile Header */}
-                <div className="flex items-center justify-between padding-responsive border-b border-border/50 glass">
+                <div className="flex items-center justify-between padding-responsive border-b border-border/50 bg-background/80 backdrop-blur-lg shadow-sm">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden touch-target bg-gradient-to-r from-corporate-navy/10 to-corporate-green/10 dark:from-corporate-navy/20 dark:to-corporate-green/20 border border-corporate-navy/20 dark:border-corporate-green/30 rounded-xl hover:shadow-lg transition-all duration-300"
+                        className="lg:hidden touch-target bg-gradient-to-r from-corporate-navy/10 to-corporate-green/10 hover:from-corporate-navy/20 hover:to-corporate-green/20 border border-border/20 rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                     >
                         <Menu className="h-5 w-5" />
-                        <span className="ml-2 text-responsive-sm">Salas</span>
+                        <span className="ml-2 text-responsive-sm font-medium">Salas</span>
                     </Button>
+
+                    {/* Nombre de la sala actual */}
+                    <div className="flex-1 mx-4 px-4 py-2 text-center">
+                        <div className="inline-block bg-gradient-to-r from-corporate-navy/5 to-corporate-green/5 rounded-xl px-4 py-1.5 backdrop-blur-sm border border-border/10">
+                            <span className="text-sm font-semibold bg-gradient-to-r from-corporate-navy to-corporate-green bg-clip-text text-transparent">
+                                {selectedChatId && availableChats.find(chat => chat.id === selectedChatId)?.name}
+                                {selectedFormId && availableForms.find(form => form.id === selectedFormId)?.title}
+                            </span>
+                        </div>
+                    </div>
 
                     <div className="w-16" /> {/* Spacer */}
                 </div>
