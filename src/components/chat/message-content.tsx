@@ -60,7 +60,13 @@ export function MessageContent({ content, className }: MessageContentProps) {
   const processedImageUrls = new Set<string>() // Para evitar duplicados
   const processedDriveFileIds = new Set<string>() // Para evitar duplicados de archivos de Drive
   
-  driveLinks.forEach((link) => {
+  // Determinar el orden de los enlaces antes de procesarlos
+  const uniqueDriveLinks = driveLinks.filter((link, index, self) => {
+    // Eliminar duplicados basados en la URL
+    return index === self.findIndex(l => l.originalUrl === link.originalUrl)
+  })
+  
+  uniqueDriveLinks.forEach((link, linkIndex) => {
     // Extraer el ID del archivo de Google Drive
     const driveFileIdMatch = link.originalUrl.match(/\/file\/d\/([a-zA-Z0-9-_]+)/)
     const driveFileId = driveFileIdMatch ? driveFileIdMatch[1] : null
@@ -90,7 +96,14 @@ export function MessageContent({ content, className }: MessageContentProps) {
                            link.originalUrl.toLowerCase().includes('ver foto') ||
                            link.originalUrl.toLowerCase().includes('[ver foto]')
     
-    const isImageLink = link.originalUrl.includes('1AJkWdvRKDg13Y49WaEyL6gL8Xyruz8H8') || // ID específico de la foto
+    // Para el formato específico del webhook: detectar si es foto basándonos en el orden
+    // Primera URL = foto, segunda URL = perfil ampliado
+    const isFirstLink = linkIndex === 0
+    const isSecondLink = linkIndex === 1
+    
+    // Si es el primer enlace, tratarlo como foto
+    const isImageLink = isFirstLink || 
+                       link.originalUrl.includes('1AJkWdvRKDg13Y49WaEyL6gL8Xyruz8H8') || // ID específico de la foto
                        hasPhotoKeyword
     
     if (isImageLink && link.imageUrl && !processedImageUrls.has(link.imageUrl)) {
@@ -110,7 +123,7 @@ export function MessageContent({ content, className }: MessageContentProps) {
         type: 'link',
         content: link.originalUrl,
         originalUrl: link.originalUrl,
-        linkText: 'Ver perfil ampliado'
+        linkText: isSecondLink ? 'Ver perfil ampliado' : 'Ver enlace'
       })
     }
     
@@ -179,17 +192,33 @@ export function MessageContent({ content, className }: MessageContentProps) {
                   )}
                   <img
                     src={part.imageUrl}
-                    alt="Imagen compartida"
-                    className="max-w-full h-auto rounded-lg shadow-sm border border-border/50 transition-transform duration-200 group-hover:scale-[1.02]"
-                    style={{ maxHeight: '400px' }}
+                    alt="Foto de la donante"
+                    className="max-w-full h-auto rounded-lg shadow-sm border border-border/50 transition-transform duration-200 group-hover:scale-[1.02] cursor-pointer"
+                    style={{ maxHeight: '400px', minHeight: '200px' }}
                     onLoadStart={() => handleImageLoadStart(part.imageUrl!)}
                     onLoad={() => handleImageLoad(part.imageUrl!)}
                     onError={() => handleImageError(part.imageUrl!)}
                     loading="lazy"
+                    onClick={() => window.open(part.originalUrl, '_blank')}
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-200 rounded-lg" />
                 </div>
-              ) : null}
+              ) : (
+                <div className="flex items-center justify-center p-4 bg-muted/20 rounded-lg border border-dashed">
+                  <div className="text-center">
+                    <ImageIcon className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">No se pudo cargar la imagen</p>
+                    <a 
+                      href={part.originalUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-xs text-primary hover:underline mt-1 inline-block"
+                    >
+                      Ver en Google Drive
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           )
         }

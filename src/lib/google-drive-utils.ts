@@ -32,11 +32,6 @@ export function detectGoogleDriveLinks(text: string): Array<{
   startIndex: number;
   endIndex: number;
 }> {
-  // Regex para detectar enlaces de Google Drive dentro de markdown [texto](url)
-  const markdownDriveRegex = /\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view[^)]*)\)/g;
-  // Regex para detectar enlaces directos de Google Drive (incluyendo al final de oración)
-  const directDriveRegex = /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view[^\s]*/g;
-  
   const links: Array<{
     originalUrl: string;
     imageUrl: string;
@@ -44,59 +39,64 @@ export function detectGoogleDriveLinks(text: string): Array<{
     endIndex: number;
   }> = [];
   
-  const processedRanges: Array<{start: number, end: number}> = [];
-  
-  // Primero buscar enlaces en formato markdown (tienen prioridad)
+  // 1. Primero detectar enlaces en formato markdown [texto](url)
+  const markdownRegex = /\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view[^)]*)\)/g;
   let match;
-  while ((match = markdownDriveRegex.exec(text)) !== null) {
-    const fullMatch = match[0]; // [texto](url)
-    const linkText = match[1]; // texto
-    const driveUrl = match[2]; // url
+  while ((match = markdownRegex.exec(text)) !== null) {
+    const driveUrl = match[2];
     const imageUrl = convertGoogleDriveUrl(driveUrl);
-    
     if (imageUrl) {
-      const startIndex = match.index;
-      const endIndex = match.index + fullMatch.length;
-      
       links.push({
-        originalUrl: fullMatch,
+        originalUrl: match[0],
         imageUrl,
-        startIndex,
-        endIndex
+        startIndex: match.index,
+        endIndex: match.index + match[0].length
       });
-      
-      // Marcar este rango como procesado
-      processedRanges.push({start: startIndex, end: endIndex});
     }
   }
   
-  // Luego buscar enlaces directos, pero solo si no están dentro de un rango ya procesado
-  directDriveRegex.lastIndex = 0; // Reset regex
-  while ((match = directDriveRegex.exec(text)) !== null) {
+  // 2. Detectar enlaces dentro de backticks `url`
+  const backtickRegex = /`https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view[^`]*?`/g;
+  while ((match = backtickRegex.exec(text)) !== null) {
+    const fullMatch = match[0];
+    const urlInsideBackticks = fullMatch.replace(/`/g, '');
+    const imageUrl = convertGoogleDriveUrl(urlInsideBackticks);
+    if (imageUrl) {
+      links.push({
+        originalUrl: urlInsideBackticks,
+        imageUrl,
+        startIndex: match.index,
+        endIndex: match.index + fullMatch.length
+      });
+    }
+  }
+  
+  // 3. Detectar enlaces directos que no estén dentro de backticks ni ya procesados
+  const directRegex = /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view[^\s]*/g;
+  while ((match = directRegex.exec(text)) !== null) {
     const originalUrl = match[0];
     const startIndex = match.index;
-    const endIndex = match.index + originalUrl.length;
     
-    // Verificar si este enlace está dentro de un rango ya procesado (markdown)
-    const isWithinProcessedRange = processedRanges.some(range => 
-      startIndex >= range.start && endIndex <= range.end
+    // Verificar que no esté dentro de backticks (ya procesado) o ya detectado
+    const isAlreadyDetected = links.some(link => 
+      link.originalUrl === originalUrl || // URL ya detectada
+      (startIndex >= link.startIndex && startIndex < link.endIndex) // Dentro de rango ya procesado
     );
     
-    if (!isWithinProcessedRange) {
+    if (!isAlreadyDetected) {
       const imageUrl = convertGoogleDriveUrl(originalUrl);
-      
       if (imageUrl) {
         links.push({
           originalUrl,
           imageUrl,
           startIndex,
-          endIndex
+          endIndex: startIndex + originalUrl.length
         });
       }
     }
   }
   
-  // Ordenar por índice de inicio para procesar en orden
+  // Ordenar por índice de inicio
   return links.sort((a, b) => a.startIndex - b.startIndex);
 }
 
