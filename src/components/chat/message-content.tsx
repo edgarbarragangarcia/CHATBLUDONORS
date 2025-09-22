@@ -25,9 +25,20 @@ export function MessageContent({ content, className }: MessageContentProps) {
     let processed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     
     // Procesar enlaces markdown [texto](url)
-    processed = processed.replace(/\[([^\]]+)\]\((?:https?:\/\/[^\/]+\/)?([^)]+)\)/g, (match, text, url) => {
-      // Si la URL es absoluta, usarla como está
-      const finalUrl = url.startsWith('http') ? url : url.startsWith('/') ? url.slice(1) : url;
+    processed = processed.replace(/\[([^\]]+)\]\(((?:https?:\/\/)?[^)]+)\)/g, (match, text, url) => {
+      // Verificar si la URL está en formato markdown también
+      const nestedMarkdown = url.match(/\[([^\]]+)\]\(((?:https?:\/\/)?[^)]+)\)/);
+      if (nestedMarkdown) {
+        // Si hay un enlace markdown anidado, usar la URL interna
+        return `<a href="${nestedMarkdown[2]}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">${text}</a>`;
+      }
+      
+      // Limpiar la URL de cualquier prefijo de dominio no deseado
+      const cleanUrl = url.replace(/^https?:\/\/[^\/]+\//, '');
+      // Asegurarse de que la URL sea absoluta si es un enlace de Google Drive
+      const finalUrl = cleanUrl.startsWith('http') ? cleanUrl : 
+                      cleanUrl.includes('drive.google.com') ? `https://${cleanUrl}` : cleanUrl;
+      
       return `<a href="${finalUrl}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">${text}</a>`;
     });
     
@@ -240,10 +251,20 @@ export function MessageContent({ content, className }: MessageContentProps) {
         }
         
         if (part.type === 'link' && part.originalUrl) {
+          // Verificar si la URL está en formato markdown
+          const markdownMatch = part.originalUrl.match(/\[([^\]]+)\]\(((?:https?:\/\/)?[^)]+)\)/);
+          const url = markdownMatch ? markdownMatch[2] : part.originalUrl;
+          
+          // Limpiar la URL de cualquier prefijo de dominio no deseado
+          const cleanUrl = url.replace(/^https?:\/\/[^\/]+\//, '');
+          // Asegurarse de que la URL sea absoluta si es un enlace de Google Drive
+          const finalUrl = cleanUrl.startsWith('http') ? cleanUrl : 
+                          cleanUrl.includes('drive.google.com') ? `https://${cleanUrl}` : cleanUrl;
+          
           return (
             <div key={index} className="mt-2">
               <a
-                href={part.originalUrl}
+                href={finalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-4 py-2 bg-corporate-navy hover:bg-corporate-navy/90 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
