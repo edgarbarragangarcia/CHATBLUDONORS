@@ -2,7 +2,73 @@
 
 Una aplicación web progresiva (PWA) moderna construida con Next.js 15, Supabase y TypeScript que combina un sistema de chat inteligente con un potente generador de formularios dinámicos, diseñada específicamente para la gestión de donantes y comunicación médica.
 
-## 🚀 Características Principales
+## � Workflow de la Aplicación
+
+### 1. Flujo de Chat con Donantes
+
+#### Visualización de Fotos y Perfiles
+- Las fotos de las donantes se muestran automáticamente en el chat
+- Los perfiles ampliados son accesibles mediante botones dedicados
+- Sistema inteligente de previsualización de imágenes de Google Drive
+- Soporte para zoom y vista detallada de imágenes
+
+#### Procesamiento de Mensajes
+1. **Entrada de Mensaje**
+   - El usuario envía un mensaje en el chat
+   - Se procesa el contenido para detectar enlaces especiales
+
+2. **Detección de Enlaces**
+   - Sistema automático de detección de enlaces de Google Drive
+   - Diferenciación entre enlaces de fotos y perfiles
+   - Procesamiento de formato Markdown en mensajes
+
+3. **Renderizado Inteligente**
+   - Las fotos se muestran directamente en el chat
+   - Los perfiles se presentan como botones de acceso
+   - Manejo de estados de carga y errores
+
+### 2. Integración con Google Drive
+
+#### Gestión de Enlaces
+- Extracción automática de IDs de archivos de Google Drive
+- Conversión a URLs de vista previa optimizadas
+- Manejo de permisos y accesos a archivos
+
+#### Visualización de Contenido
+- Renderizado de imágenes con tamaño optimizado
+- Sistema de caché para carga rápida
+- Fallback para casos de error en la carga
+
+### 3. Sistema de Respuestas
+
+#### Mensajes Automatizados
+- Integración con webhooks para respuestas automáticas
+- Procesamiento de URLs y contenido multimedia
+- Sistema de limpieza y formateo de respuestas
+
+#### Formato de Respuestas
+- Soporte para markdown en mensajes
+- Enlaces enriquecidos con vista previa
+- Botones de acción contextuales
+
+## 🆕 Últimas Actualizaciones
+
+### Mejoras en la Visualización de Contenido
+- Implementación de vista previa directa de imágenes en el chat
+- Optimización del renderizado de fotos de Google Drive
+- Mejora en la interfaz de botones de perfil ampliado
+
+### Optimizaciones de Rendimiento
+- Caché inteligente de imágenes
+- Carga lazy de contenido multimedia
+- Mejoras en la velocidad de carga de mensajes
+
+### Correcciones y Mejoras
+- Solución de problemas con enlaces anidados
+- Mejor manejo de errores en carga de imágenes
+- Optimización de la experiencia móvil
+
+## �🚀 Características Principales
 
 ### 💬 Sistema de Chat Inteligente
 - **Múltiples salas de chat**: Crea y gestiona diferentes salas de chat independientes
