@@ -124,20 +124,26 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     if (typeof response === 'string') {
       // Limpiar URLs malformadas que incluyen markdown incorrecto con base URL
       let cleaned = response.replace(
-        /https:\/\/chatbludonors\.vercel\.app\/\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[^)]+)\)/g,
-        '[$1]($2)'
+        /(https?:\/\/[^\/]+\/)\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[^)]+)\)/g,
+        '[$2]($3)'
       );
       
       // Limpiar casos donde la URL base está mal incluida sin corchetes
       cleaned = cleaned.replace(
-        /https:\/\/chatbludonors\.vercel\.app\/([^\s]+)/g,
-        (match, path) => {
+        /(https?:\/\/[^\/]+\/)([^\s]+)/g,
+        (match, baseUrl, path) => {
           // Si el path contiene un enlace de Google Drive, extraer solo ese
           const driveMatch = path.match(/\[([^\]]+)\]\((https:\/\/drive\.google\.com\/file\/d\/[^)]+)\)/);
           if (driveMatch) {
             return `[${driveMatch[1]}](${driveMatch[2]})`;
           }
-          return match;
+          // Si es un enlace markdown completo, mantenerlo intacto
+          const markdownMatch = path.match(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/);
+          if (markdownMatch) {
+            return `[${markdownMatch[1]}](${markdownMatch[2]})`;
+          }
+          // Si no coincide con ningún patrón, devolver el path original
+          return path;
         }
       );
       

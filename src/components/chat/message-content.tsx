@@ -22,7 +22,16 @@ export function MessageContent({ content, className }: MessageContentProps) {
   // Función para procesar texto con formato de negrilla
   const processTextFormatting = (text: string) => {
     // Convertir **texto** a <strong>texto</strong>
-    return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    let processed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Procesar enlaces markdown [texto](url)
+    processed = processed.replace(/\[([^\]]+)\]\((?:https?:\/\/[^\/]+\/)?([^)]+)\)/g, (match, text, url) => {
+      // Si la URL es absoluta, usarla como está
+      const finalUrl = url.startsWith('http') ? url : url.startsWith('/') ? url.slice(1) : url;
+      return `<a href="${finalUrl}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">${text}</a>`;
+    });
+    
+    return processed;
   }
   
   if (driveLinks.length === 0) {
@@ -89,12 +98,14 @@ export function MessageContent({ content, className }: MessageContentProps) {
     }
     
     // Determinar si es una imagen o un enlace basándonos en el contexto
-    // Primero verificar si el texto del enlace indica que es una foto
-    const linkTextMatch = contentString.slice(Math.max(0, link.startIndex - 50), link.startIndex)
-    const hasPhotoKeyword = linkTextMatch.toLowerCase().includes('foto') || 
-                           linkTextMatch.toLowerCase().includes('imagen') ||
-                           link.originalUrl.toLowerCase().includes('ver foto') ||
-                           link.originalUrl.toLowerCase().includes('[ver foto]')
+    // Extraer el texto del enlace si está en formato markdown
+    const markdownMatch = contentString.slice(Math.max(0, link.startIndex - 50), link.endIndex + 50)
+      .match(/\[([^\]]+)\]\((https:\/\/drive\.google\.com\/[^)]+)\)/)
+    
+    const linkText = markdownMatch ? markdownMatch[1] : ''
+    const hasPhotoKeyword = linkText.toLowerCase().includes('foto') || 
+                           linkText.toLowerCase().includes('imagen') ||
+                           link.originalUrl.toLowerCase().includes('ver foto')
     
     // Para el formato específico del webhook: detectar si es foto basándonos en el orden
     // Primera URL = foto, segunda URL = perfil ampliado
@@ -119,11 +130,16 @@ export function MessageContent({ content, className }: MessageContentProps) {
     } else if (!isImageLink) {
       // Agregar como enlace/botón
       if (driveFileId) processedDriveFileIds.add(driveFileId)
+      
+      // Extraer el texto del enlace del formato markdown si existe
+      const markdownMatch = contentString.slice(Math.max(0, link.startIndex - 50), link.endIndex + 50)
+        .match(/\[([^\]]+)\]\((https:\/\/drive\.google\.com\/[^)]+)\)/)
+      
       parts.push({
         type: 'link',
         content: link.originalUrl,
         originalUrl: link.originalUrl,
-        linkText: isSecondLink ? 'Ver perfil ampliado' : 'Ver enlace'
+        linkText: markdownMatch ? markdownMatch[1] : (isSecondLink ? 'Ver perfil ampliado' : 'Ver enlace')
       })
     }
     
