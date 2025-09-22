@@ -98,7 +98,10 @@ export function MessageContent({ content, className }: MessageContentProps) {
   // Convertir URL de Google Drive a URL de vista previa
   const getPreviewUrl = (url: string) => {
     const fileId = getGoogleDriveId(url);
-    return fileId ? `https://drive.google.com/uc?export=view&id=${fileId}` : url;
+    if (!fileId) return url;
+
+    // Usar una URL directa de Google Drive que funcione para imágenes
+    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
   }
 
   return (
@@ -146,8 +149,12 @@ export function MessageContent({ content, className }: MessageContentProps) {
                   <img
                     src={imageUrl}
                     alt={link.text}
-                    className="max-w-full h-auto rounded-lg shadow-sm border border-border/50 transition-transform duration-200 group-hover:scale-[1.02] cursor-pointer"
-                    style={{ maxHeight: '400px', minHeight: '200px', objectFit: 'contain' }}
+                    className="w-full max-w-2xl mx-auto rounded-lg shadow-md border border-border/50 transition-all duration-200 group-hover:scale-[1.02] cursor-zoom-in"
+                    style={{ 
+                      maxHeight: '500px',
+                      objectFit: 'contain',
+                      backgroundColor: 'rgba(0,0,0,0.02)'
+                    }}
                     onLoadStart={() => handleImageLoadStart(imageUrl)}
                     onLoad={() => handleImageLoad(imageUrl)}
                     onError={() => handleImageError(imageUrl)}
