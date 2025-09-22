@@ -1,0 +1,55 @@
+/* Estilos para el layout fijo del chat */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 4rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  height: calc(100vh - 10rem);
+}
+
+.chat-form {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background-color: var(--background);
+  border-top: 1px solid var(--border);
+}
+
+/* Estilos específicos para móvil */
+@media (max-width: 768px) {
+  .chat-header,
+  .chat-form {
+    position: fixed;
+    left: 0;
+    right: 0;
+  }
+  
+  .chat-header {
+    top: 0;
+  }
+  
+  .chat-form {
+    bottom: 0;
+  }
+  
+  .chat-messages {
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+    height: calc(100vh - 8rem);
+  }
+}

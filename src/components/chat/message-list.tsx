@@ -9,9 +9,10 @@ import { Heart } from "lucide-react"
 import type { Message } from "@/contexts/messages-context"
 import { TypingIndicator } from "./typing-indicator"
 import { MessageContent } from "./message-content"
-import { WatermarkBackground } from "./watermark-background"
 
 export function MessageList({ messages, currentUserId, isTyping = false }: { messages: Message[], currentUserId: string, isTyping?: boolean }) {
+  // Estilo para el contenedor de mensajes scrolleable
+  const messageListContainerStyle = "h-[calc(100vh-10rem)] overflow-y-auto";
   const scrollRef = useRef<HTMLDivElement>(null)
   const [likedMessages, setLikedMessages] = useState<Set<string>>(new Set())
 
@@ -34,10 +35,8 @@ export function MessageList({ messages, currentUserId, isTyping = false }: { mes
   }, [messages])
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-6 relative">
-      {/* Watermark background - Client-side only to avoid hydration issues */}
-      <WatermarkBackground size="large" opacity={0.15} />
-      <div className="flex flex-col gap-4 relative z-10">
+    <div ref={scrollRef} className="h-[calc(100vh-8rem)] overflow-y-auto p-4 md:p-6 relative">
+      <div className="flex flex-col gap-4">
         {messages.map((message) => {
           const isCurrentUser = message.user_id === currentUserId
           const isSystemMessage = message.user_id === '00000000-0000-0000-0000-000000000000'

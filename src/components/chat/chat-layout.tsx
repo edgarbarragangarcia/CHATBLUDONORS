@@ -48,6 +48,9 @@ export function ChatLayout({ user, availableChats, availableForms }: ChatLayoutP
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const isMobile = useIsMobile();
 
+    // Estilo para el contenedor principal que usa flexbox para layout fijo
+    const containerStyle = "flex flex-col h-[calc(100vh-4rem)]";
+
     const handleSelectChat = (chatId: string) => {
         setSelectedChatId(chatId);
         setSelectedFormId(null);

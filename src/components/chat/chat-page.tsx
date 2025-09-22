@@ -274,11 +274,15 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   }
 
   return (
-    <main className="h-full flex flex-col bg-background rounded-lg">
+    <main className="flex flex-col h-full relative">
+      <div className="flex-1 overflow-y-auto">
         <MessageList messages={messages} currentUserId={user.id} isTyping={isTyping} />
-        <div className="p-4 border-t bg-background">
-            <MessageForm onSendMessage={handleSendMessage} />
+      </div>
+      <div className="flex-none sticky bottom-0 z-10 bg-background border-t border-border/50">
+        <div className="p-4">
+          <MessageForm onSendMessage={handleSendMessage} />
         </div>
+      </div>
     </main>
   )
 }
