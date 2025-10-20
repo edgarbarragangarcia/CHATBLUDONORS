@@ -22,21 +22,22 @@ export function MessageContent({ content, className }: MessageContentProps) {
   // Convertir objeto a string si es necesario
   const contentString = typeof content === 'object' ? JSON.stringify(content, null, 2) : content
   
-  // Extraer enlaces de Google Drive con sus textos
+  // Extraer enlaces de Google Drive y su texto descriptivo asociado
   const extractDriveLinks = (text: string): DriveLink[] => {
     const links: DriveLink[] = [];
-    const regex = /\[([^\]]+)\]\((https:\/\/drive\.google\.com\/[^)]+)\)/g;
+    // Expresión regular final que captura el formato: *   **Texto:** [URL](URL)
+    const regex = /\*   \*\*(.*?):\*\* \[(https:\/\/drive\.google\.com\/[^\]]+)\]\(\1\)/g;
     let match;
     
     while ((match = regex.exec(text)) !== null) {
-      // Ignorar las URLs que ya están dentro de otro enlace markdown
-      const prevChar = text.charAt(Math.max(0, match.index - 1));
-      if (prevChar === '(') continue;
+      const description = match[1].trim();
+      const url = match[2];
+      // Determina el tipo basado en la descripción
+      const type = description.toLowerCase().includes('foto') ? 'photo' : 'profile';
       
-      const type = match[1].toLowerCase().includes('foto') ? 'photo' : 'profile';
       links.push({
-        text: match[1],
-        url: match[2],
+        text: description,
+        url: url,
         type
       });
     }
@@ -44,9 +45,10 @@ export function MessageContent({ content, className }: MessageContentProps) {
     return links;
   }
   
-  // Extraer el texto limpio (sin los enlaces markdown)
+  // Extraer el texto limpio (sin las líneas que contienen enlaces de Drive)
   const getCleanText = (text: string) => {
-    return text.replace(/\[([^\]]+)\]\(https:\/\/drive\.google\.com\/[^)]+\)/g, '').trim();
+    // Elimina las líneas completas que contienen un enlace de Google Drive para evitar duplicados
+    return text.split('\n').filter(line => !/\[(https:\/\/drive\.google\.com\/[^\]]+)\]\(\1\)/.test(line)).join('\n').trim();
   }
   
   // Función para procesar texto con formato de negrilla
@@ -95,94 +97,77 @@ export function MessageContent({ content, className }: MessageContentProps) {
     return match ? match[1] : null;
   }
 
-  // Convertir URL de Google Drive a URL de vista previa
+  // Convertir URL de Google Drive a URL de imagen directa
   const getPreviewUrl = (url: string) => {
     const fileId = getGoogleDriveId(url);
-    if (!fileId) return url;
-
-    // Usar una URL directa de Google Drive que funcione para imágenes
-    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+    // Usamos un proxy de imagen para evitar problemas de CORS y mejorar el rendimiento
+    return fileId ? `https://lh3.googleusercontent.com/d/${fileId}` : null;
   }
+
+  const processedText = processTextFormatting(cleanText);
 
   return (
     <div className={cn("space-y-3", className)}>
-      {/* Mostrar el texto limpio primero */}
-      {cleanText && (
-        <p 
-          className="whitespace-pre-wrap"
-          dangerouslySetInnerHTML={{ __html: processTextFormatting(cleanText) }}
-        />
-      )}
+      {cleanText && <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: processedText }} />}
       
-      {/* Mostrar las imágenes y botones de perfil */}
-      <div className="flex flex-col gap-4">
+      <div className="space-y-3">
         {driveLinks.map((link, index) => {
-          if (link.type === 'photo') {
-            // Renderizar la imagen
-            const imageUrl = getPreviewUrl(link.url);
-            const isLoading = imageLoading.has(imageUrl);
-            const hasError = imageErrors.has(imageUrl);
+          const previewUrl = getPreviewUrl(link.url);
+          const isPhoto = link.text.toLowerCase().includes('foto');
 
+          // Si es una foto y tenemos una URL de vista previa válida que no ha dado error
+          if (isPhoto && previewUrl && !imageErrors.has(previewUrl)) {
             return (
-              <div key={index} className="relative group">
-                {isLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-muted/20 rounded-lg">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+              <div key={index} className="relative group max-w-sm">
+                {imageLoading.has(previewUrl) && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-lg">
+                    <div className="w-6 h-6 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
                   </div>
                 )}
-                {hasError ? (
-                  <div className="flex items-center justify-center p-4 bg-muted/20 rounded-lg border border-dashed">
-                    <div className="text-center">
-                      <ImageIcon className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">No se pudo cargar la imagen</p>
-                      <a 
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-primary hover:underline mt-1 inline-block"
-                      >
-                        Ver en Google Drive
-                      </a>
-                    </div>
-                  </div>
-                ) : (
-                  <img
-                    src={imageUrl}
-                    alt={link.text}
-                    className="w-full max-w-2xl mx-auto rounded-lg shadow-md border border-border/50 transition-all duration-200 group-hover:scale-[1.02] cursor-zoom-in"
-                    style={{ 
-                      maxHeight: '500px',
-                      objectFit: 'contain',
-                      backgroundColor: 'rgba(0,0,0,0.02)'
-                    }}
-                    onLoadStart={() => handleImageLoadStart(imageUrl)}
-                    onLoad={() => handleImageLoad(imageUrl)}
-                    onError={() => handleImageError(imageUrl)}
-                    loading="lazy"
-                    onClick={() => window.open(link.url, '_blank')}
-                  />
-                )}
+                <img 
+                  src={previewUrl} 
+                  alt={link.text} 
+                  className={cn(
+                    "w-full h-auto rounded-lg shadow-md transition-all duration-300 ease-in-out",
+                    imageLoading.has(previewUrl) ? "opacity-0" : "opacity-100 group-hover:scale-105 group-hover:shadow-xl"
+                  )}
+                  onLoad={() => handleImageLoad(previewUrl)}
+                  onError={() => handleImageError(previewUrl)}
+                  onLoadStart={() => handleImageLoadStart(previewUrl)}
+                />
+                <a 
+                  href={link.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="absolute bottom-2 right-2 bg-black/60 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
+                  aria-label="Abrir imagen en nueva pestaña"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 001.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                  </svg>
+                </a>
               </div>
             );
-          } else {
-            // Renderizar botón para perfil
-            return (
-              <a
-                key={index}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-corporate-navy hover:bg-corporate-navy/90 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md self-start"
-              >
-                {link.text}
-                <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-            );
           }
+
+          // Fallback: Renderizar como un botón si no es una foto o si la imagen falló
+          return (
+            <a
+              key={index}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 bg-primary/10 text-primary-foreground font-semibold py-2.5 px-4 rounded-lg hover:bg-primary/20 transition-all duration-300 shadow-sm border border-primary/20 group"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
+              </svg>
+              <span>{link.text}</span>
+            </a>
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
