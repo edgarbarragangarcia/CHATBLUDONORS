@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
 
     const webhookUrl = chatData?.webhook_url
     if (!webhookUrl) {
-      console.log(`No hay webhook configurado para el chat ${chatId}`)
       return NextResponse.json(
         { success: true, message: 'No hay webhook configurado' },
         { status: 200 }
@@ -48,65 +47,20 @@ export async function POST(request: NextRequest) {
         'User-Agent': 'ChatBluDonors-Proxy/1.0'
       },
       body: JSON.stringify({
-        message,
-        user_id: userId,
-        chat_id: chatId,
-        timestamp: new Date().toISOString()
+        chatId: chatId,
+        message: message,
+        userId: userId
       }),
       // Timeout de 45 segundos para permitir procesamiento completo del webhook externo
       signal: AbortSignal.timeout(60000)
     })
 
-    if (!webhookResponse.ok) {
-      console.error(`Webhook respondió con status ${webhookResponse.status}`)
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: `Webhook respondió con status ${webhookResponse.status}`,
-          status: webhookResponse.status
-        },
-        { status: 200 } // Devolvemos 200 para que el frontend no falle
-      )
-    }
+    const responseData = await webhookResponse.json();
 
-    // Procesar respuesta del webhook
-    const responseText = await webhookResponse.text()
-    
-    if (!responseText || responseText.trim() === '') {
-      console.log('Webhook devolvió respuesta vacía')
-      return NextResponse.json(
-        { success: true, response: null },
-        { status: 200 }
-      )
-    }
+    // ¡¡¡AÑADIDO PARA DEPURACIÓN!!!
+    console.log("Respuesta CRUDA del webhook en producción:", JSON.stringify(responseData, null, 2));
 
-    // Intentar parsear como JSON
-    try {
-      const jsonResponse = JSON.parse(responseText)
-      console.log('Respuesta del webhook (JSON):', jsonResponse)
-      
-      // Si es un array, tomar el primer elemento
-      let finalResponse = jsonResponse
-      if (Array.isArray(jsonResponse) && jsonResponse.length > 0) {
-        finalResponse = jsonResponse[0]
-      }
-      
-      // Devolver toda la respuesta completa en lugar de solo el mensaje
-      return NextResponse.json(
-        { 
-          success: true, 
-          response: finalResponse 
-        },
-        { status: 200 }
-      )
-    } catch (parseError) {
-      // Si no es JSON válido, devolver como texto
-      console.log('Respuesta del webhook (texto):', responseText)
-      return NextResponse.json(
-        { success: true, response: responseText },
-        { status: 200 }
-      )
-    }
+    return NextResponse.json({ success: true, response: responseData })
 
   } catch (error) {
     console.error('Error en webhook proxy:', error)
