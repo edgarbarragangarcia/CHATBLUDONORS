@@ -13,9 +13,9 @@ interface MessageContentProps {
 export function MessageContent({ content, className }: MessageContentProps) {
   const contentString = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
 
-  const buttonLinks: { href: string; text: string }[] = [];
   const lines = contentString.split(/\\n|\n/);
-  const contentLines: string[] = [];
+  const buttonLinks: { href: string; text: string }[] = [];
+  const textLines: string[] = [];
 
   const urlRegex = /(https?:\/\/\S+)/;
 
@@ -23,27 +23,25 @@ export function MessageContent({ content, className }: MessageContentProps) {
     const lowerLine = line.toLowerCase();
     const urlMatch = line.match(urlRegex);
 
-    if (urlMatch && urlMatch[0]) {
-      const url = urlMatch[0].replace(/\\$/, ''); // Clean trailing backslash if any
+    if (urlMatch) {
+      const url = urlMatch[0].replace(/\\$/, '');
       if (lowerLine.includes('foto de la donante')) {
         buttonLinks.push({ href: url, text: 'Ver Foto' });
-        return; // Skip this line from being rendered as text
-      }
-      if (lowerLine.includes('perfil ampliado')) {
+      } else if (lowerLine.includes('perfil ampliado')) {
         buttonLinks.push({ href: url, text: 'Ver Perfil Ampliado' });
-        return; // Skip this line from being rendered as text
+      } else {
+        textLines.push(line);
       }
+    } else {
+      textLines.push(line);
     }
-    contentLines.push(line);
   });
 
-  const cleanedContent = contentLines.join('\n').replace(/\n{3,}/g, '\n\n'); // Clean up extra newlines
+  const cleanedContent = textLines.join('\n').replace(/\n{3,}/g, '\n\n');
 
   return (
     <div className={cn("prose prose-sm max-w-none", className)}>
-      <ReactMarkdown>
-        {cleanedContent}
-      </ReactMarkdown>
+      <ReactMarkdown>{cleanedContent}</ReactMarkdown>
       <div className="mt-4">
         {buttonLinks.map((link, index) => (
           <Button key={index} asChild className="mr-2 mb-2">
