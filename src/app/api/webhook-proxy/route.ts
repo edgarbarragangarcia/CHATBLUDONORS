@@ -49,18 +49,31 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         chatId: chatId,
         message: message,
-        userId: userId
+        user_id: userId
       }),
       // Timeout de 45 segundos para permitir procesamiento completo del webhook externo
       signal: AbortSignal.timeout(60000)
     })
 
-    const responseData = await webhookResponse.json();
+    const responseText = await webhookResponse.text();
+    let responseData;
+
+    if (responseText) {
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (e) {
+        // Si no es JSON, trátalo como texto plano
+        responseData = responseText;
+      }
+    } else {
+      // Si la respuesta está vacía, es un éxito sin datos
+      responseData = null;
+    }
 
     // ¡¡¡AÑADIDO PARA DEPURACIÓN!!!
     console.log("Respuesta CRUDA del webhook en producción:", JSON.stringify(responseData, null, 2));
 
-    return NextResponse.json({ success: true, response: responseData })
+    return NextResponse.json({ success: true, response: responseData });
 
   } catch (error) {
     console.error('Error en webhook proxy:', error)

@@ -73,7 +73,10 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     
     try {
       
-      const response = await fetch('/api/webhook-proxy', {
+      const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+        : 'http://localhost:9002';
+      const response = await fetch(`${baseUrl}/api/webhook-proxy`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -168,6 +171,10 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
       
       return cleaned;
     }
+
+    if (Array.isArray(response)) {
+      return response.map(item => cleanWebhookResponse(item));
+    }
     
     if (typeof response === 'object' && response !== null) {
       const cleaned = { ...response };
@@ -248,7 +255,15 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
           let messageContent = ''
           let botAvatar = null
           
-          if (cleanedResponse !== null && typeof cleanedResponse === 'object') {
+          if (Array.isArray(cleanedResponse) && cleanedResponse.length > 0) {
+            const firstItem = cleanedResponse[0];
+            if (typeof firstItem === 'object' && firstItem !== null) {
+              messageContent = firstItem.output || firstItem.response || firstItem.message || JSON.stringify(firstItem);
+              botAvatar = firstItem.avatar_url || firstItem.profile_avatar || firstItem.user_avatar || null;
+            } else {
+              messageContent = String(firstItem);
+            }
+          } else if (cleanedResponse !== null && typeof cleanedResponse === 'object') {
             // Extraer el contenido del mensaje
             messageContent = cleanedResponse.output || cleanedResponse.response || cleanedResponse.message || JSON.stringify(cleanedResponse)
             // Si hay avatar en la respuesta, usarlo
