@@ -151,7 +151,6 @@ export function FormViewer({ form, user }: FormViewerProps) {
                         submitted_at: new Date().toISOString()
                     };
                     
-                    console.log('Enviando datos al webhook via proxy:', webhookPayload);
                     
                     // Usar la ruta API proxy para evitar problemas de CORS
                     const webhookResponse = await fetch('/api/webhook', {
@@ -165,7 +164,6 @@ export function FormViewer({ form, user }: FormViewerProps) {
                     const result = await webhookResponse.json();
                     
                     if (webhookResponse.ok && result.success) {
-                        console.log('Webhook enviado exitosamente via proxy:', result);
                     } else {
                         console.warn('Error en webhook via proxy:', result);
                     }

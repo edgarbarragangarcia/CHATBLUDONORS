@@ -22,33 +22,35 @@ export function MessageContent({ content, className }: MessageContentProps) {
   // Convertir objeto a string si es necesario
   const contentString = typeof content === 'object' ? JSON.stringify(content, null, 2) : content
   
-  // Extraer enlaces de Google Drive y su texto descriptivo asociado
+  // Extraer enlaces de Google Drive de una manera más robusta
   const extractDriveLinks = (text: string): DriveLink[] => {
     const links: DriveLink[] = [];
-    // Expresión regular final que captura el formato: *   **Texto:** [URL](URL)
-    const regex = /\*   \*\*(.*?):\*\* \[(https:\/\/drive\.google\.com\/[^\]]+)\]\(\1\)/g;
-    let match;
+    const lines = text.split('\n');
     
-    while ((match = regex.exec(text)) !== null) {
-      const description = match[1].trim();
-      const url = match[2];
-      // Determina el tipo basado en la descripción
-      const type = description.toLowerCase().includes('foto') ? 'photo' : 'profile';
-      
-      links.push({
-        text: description,
-        url: url,
-        type
-      });
-    }
+    lines.forEach(line => {
+      const match = line.match(/\*   \*\*(.*?):\*\* \[(https:\/\/drive\.google\.com\/[^\]]+)\]/);
+      if (match) {
+        const description = match[1].trim();
+        const url = match[2];
+        const type = description.toLowerCase().includes('foto') ? 'photo' : 'profile';
+        
+        links.push({
+          text: description,
+          url: url,
+          type
+        });
+      }
+    });
     
     return links;
   }
   
   // Extraer el texto limpio (sin las líneas que contienen enlaces de Drive)
   const getCleanText = (text: string) => {
-    // Elimina las líneas completas que contienen un enlace de Google Drive para evitar duplicados
-    return text.split('\n').filter(line => !/\[(https:\/\/drive\.google\.com\/[^\]]+)\]\(\1\)/.test(line)).join('\n').trim();
+    return text.split('\n')
+      .filter(line => !line.includes('https://drive.google.com'))
+      .join('\n')
+      .trim();
   }
   
   // Función para procesar texto con formato de negrilla

@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
@@ -9,8 +8,10 @@ import { useMessages, type Message } from "@/contexts/messages-context"
 import { Card } from "@/components/ui/card"
 import { MessageList } from "./message-list"
 import { MessageForm } from "./message-form"
+import { useToast } from "@/hooks/use-toast"
 
 export default function ChatPage({ user, email, chatId }: { user: User, email?: string, chatId: string }) {
+  const { toast } = useToast()
   const { getWebhookUrl } = useWebhook()
   const { getMessages, addMessage } = useMessages()
   const messages = getMessages(chatId)
@@ -49,28 +50,28 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   const fetchChatWebhook = useCallback(async () => {
     try {
       const webhookUrl = await getWebhookUrl(chatId)
-      console.log('Chat webhook URL obtenida del contexto:', webhookUrl)
       setChatWebhookUrl(webhookUrl)
     } catch (error) {
-      console.error('Error fetching chat webhook from context:', error)
+      toast({
+        title: "Error de Conexión",
+        description: "No se pudo obtener la configuración del webhook para este chat.",
+        variant: "destructive",
+      })
       setChatWebhookUrl(null)
     }
   }, [getWebhookUrl, chatId])
 
   useEffect(() => {
     fetchChatWebhook() // Cargar el webhook URL del chat
-    console.log('Chat inicializado en modo memoria para:', chatId)
   }, [fetchChatWebhook, chatId])
 
   // Función para enviar mensaje al webhook usando proxy interno (sin CORS)
   const sendToWebhook = async (content: string): Promise<any | null> => {
     if (!chatWebhookUrl) {
-      console.log('No hay webhook configurado para este chat')
       return null
     }
     
     try {
-      console.log('Enviando mensaje a través del proxy interno')
       
       const response = await fetch('/api/webhook-proxy', {
         method: 'POST',
@@ -91,29 +92,47 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
         
         if (data.success) {
           if (data.response) {
-            console.log('Respuesta del webhook recibida:', data.response)
             return data.response
           } else {
-            console.log('Webhook procesado exitosamente sin respuesta')
             return null
           }
         } else {
-          console.warn('Error en el webhook:', data.error)
+          toast({
+            title: "Error en el Webhook",
+            description: data.error || "Hubo un problema al procesar la respuesta del webhook.",
+            variant: "destructive",
+          })
           return null
         }
       } else {
-        console.error('Error en el proxy interno:', response.status)
+        toast({
+          title: "Error de Conexión",
+          description: `El servidor proxy respondió con un error ${response.status}.`,
+          variant: "destructive",
+        })
         return null
       }
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          console.warn('Timeout en el envío del webhook (60s)')
+          toast({
+            title: "Tiempo de Espera Excedido",
+            description: "El webhook tardó demasiado en responder (más de 60 segundos).",
+            variant: "destructive",
+          })
         } else {
-          console.warn('Error enviando al webhook:', error.message)
+          toast({
+            title: "Error al Enviar Mensaje",
+            description: "No se pudo conectar con el webhook. Revisa tu conexión.",
+            variant: "destructive",
+          })
         }
       } else {
-        console.warn('Error desconocido enviando al webhook:', error)
+        toast({
+          title: "Error Desconocido",
+          description: "Ocurrió un error inesperado al enviar el mensaje.",
+          variant: "destructive",
+        })
       }
       return null
     }
@@ -198,7 +217,6 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
   const handleSendMessage = async (content: string) => {
     if (content.trim() === "" || !chatId) return
 
-    console.log('Enviando mensaje (solo memoria):', content)
 
     // Crear mensaje del usuario directamente en memoria
     const userProfile = getProfileForUser(user.id)
@@ -213,22 +231,18 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     }
 
     // Agregar el mensaje del usuario al contexto global inmediatamente
-    console.log('Agregando mensaje del usuario al contexto global:', userMessage)
     addMessage(chatId, userMessage)
 
     // Si hay webhook configurado, intentamos enviar el mensaje
     if (chatWebhookUrl) {
       try {
         setIsTyping(true) // Mostrar indicador de escritura
-        console.log('Enviando al webhook:', chatWebhookUrl)
         const webhookResponse = await sendToWebhook(content)
         
         if (webhookResponse) {
-          console.log('Respuesta del webhook recibida:', webhookResponse)
           
           // Limpiar la respuesta del webhook para corregir URLs malformadas
           const cleanedResponse = cleanWebhookResponse(webhookResponse);
-          console.log('Respuesta del webhook limpiada:', cleanedResponse)
           
           // Si el response es un objeto con información completa (incluyendo avatar)
           let messageContent = ''
@@ -258,18 +272,19 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
           }
           
           // Agregar el mensaje del bot al contexto global inmediatamente
-          console.log('Agregando mensaje del bot al contexto global:', botMessage)
           addMessage(chatId, botMessage)
         } else {
-          console.log('Webhook no disponible o no respondió - el chat continúa funcionando normalmente')
         }
       } catch (webhookError) {
-        console.warn('Error con el webhook, pero el mensaje se mantiene en memoria:', webhookError)
+        toast({
+          title: "Error en el Webhook",
+          description: "El mensaje fue guardado, pero no se pudo procesar por el webhook.",
+          variant: "destructive",
+        })
       } finally {
         setIsTyping(false) // Ocultar indicador de escritura
       }
     } else {
-      console.log('No hay webhook configurado para este chat')
     }
   }
 
