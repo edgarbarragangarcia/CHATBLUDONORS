@@ -22,7 +22,7 @@ export function MessageContent({ content, className }: MessageContentProps) {
   // Reemplazar los enlaces de Markdown por botones y limpiar el contenido
   let buttonIndex = 0;
   cleanedContent = cleanedContent.replace(markdownLinkRegex, (match, text, url) => {
-    const buttonText = buttonIndex === 0 ? "Ver Documento" : "Ver Perfil Ampliado";
+    const buttonText = buttonIndex === 0 ? "Ver Foto" : "Ver Perfil Ampliado";
     buttonLinks.push({ href: url, text: buttonText });
     buttonIndex++;
     return ''; // Eliminar el enlace del contenido principal
