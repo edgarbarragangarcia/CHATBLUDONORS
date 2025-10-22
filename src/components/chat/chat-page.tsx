@@ -73,10 +73,7 @@ export default function ChatPage({ user, email, chatId }: { user: User, email?: 
     
     try {
       
-      const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-        : 'http://localhost:9002';
-      const response = await fetch(`${baseUrl}/api/webhook-proxy`, {
+      const response = await fetch(`/api/webhook-proxy`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
