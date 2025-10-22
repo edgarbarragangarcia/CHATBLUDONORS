@@ -16,18 +16,17 @@ export function MessageContent({ content, className }: MessageContentProps) {
   const buttonLinks: { href: string; text: string }[] = [];
   let cleanedContent = contentString;
 
-  // Regex para encontrar "Ver [texto del botón]" y la URL en la misma línea
-  const buttonRegex = /Ver (Foto|Perfil Ampliado)[\s\S]*?(https?:\/\/\S+)/gi;
+  // Regex para encontrar enlaces de Markdown en el formato [texto](URL)
+  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/\S+)\)/g;
   
-  let match;
-  while ((match = buttonRegex.exec(contentString)) !== null) {
-    const buttonText = `Ver ${match[1]}`;
-    const url = match[2];
-    buttonLinks.push({ href: url, text: buttonText });
-  }
+  // Reemplazar los enlaces de Markdown por botones y limpiar el contenido
+  cleanedContent = cleanedContent.replace(markdownLinkRegex, (match, text, url) => {
+    buttonLinks.push({ href: url, text: text });
+    return ''; // Eliminar el enlace del contenido principal
+  });
 
-  // Limpiar el contenido de las líneas que generan botones
-  cleanedContent = cleanedContent.replace(/Puedes ver sus fotos aquí:/gi, '').replace(buttonRegex, '').trim();
+  // Limpiar saltos de línea excesivos que puedan quedar
+  cleanedContent = cleanedContent.replace(/(\r\n|\n|\r){2,}/g, '\n').trim();
 
   return (
     <div className={cn("prose prose-sm max-w-none", className)}>
