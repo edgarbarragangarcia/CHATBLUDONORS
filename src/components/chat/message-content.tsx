@@ -20,8 +20,11 @@ export function MessageContent({ content, className }: MessageContentProps) {
   const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/\S+)\)/g;
   
   // Reemplazar los enlaces de Markdown por botones y limpiar el contenido
+  let buttonIndex = 0;
   cleanedContent = cleanedContent.replace(markdownLinkRegex, (match, text, url) => {
-    buttonLinks.push({ href: url, text: text });
+    const buttonText = buttonIndex === 0 ? "Ver Documento" : "Ver Perfil Ampliado";
+    buttonLinks.push({ href: url, text: buttonText });
+    buttonIndex++;
     return ''; // Eliminar el enlace del contenido principal
   });
 
