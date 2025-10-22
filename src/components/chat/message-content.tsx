@@ -13,38 +13,28 @@ interface MessageContentProps {
 export function MessageContent({ content, className }: MessageContentProps) {
   const contentString = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
 
-  const lines = contentString.split(/\\n|\n/);
   const buttonLinks: { href: string; text: string }[] = [];
-  const textLines: string[] = [];
+  let cleanedContent = contentString;
 
-  const urlRegex = /(https?:\/\/\S+)/;
+  // Regex para encontrar "Ver [texto del botón]" y la URL en la misma línea
+  const buttonRegex = /Ver (Foto|Perfil Ampliado)[\s\S]*?(https?:\/\/\S+)/gi;
+  
+  let match;
+  while ((match = buttonRegex.exec(contentString)) !== null) {
+    const buttonText = `Ver ${match[1]}`;
+    const url = match[2];
+    buttonLinks.push({ href: url, text: buttonText });
+  }
 
-  lines.forEach(line => {
-    const lowerLine = line.toLowerCase();
-    const urlMatch = line.match(urlRegex);
-
-    if (urlMatch) {
-      const url = urlMatch[0].replace(/\\$/, '');
-      if (lowerLine.includes('foto de la donante')) {
-        buttonLinks.push({ href: url, text: 'Ver Foto' });
-      } else if (lowerLine.includes('perfil ampliado')) {
-        buttonLinks.push({ href: url, text: 'Ver Perfil Ampliado' });
-      } else {
-        textLines.push(line);
-      }
-    } else {
-      textLines.push(line);
-    }
-  });
-
-  const cleanedContent = textLines.join('\n').replace(/\n{3,}/g, '\n\n');
+  // Limpiar el contenido de las líneas que generan botones
+  cleanedContent = cleanedContent.replace(/Puedes ver sus fotos aquí:/gi, '').replace(buttonRegex, '').trim();
 
   return (
     <div className={cn("prose prose-sm max-w-none", className)}>
       <ReactMarkdown>{cleanedContent}</ReactMarkdown>
-      <div className="mt-4">
+      <div className="mt-4 flex flex-wrap gap-2">
         {buttonLinks.map((link, index) => (
-          <Button key={index} asChild className="mr-2 mb-2">
+          <Button key={index} asChild>
             <a href={link.href} target="_blank" rel="noopener noreferrer">
               {link.text}
             </a>
