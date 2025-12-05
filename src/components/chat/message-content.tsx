@@ -1,15 +1,9 @@
 "use client"
 
 import ReactMarkdown from 'react-markdown'
-import React, { useState } from 'react'
+import React from 'react'
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { FileText, Image as ImageIcon, ExternalLink } from 'lucide-react'
 
 interface MessageContentProps {
@@ -24,18 +18,7 @@ interface ExtractedLink {
 }
 
 export function MessageContent({ content, className }: MessageContentProps) {
-  const [modalImageUrl, setModalImageUrl] = useState<string | null>(null)
   const contentString = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
-
-  const getDirectGoogleDriveUrl = (url: string): string => {
-    const regex = /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/;
-    const match = url.match(regex);
-    if (match && match[1]) {
-      const fileId = match[1];
-      return `https://lh3.googleusercontent.com/d/${fileId}`;
-    }
-    return url;
-  };
 
   const determineLinkType = (text: string, url: string, index: number): 'photo' | 'profile' | 'generic' => {
     const lowerText = text.toLowerCase();
@@ -177,31 +160,18 @@ export function MessageContent({ content, className }: MessageContentProps) {
             const buttonText = getButtonText(link);
             const icon = getButtonIcon(link.type);
 
-            if (link.type === 'photo') {
-              return (
-                <Button
-                  key={index}
-                  variant="default"
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all"
-                  onClick={() => {
-                    const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(link.href)}`;
-                    setModalImageUrl(proxyUrl);
-                  }}
-                >
-                  {icon}
-                  {buttonText}
-                </Button>
-              )
-            }
-
+            // Todos los botones ahora abren el enlace en una nueva pestaña
             return (
               <Button
                 key={index}
                 asChild
-                variant={link.type === 'profile' ? 'default' : 'outline'}
-                className={link.type === 'profile'
-                  ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-md hover:shadow-lg transition-all"
-                  : "border-gray-300 hover:bg-gray-50 transition-all"
+                variant={link.type === 'photo' ? 'default' : link.type === 'profile' ? 'default' : 'outline'}
+                className={
+                  link.type === 'photo'
+                    ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all"
+                    : link.type === 'profile'
+                      ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-md hover:shadow-lg transition-all"
+                      : "border-gray-300 hover:bg-gray-50 transition-all"
                 }
               >
                 <a href={link.href} target="_blank" rel="noopener noreferrer">
@@ -213,17 +183,6 @@ export function MessageContent({ content, className }: MessageContentProps) {
           })}
         </div>
       )}
-
-      <Dialog open={!!modalImageUrl} onOpenChange={(isOpen) => !isOpen && setModalImageUrl(null)}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Vista Previa de la Foto</DialogTitle>
-          </DialogHeader>
-          <div className="mt-4 -mx-6 -mb-6">
-            {modalImageUrl && <img src={modalImageUrl} alt="Vista previa de la foto" className="w-full h-auto rounded-b-lg" />}
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
