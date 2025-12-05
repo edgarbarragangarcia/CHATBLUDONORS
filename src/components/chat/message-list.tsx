@@ -96,7 +96,7 @@ export function MessageList({ messages, currentUserId, isTyping = false }: { mes
                           likedMessages.has(message.id) ? "fill-current" : ""
                         )} 
                       />
-                      <span>{likedMessages.has(message.id) ? "Me gusta" : "Like"}</span>
+                      <span>{likedMessages.has(message.id) ? "Te gusta" : "Me gusta"}</span>
                     </Button>
                   </div>
                 )}
